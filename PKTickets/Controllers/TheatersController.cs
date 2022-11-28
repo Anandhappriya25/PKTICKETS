@@ -91,5 +91,26 @@ namespace PKTickets.Controllers
             }
             return Ok(result.Message);
         }
+        [HttpGet("{id}/Screens")]
+        public IActionResult GetScreensByTheaterId(int id)
+        {
+            var theater = theaterRepository.TheaterById(id);
+            if (theater == null)
+            {
+                return NotFound();
+            }
+            return Ok(theaterRepository.TheaterScreens(id));
+        }
+
+        [HttpGet("{id}/Schedules")]
+        public IActionResult ListByTheaterId(int id)
+        {
+            var theater = theaterRepository.TheaterById(id);
+            if (theater == null)
+            {
+                return NotFound("Theater Id is notfound");
+            }
+            return Ok(theaterRepository.TheaterSchedulesById(id));
+        }
     }
 }

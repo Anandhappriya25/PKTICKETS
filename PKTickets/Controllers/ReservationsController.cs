@@ -114,15 +114,6 @@ namespace PKTickets.Controllers
             return Ok(reservationRepository.ReservationsByUserId(id));
         }
 
-        [HttpPost("Multiple")]
-        public IActionResult Multiple(MultipleBookingDTO obj)
-        {
-            var user = reservationRepository.UserById(obj.UserId);
-            if (user == null)
-            {
-                return NotFound("User Id is notfound");
-            }
-            return Ok(reservationRepository.MultipleBooking(obj));
-        }
+  
     }
 }

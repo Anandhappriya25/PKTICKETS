@@ -103,40 +103,13 @@ namespace PKTickets.Repository
         }
 
         
-        public ScreensListDTO TheaterScreens(int id)
-        {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
-            var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
-            ScreensListDTO list = new ScreensListDTO();
-            list.TheaterName = theater.TheaterName;
-            list.ScreensCount = screens.Count();
-            list.Screens = Screens(id);
-            return list;
-        }
+       
         public Theater TheaterById(int id)
         {
          var   theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
             return theater;
         }
 
-        #region PrivateMethods
-        private List<ScreensDTO> Screens(int id)
-        {
-            var screens = (from theater in db.Theaters
-                           join screen in db.Screens on theater.TheaterId equals screen.TheaterId
-                           where theater.TheaterId == id && screen.IsActive == true
-                           select new ScreensDTO()
-                           {
-                               ScreenId = screen.ScreenId,
-                               ScreenName = screen.ScreenName,
-                               PremiumCapacity = screen.PremiumCapacity,
-                               EliteCapacity = screen.EliteCapacity,
-                               PremiumPrice = screen.PremiumPrice,
-                               ElitePrice = screen.ElitePrice,
-                           }).ToList();
-
-            return screens;
-        }
-        #endregion
+     
     }
 }

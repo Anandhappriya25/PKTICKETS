@@ -121,16 +121,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("TheaterId/{id}")]
-        public IActionResult ListByTheaterId(int id)
-        {
-            var theater = scheduleRepository.TheaterById(id);
-            if (theater == null)
-            {
-                return NotFound("Theater Id is notfound");
-            }
-            return Ok(scheduleRepository.TheaterSchedulesById(id));
-        }
+       
 
         [HttpGet("Details/Movie/{id}")]
         public IActionResult DetailsByMovieId(int id)

@@ -185,29 +185,7 @@ namespace PKTickets.Repository
             var screen = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == id);
             return screen;
         }
-        public TheatersSchedulesDTO TheaterSchedulesById(int id)
-        {
-            var theater = db.Theaters.FirstOrDefault(x => x.TheaterId == id);
-            var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
-
-            TheatersSchedulesDTO list = new TheatersSchedulesDTO();
-            list.TheaterName = theater.TheaterName; 
-            list.ScreensCount =screens.Count();
-
-           List<ScreenSchedulesDTO> schedules=new List<ScreenSchedulesDTO>();
-            foreach (var screen in screens)
-            {
-                ScreenSchedulesDTO scheduleList = new ScreenSchedulesDTO();
-                scheduleList.ScreenId=screen.ScreenId;
-                scheduleList.ScreenName=screen.ScreenName;  
-                scheduleList.PremiumCapacity=screen.PremiumCapacity;    
-                scheduleList.EliteCapacity=screen.EliteCapacity;
-                scheduleList.Schedules = SchedulesListScreenId(screen.ScreenId);
-                schedules.Add(scheduleList);
-            }
-            list.Screens = schedules;
-            return list;
-        }
+       
         public Theater TheaterById(int id)
         {
             var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);

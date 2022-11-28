@@ -83,16 +83,7 @@ namespace PKTickets.Controllers
             return Ok(result.Message);
         }
 
-        [HttpGet("Theater/{id}")]
-        public IActionResult GetScreensByTheaterId(int id)
-        {
-            var theater=screenRepository.TheaterById(id);
-            if(theater == null)
-            {
-                return NotFound();
-            }
-            return Ok(screenRepository.TheaterScreens(id));
-        }
+       
 
     }
 }

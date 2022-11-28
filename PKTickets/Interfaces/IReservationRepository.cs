@@ -15,7 +15,6 @@ namespace PKTickets.Interfaces
         public UserDTO ReservationsByUserId(int id);
         public User UserById(int id);
         public Schedule ScheduleById(int id);
-        public Result MultipleBooking(MultipleBookingDTO bookingDTO);
 
 
     }

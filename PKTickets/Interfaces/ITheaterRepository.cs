@@ -12,5 +12,7 @@ namespace PKTickets.Interfaces
         public Messages DeleteTheater(int theaterId);
         public Messages CreateTheater(Theater theater);
         public Messages UpdateTheater(Theater theater);
+        public ScreensListDTO TheaterScreens(int id);
+        public TheatersSchedulesDTO TheaterSchedulesById(int id);
     }
 }

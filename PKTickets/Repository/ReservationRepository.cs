@@ -189,24 +189,6 @@ namespace PKTickets.Repository
             return schedule;
         }
 
-        public Result MultipleBooking(MultipleBookingDTO bookingDTO)
-        {
-            Result result = new Result();
-            List<Detail> details = bookingDTO.MultipleReservations;
-            foreach (Detail detail in details)
-            {
-                Reservation reservation = new Reservation();
-                reservation.UserId= bookingDTO.UserId;
-                reservation.ScheduleId=detail.ScheduleId;
-                reservation.PremiumTickets = detail.PremiumTickets;
-                reservation.EliteTickets=detail.EliteTickets;
-                var obj = CreateReservation(reservation);
-                Output va = new Output();
-                va.Message = obj.Message;
-                result.Messages.Add(va);
-            }
-            return result;
-        }
 
         #region Private Methods
 
