@@ -13,7 +13,6 @@ builder.Services.AddDbContext<PKTicketsDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("PKTICKETConnection"));
 });
-//builder.Services.AddHostedService<TimedHostedService>();
 //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 //            .AddCookie(options =>
 //            {

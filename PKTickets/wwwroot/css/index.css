@@ -1,0 +1,17 @@
+﻿
+#line {
+    font-size: 100px;
+    color: #CCCCFF;
+    text-decoration: underline;
+    text-decoration-thickness: 5px;
+}
+#blur {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+}

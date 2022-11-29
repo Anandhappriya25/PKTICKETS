@@ -1,0 +1,83 @@
+﻿@using PKTickets.Models
+@model User
+@{
+    string title = "Create User";
+    if (Model.UserId > 0)
+    {
+        title = "Edit User";
+    }
+    Layout = "~/views/shared/_userlayout.cshtml";
+
+}
+
+<style>
+    .required:after {
+        content: " *";
+        color: red;
+    }
+</style>
+
+@using (Html.BeginForm(FormMethod.Post, new { id = "CreateUsers" }))
+{
+    
+    <div class="container border rounded-3  pt-3  bg-light text-dark w-50" id="center">
+        <div id="formhead" class="text-center mb-3">@title</div>
+
+        @Html.HiddenFor(m => m.UserId )
+        <div class="mb-3  row justify-content-center">
+            <div class="col-3">
+                <label class="form-label required">User Name</label>
+            </div>
+            <div class="col-4">
+                @Html.TextBoxFor(m => m.UserName , new {@class="form-control", required = "required" , maxlength = "20"} )
+            </div>
+        </div>
+        <div class="mb-3 row justify-content-center">
+            <div class="col-3">
+                <label class="form-label required">Email Id</label>
+            </div>
+            <div class="col-4">
+                @Html.TextBoxFor(m => m.EmailId , new {@class="form-control", required = "required" , type= "email"})
+            </div>
+        </div>
+        
+        <div class="mb-3 row justify-content-center">
+            <div class="col-3">
+                <label class="form-label required">Phone Number</label>
+            </div>
+            <div class="col-4">
+                @Html.TextBoxFor(m => m.PhoneNumber , new {@class="form-control", required = "required" ,type ="number",minlength = "10" ,maxlength = "10" ,min="6000000000",max="9999999999"})
+            </div>
+        </div>
+      
+        <div class="mb-3 row justify-content-center">
+            <div class="col-3">
+                <label class="form-label required">City</label>
+            </div>
+            <div class="col-4">
+                @Html.TextBoxFor(m => m.Location , new {@class="form-control", required = "required" , maxlength = "20"})
+            </div>
+        </div>
+        <div class="mb-3 row justify-content-center">
+            <div class="col-3">
+                <label class="form-label required">Password</label>
+            </div>
+            <div class="col-4">
+                @Html.TextBoxFor(m => m.Password , new {@class="form-control", required = "required" ,type="password",minlength = "6",maxlength = "10"})
+            </div>
+        </div>
+        <div class="mb-3 row justify-content-center">
+            <div class="col-3">
+                <button type="submit" class="btn btn-outline-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+
+  
+
+}
+
+@section scripts{  
+    <script src="~/js/createusers.js"></script>
+    <link href="~/css/color.css" rel="stylesheet" />
+}

@@ -54,7 +54,64 @@ namespace PKTickets.Controllers
             return View();
         }
 
-       
+        public IActionResult UserList()
+        {
+            var usersList = _userRepository.GetAllUsers();
+            return View(usersList);
+        }
+        public IActionResult DeleteUser(int id)
+        {
+            var ticket = _userRepository.DeleteUser(id);
+            return Json(ticket);
+        }
+        public IActionResult CreateUser()
+        {
+            User user=new User();
+            return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult EditUser(int id)
+        {
+            var user = _userRepository.UserById(id);
+            return View("CreateUser",user);
+        }
+        
+         [HttpPost]
+        public IActionResult Save(User user)
+        {
+                if (user.UserId == 0)
+                {
+                    return Json(_userRepository.CreateUser(user));
+                }
+                else
+                {
+                    return Json(_userRepository.UpdateUser(user));
+                }
+         
+        }
+
+        public IActionResult TheatersList()
+        {
+            var theater = _theaterRepository.GetTheaters();
+            return View(theater);
+        }
+        public IActionResult RemoveTheater (int id)
+        {
+            var theater = _theaterRepository.DeleteTheater(id);
+            return Json(theater);
+        }
+        public IActionResult ReservationsByUserId(int id)
+        {
+            var usersList = _reservationRepository.ReservationsByUserId(id);
+            return View(usersList);
+        }
+        public IActionResult CancelTicket(int id)
+        {
+            var ticket = _reservationRepository.DeleteReservation(id);
+            return Json(ticket);
+        }
+
         //public async Task<IActionResult> Add(Movie movie)
         //{
 
@@ -76,7 +133,7 @@ namespace PKTickets.Controllers
         //        return Json(_movieRepository.CreateMovie(movie));
         //    }
         //}
-       
-        
+
+
     }
 }

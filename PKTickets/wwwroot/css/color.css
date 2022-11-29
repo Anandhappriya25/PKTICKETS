@@ -1,0 +1,35 @@
+﻿
+#color {
+    border:solid;
+    background-color: #FBF6D9;
+    float: right;
+}
+#thead {
+    background-color: #161b22;
+}
+#edit {
+    background-color: #ADD8E6;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+#add {
+    border: solid;
+    background-color: #77DD77;
+    float: right;
+    margin-right: 1%;
+}
+#formhead {
+    color: dodgerblue;
+    font-size: 2.5em;
+}
+#center {
+    margin-top:11%;
+}
+#black {
+    background-color: black;
+    opacity: 0.6;
+}
+

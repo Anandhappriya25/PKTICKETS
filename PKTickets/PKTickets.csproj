@@ -7,11 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\ConfirmDelete.js" />
+    <Content Remove="wwwroot\js\TheaterDelete.js" />
+    <Content Remove="wwwroot\js\UserDelete.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\css\Image\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\css\logo\logo.jpg" />
+    <None Include="wwwroot\js\TheaterDelete.js" />
+    <None Include="wwwroot\js\UserDelete.js" />
+    <None Include="wwwroot\js\ConfirmDelete.js" />
     <None Include="wwwroot\js\CreateUsers.js" />
   </ItemGroup>
 
