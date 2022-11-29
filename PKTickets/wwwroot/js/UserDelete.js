@@ -9,7 +9,7 @@
             success: function (response) {
                 alert(response.message);
                 if (response.success == true) {
-                    location.reload();
+                    setTimeout(function () { window.location = '/Home/UserList'; }, 500);
                 }
             },
             error: function () {

@@ -1,0 +1,90 @@
+﻿@using PKTickets.Models
+@model Screen
+@{
+    string name = "";
+    string title = "Screen Form";
+    if (Model.ScreenId > 0)
+    {
+        title = "Edit Screen";
+    }
+    Layout = "~/views/shared/_userlayout.cshtml";
+
+}
+<section class="text-center text-lg-start">
+
+    <div class="container py-4">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card cascading-right" id="form">
+                    <div class="card-body p-5 shadow-5 text-center">
+                        <h2 class="fw-bold mb-5">@title</h2>
+                        @using (Html.BeginForm(FormMethod.Post, new { id = "AddScreen" }))
+                        {
+                            @Html.HiddenFor(m => m.ScreenId )
+                            @Html.HiddenFor(m => m.TheaterId )
+                            <div class="form-outline mb-4 col-6 " id="margin">
+                                @Html.TextBoxFor(m => m.ScreenName , new {@class="form-control", required = "required" , maxlength = "20"} )
+                                <label class="form-label required">Screen Name</label>
+                            </div>
+                            @if (Model.ScreenId > 0)
+                            {
+                                <div class="form-outline mb-4 col-6 " id="margin">
+                                    @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control", required = "required" ,min="50", max= "300" ,@disabled="disabled"})
+                                    <label class="form-label required">Premium Capacity</label>
+                                </div>
+                                <div class="form-outline mb-4 col-6 " id="margin">
+                                    @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control", required = "required" ,min="50", max = "250",@disabled="disabled"})
+                                    <label class="form-label required">Elite Capacity</label>
+                                </div>
+                            }
+                            else
+                            {
+
+
+
+                                <div class="form-outline mb-4 col-6 " id="margin">
+                                    @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control", required = "required" , maxlength = "20"})
+                                    <label class="form-label required">Premium Capacity</label>
+                                </div>
+                                <div class="form-outline mb-4 col-6 " id="margin">
+                                    @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control", required = "required" , maxlength = "20"})
+                                    <label class="form-label required">Elite Capacity</label>
+                                </div>
+                            }
+                            <div class="form-outline mb-4 col-6 " id="margin">
+                                @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control", required = "required" , maxlength = "20"})
+                                <label class="form-label required">PremiumPrice</label>
+                            </div>
+                            <div class="form-outline mb-4 col-6 " id="margin">
+                                @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control", required = "required" , maxlength = "20"})
+                                <label class="form-label required">ElitePrice</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block mb-4 col-12">
+                                @if (Model.ScreenId > 0)
+                                {
+                                    name = "Update";
+
+                                }
+                                else
+                                {
+                                    name = "Add";
+                                }@name
+                            </button>
+
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <img src="~/css/logo/screen.jpeg" class="w-98 rounded-4 shadow-4"
+                     alt="" />
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script src="~/js/addscreen.js"></script>
+    <link href="~/css/form.css" rel="stylesheet" />
+    <link href="~/css/color.css" rel="stylesheet" />
+}

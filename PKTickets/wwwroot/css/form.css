@@ -7,8 +7,14 @@
 }
 #form {
     background: hsla(0, 0%, 100%, 0.55);
-    backdrop-filter: blur(0px);
+    backdrop-filter: blur(30px);
 }
 #margin {
     margin-left:25%;
+}
+.w-100{
+    width:115%!important;
+}
+.w-98 {
+    width:98%!important;
 }

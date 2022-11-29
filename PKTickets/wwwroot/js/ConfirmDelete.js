@@ -9,8 +9,7 @@
             success: function (response) {
                 alert(response.message);
                 if (response.success == true) {
-                    /*setTimeout(function () { window.location = '/Home/ReservationsByUserId'; }, 1000);*/
-                    location.reload();
+                    setTimeout(function () { window.location = '/Home/ReservationsByUserId?id='+id; }, 500);
                 }
             },
             error: function () {

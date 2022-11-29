@@ -1,10 +1,11 @@
-﻿function Theater(id) {
-    let result = confirm("Are you sure you want to delete?");
-    if (result) {
+﻿
+$(document).ready(function () {
+    $("#AddTheater").submit(function (e) {
+        e.preventDefault();
         $.ajax({
-            type: "get",
-            url: "/Home/RemoveTheater?id=" + id,
-            contentType: 'application/json; charset=utf-8',
+            url: "/Home/SaveTheater",
+            type: "Post",
+            data: $("#AddTheater").serialize(),
             dataType: 'json',
             success: function (response) {
                 alert(response.message);
@@ -16,8 +17,6 @@
                 alert("error");
             }
         });
-    }
-}
-function GoIndex() {
-    setTimeout(function () { window.location = '/Home/Index'; }, 100);
-}
+    });
+});
+

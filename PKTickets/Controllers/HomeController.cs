@@ -90,10 +90,40 @@ namespace PKTickets.Controllers
                 }
          
         }
+        public IActionResult AddTheater()
+        {
+            Theater theater = new Theater();
+            return View(theater);
+        }
+        [HttpGet]
+        public IActionResult EditTheater(int id)
+        {
+            var theater = _theaterRepository.TheaterById(id);
+            return View("AddTheater", theater);
+        }
+        [HttpPost]
+        public IActionResult SaveTheater(Theater theater)
+        {
+            if (theater.TheaterId == 0)
+            {
+                return Json(_theaterRepository.CreateTheater(theater));
+            }
+            else
+            {
+                return Json(_theaterRepository.UpdateTheater(theater));
+            }
 
+        }
         public IActionResult TheatersList()
         {
             var theater = _theaterRepository.GetTheaters();
+            return View(theater);
+        }
+        [HttpGet]
+        public IActionResult TheaterScreens(int id)
+        {
+            var theater = _theaterRepository.TheaterScreens(id);
+            ViewBag.csd = id;
             return View(theater);
         }
         public IActionResult RemoveTheater (int id)
@@ -110,6 +140,33 @@ namespace PKTickets.Controllers
         {
             var ticket = _reservationRepository.DeleteReservation(id);
             return Json(ticket);
+        }
+        public IActionResult AddScreen(int id)
+        {
+            Screen screen = new Screen();
+            screen.TheaterId= id;
+            return View(screen);
+        }
+
+        [HttpPost]
+        public IActionResult SaveScreen(Screen screen)
+        {
+            if (screen.ScreenId == 0)
+            {
+                return Json(_screenRepository.AddScreen(screen));
+            }
+            else
+            {
+                return Json(_screenRepository.UpdateScreen(screen));
+            }
+
+        }
+
+        [HttpGet]
+        public IActionResult EditScreen(int id)
+        {
+            var screen = _screenRepository.ScreenById(id);
+            return View("AddScreen", screen);
         }
 
         //public async Task<IActionResult> Add(Movie movie)

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\AddTheater.js" />
     <Content Remove="wwwroot\js\ConfirmDelete.js" />
     <Content Remove="wwwroot\js\TheaterDelete.js" />
     <Content Remove="wwwroot\js\UserDelete.js" />
@@ -18,6 +19,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\css\logo\logo.jpg" />
+    <None Include="wwwroot\js\AddTheater.js" />
     <None Include="wwwroot\js\TheaterDelete.js" />
     <None Include="wwwroot\js\UserDelete.js" />
     <None Include="wwwroot\js\ConfirmDelete.js" />
