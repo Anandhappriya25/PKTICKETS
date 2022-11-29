@@ -1,0 +1,14 @@
+﻿.required:after {
+    content: " *";
+    color: red;
+}
+.cascading-right {
+    margin-right: -50px;
+}
+#form {
+    background: hsla(0, 0%, 100%, 0.55);
+    backdrop-filter: blur(0px);
+}
+#margin {
+    margin-left:25%;
+}
