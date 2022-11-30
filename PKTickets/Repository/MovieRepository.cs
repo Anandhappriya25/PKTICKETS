@@ -112,6 +112,7 @@ namespace PKTickets.Repository
                 movieExist.Duration = movie.Duration;
                 movieExist.Genre = movie.Genre;
                 movieExist.CastAndCrew = movie.CastAndCrew;
+                movieExist.ImagePath= movie.ImagePath;
                 db.SaveChanges();
                 messages.Success = true;
                 messages.Message = "" + movie.Title + " Movie is Successfully Updated";

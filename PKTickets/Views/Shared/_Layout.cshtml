@@ -29,7 +29,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="navbar-nav flex-grow-1" style="margin-left:59%;">
+                <div class="navbar-nav flex-grow-1" style="margin-left:51%;">
                     <div class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="UserList">
                             <i class="fa-solid fa-users"></i> Users
@@ -41,17 +41,22 @@
                                 </a>
                             </div>
 
+                            
                             <div class="nav-item" style="float:right;">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MovieList" asp-route-id="">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Movies" asp-route-id="">
                             <i class="fa-solid fa-clapperboard"></i> Movies
                                 </a>
                             </div>
                     <div class="nav-item" style="float:right;">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MoviesList">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ReservationsList">
                             <i class="fa-solid fa-ticket"></i> Reservations
                         </a>
                     </div>
-                       
+                    <div class="nav-item" style="float:right;">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MovieList" asp-route-id="">
+                            <i class="fa-solid fa-ticket-simple"></i> BookTicket
+                        </a>
+                    </div>
                     </div>
             </div>
 
