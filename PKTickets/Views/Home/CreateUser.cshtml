@@ -14,66 +14,6 @@
 }
 
 
-@*
-
-
-<section class="text-center text-lg-start">
-
-  <div class="container py-4">
-    <div class="row g-0 align-items-center">
-      <div class="col-lg-6 mb-5 mb-lg-0">
-        <div class="card cascading-right" id="form">
-          <div class="card-body p-5 shadow-5 text-center">
-            <h2 class="fw-bold mb-5">@title</h2>
-                        @using (Html.BeginForm(FormMethod.Post, new { id = "CreateUsers" }))
-                        {
-                            @Html.HiddenFor(m => m.UserId )
-                            <div class="form-outline mb-2 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.UserName , new {@class="form-control", required = "required" , maxlength = "20"} )
-                                <label class="form-label required">User Name</label>
-                            </div>
-                            
-              <div class="form-outline mb-2 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.EmailId , new {@class="form-control", required = "required" , type= "email"})
-                                <label class="form-label required">Email address</label>
-              </div>
-                            <div class="form-outline mb-2 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.PhoneNumber , new {@class="form-control", required = "required" ,type ="number",minlength = "10" ,maxlength = "10" ,min="6000000000",max="9999999999"})
-                                <label class="form-label required">Phone number</label>
-                            </div>
-                            <div class="form-outline mb-2 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.Password , new {@class="form-control", required = "required" ,type="password",minlength = "6",maxlength = "10"})
-                                <label class="form-label required">Password</label>
-              </div>
-                            <div class="form-outline mb-2 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.Location , new {@class="form-control", required = "required" , maxlength = "20"})
-                                <label class="form-label required">Location</label>
-                            </div>
-              <button type="submit" class="btn btn-primary btn-lg btn-block mb-4 col-12">
-                                @if (Model.UserId > 0)
-                                {
-                                    name = "Update";
-                                
-                                }
-                                else
-                                {
-                                   name = "Create";
-                                }@name
-              </button>
-
-             }
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6 mb-5 mb-lg-0">
-                <img src="~/css/logo/3df07a575d316e4f7a16e20c93423bc3.webp" class="w-100 rounded-4 shadow-4"
-                     alt="" />
-      </div>
-    </div>
-  </div>
-</section>*@
-
 
 
 <div class="container register">

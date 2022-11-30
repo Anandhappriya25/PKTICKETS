@@ -9,7 +9,7 @@
             success: function (response) {
                 alert(response.message);
                 if (response.success == true) {
-                    setTimeout(function () { window.location = '/Home/TheaterScreens?id='+ $('#TheaterId').val(); }, 500);
+                    setTimeout(function () { window.location.reload(); }, 500);
                 }
             },
             error: function () {
@@ -17,4 +17,8 @@
             }
         });
     }
+}
+
+function getParam(name) {
+    return (location.search.split(name + '=')[1] || '').split('&')[0];
 }

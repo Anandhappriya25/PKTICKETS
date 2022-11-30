@@ -4,7 +4,7 @@
 @{
     Layout = "~/views/shared/_userlayout.cshtml";
 }
-<a class=" text-black mb-3"  title="Add User" asp-area="" asp-controller="Home" asp-action="CreateUser">
+<a class=" text-black mb-3"  title="Add User" asp-area="" asp-controller="Home" asp-action="AddMovie">
     <i class="fa-regular fa-square-plus Add"></i>
 
 </a>
@@ -12,17 +12,18 @@
 
 
 
-
 <div class="container-fluid ">
     <div class="row row-cols-4 row-cols-sm-4 row-cols-md-4 row-cols-lg-4">
  @foreach (Movie movie in Model)
         {
+
             <div class="card" style="width:18rem;margin-right:36px;margin-top:49px;">
-                <img class="card-img-top" style="margin-top:12px;"src="~/css/image/5cee5bc2-6d70-4169-9066-af720fcdddda.jpg" alt="Card image top">
+                <img class="card-img-top" style="margin-top:12px;" src="/css/Image/@movie.ImagePath" alt="Card image top">
     <div class="card-body">
         <h3 class="card-title">@movie.Title</h3>
-        <h4 class="card-subtitle">@movie.Director</h4>
-        <p class="card-text">@movie.CastAndCrew</p>
+        <h4 class="card-subtitle">@movie.Language</h4>
+        <p class="card-text">@movie.Director, @movie.CastAndCrew</p>
+                    <p class="card-text para">Duration : @movie.Duration Minutes</p>
     </div>
 </div>
         }

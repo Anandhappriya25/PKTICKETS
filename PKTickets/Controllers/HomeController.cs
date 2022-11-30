@@ -173,32 +173,59 @@ namespace PKTickets.Controllers
             var screen = _screenRepository.RemoveScreen(id);
             return Json(screen);
         }
+        public IActionResult Movies()
+        {
+            var movie = _movieRepository.GetAllMovies();
+            return View(movie);
+        }
         public IActionResult MovieList()
         {
             var movie = _movieRepository.GetAllMovies();
             return View(movie);
         }
-        //public async Task<IActionResult> Add(Movie movie)
-        //{
 
-        //    var uploadDirectory = "Css/Image/";
-        //    string location = "~wwwroot/Css/Image/";
-        //    var uploadPath = Path.Combine(WebHostEnvironment.WebRootPath, uploadDirectory);
-        //    if (!Directory.Exists(uploadPath))
-        //        Directory.CreateDirectory(uploadPath);
-        //    var fileName = Guid.NewGuid() + Path.GetExtension(movie.CoverPhoto.FileName);
-        //    var imagePath = Path.Combine(uploadPath, fileName);
-        //    await movie.CoverPhoto.CopyToAsync(new FileStream(imagePath, FileMode.Create));
-        //    movie.ImagePath = fileName;
-        //    if (movie.MovieId > 0)
-        //    {
-        //        return Json(_movieRepository.UpdateMovie(movie));
-        //    }
-        //    else
-        //    {
-        //        return Json(_movieRepository.CreateMovie(movie));
-        //    }
-        //}
+      
+        public IActionResult AddMovie()
+        {
+            Movie movie = new Movie();
+            return View(movie);
+        }
+        [HttpGet]
+        public IActionResult EditMovie(int id)
+        {
+            var movie = _movieRepository.MovieById(id);
+            return View("AddMovie", movie);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(Movie movie)
+        {
+
+            var uploadDirectory = "Css/Image/";
+            var uploadPath = Path.Combine(WebHostEnvironment.WebRootPath, uploadDirectory);
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+            var fileName = Guid.NewGuid() + Path.GetExtension(movie.CoverPhoto.FileName);
+            var imagePath = Path.Combine(uploadPath, fileName);
+            await movie.CoverPhoto.CopyToAsync(new FileStream(imagePath, FileMode.Create));
+            movie.ImagePath = fileName;
+            if (movie.MovieId > 0)
+            {
+                var obj = _movieRepository.UpdateMovie(movie);
+                return RedirectToAction("MovieList");
+            }
+            else
+            {
+                var obj = _movieRepository.CreateMovie(movie);
+                return RedirectToAction("MovieList");
+            }
+        }
+
+        public IActionResult ReservationsList()
+        {
+            var list = _reservationRepository.ReservationList();
+            return View(list);
+        }
 
 
     }
