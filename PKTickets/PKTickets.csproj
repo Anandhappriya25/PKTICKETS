@@ -9,6 +9,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\js\AddTheater.js" />
     <Content Remove="wwwroot\js\ConfirmDelete.js" />
+    <Content Remove="wwwroot\js\ScreenDelete.js" />
     <Content Remove="wwwroot\js\TheaterDelete.js" />
     <Content Remove="wwwroot\js\UserDelete.js" />
   </ItemGroup>
@@ -21,12 +22,14 @@
     <None Include="wwwroot\css\logo\logo.jpg" />
     <None Include="wwwroot\js\AddTheater.js" />
     <None Include="wwwroot\js\TheaterDelete.js" />
+    <None Include="wwwroot\js\ScreenDelete.js" />
     <None Include="wwwroot\js\UserDelete.js" />
     <None Include="wwwroot\js\ConfirmDelete.js" />
     <None Include="wwwroot\js\CreateUsers.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazorise.Icons.Material" Version="1.1.4.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>

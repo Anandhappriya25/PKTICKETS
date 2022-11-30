@@ -29,11 +29,11 @@
                             @if (Model.ScreenId > 0)
                             {
                                 <div class="form-outline mb-4 col-6 " id="margin">
-                                    @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control", required = "required" ,min="50", max= "300" ,@disabled="disabled"})
+                                    @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max= "300" ,@disabled="disabled"})
                                     <label class="form-label required">Premium Capacity</label>
                                 </div>
                                 <div class="form-outline mb-4 col-6 " id="margin">
-                                    @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control", required = "required" ,min="50", max = "250",@disabled="disabled"})
+                                    @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250",@disabled="disabled"})
                                     <label class="form-label required">Elite Capacity</label>
                                 </div>
                             }
@@ -43,20 +43,20 @@
 
 
                                 <div class="form-outline mb-4 col-6 " id="margin">
-                                    @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control", required = "required" , maxlength = "20"})
+                                    @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250"})
                                     <label class="form-label required">Premium Capacity</label>
                                 </div>
                                 <div class="form-outline mb-4 col-6 " id="margin">
-                                    @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control", required = "required" , maxlength = "20"})
+                                    @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250"})
                                     <label class="form-label required">Elite Capacity</label>
                                 </div>
                             }
                             <div class="form-outline mb-4 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control", required = "required" , maxlength = "20"})
+                                @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "1000"})
                                 <label class="form-label required">PremiumPrice</label>
                             </div>
                             <div class="form-outline mb-4 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control", required = "required" , maxlength = "20"})
+                                @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "2000"})
                                 <label class="form-label required">ElitePrice</label>
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg btn-block mb-4 col-12">

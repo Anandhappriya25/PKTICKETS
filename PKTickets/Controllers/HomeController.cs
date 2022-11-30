@@ -168,7 +168,16 @@ namespace PKTickets.Controllers
             var screen = _screenRepository.ScreenById(id);
             return View("AddScreen", screen);
         }
-
+        public IActionResult RemoveScreen(int id)
+        {
+            var screen = _screenRepository.RemoveScreen(id);
+            return Json(screen);
+        }
+        public IActionResult MovieList()
+        {
+            var movie = _movieRepository.GetAllMovies();
+            return View(movie);
+        }
         //public async Task<IActionResult> Add(Movie movie)
         //{
 
