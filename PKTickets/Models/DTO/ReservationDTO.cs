@@ -6,8 +6,8 @@
         public string UserName { get; set; }
         public string MovieName { get; set; }
         public string TheaterName { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string ShowTiming { get; set; }
-        public string Tickets { get; set; }
+        public int Tickets { get; set; }
     }
 }

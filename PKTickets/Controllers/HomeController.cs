@@ -181,6 +181,19 @@ namespace PKTickets.Controllers
             var screen = _screenRepository.RemoveScreen(id);
             return Json(screen);
         }
+
+        [HttpGet]
+        public IActionResult ScreenScheduleById(int id)
+        {
+            var schedule = _scheduleRepository.SchedulesListByScreenId(id);
+            ViewBag.csd = id;
+            return View("ScreenSchedules",schedule);
+        }
+        public IActionResult ScreenSchedules()
+        {
+            return View();
+        }
+
         public IActionResult Movies()
         {
             var movie = _movieRepository.GetAllMovies();
@@ -231,7 +244,7 @@ namespace PKTickets.Controllers
 
         public IActionResult ReservationsList()
         {
-            var list = _reservationRepository.ReservationList();
+            var list = _reservationRepository.ListOfReservations();
             return View(list);
         }
 
