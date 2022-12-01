@@ -15,6 +15,17 @@ namespace PKTickets.Repository
         {
             this.db = db;
         }
+        public List<Theater> TheaterByMovieId(int id)
+        {
+            var details= DetailsByMovieId(id);
+            List<Theater> theater = new List<Theater>();
+            foreach(var item in details.Theaters)
+            {
+                var obj=db.Theaters.FirstOrDefault(x=>x.TheaterId==item.TheaterId);
+                theater.Add(obj);
+            }
+            return theater;
+        }
         public List<Schedule> SchedulesList()
         {
             return db.Schedules.ToList();

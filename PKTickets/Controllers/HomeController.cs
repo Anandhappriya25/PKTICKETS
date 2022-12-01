@@ -260,6 +260,28 @@ namespace PKTickets.Controllers
             Invoice invoice = new Invoice();
             return View(invoice);
         }
+        public IActionResult RemoveMovie(int id)
+        {
+            var movie = _movieRepository.DeleteMovie(id);
+            return Json(movie);
+        }
+        [HttpGet]
+        public IActionResult MovieById(int id)
+        {
+            var movie = _movieRepository.MovieById(id);
+            return View("MovieInfo", movie);
+        }
+        public IActionResult MovieInfo()
+        {
+            Movie movie = new Movie();
+            return View(movie);
+        }
+        [HttpGet]
+        public IActionResult MovieTheaters(int id)
+        {
+            var theaters = _scheduleRepository.TheaterByMovieId(id);
 
+            return View(theaters);
+        }
     }
 }
