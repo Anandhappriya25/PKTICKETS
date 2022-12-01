@@ -18,6 +18,7 @@ namespace PKTickets.Repository
         {
             return db.Reservations.Where(x => x.IsActive == true).ToList();
         }
+ 
 
         public Reservation ReservationById(int id)
         {
@@ -189,7 +190,28 @@ namespace PKTickets.Repository
             return schedule;
         }
 
-
+        public List<ReservationDTO> ListOfReservations()
+        {
+            var reservations = (from reservation in db.Reservations
+                                join user in db.Users on reservation.UserId equals user.UserId
+                                join schedule in db.Schedules on reservation.ScheduleId equals schedule.ScheduleId
+                                join screen in db.Screens on schedule.ScreenId equals screen.ScreenId
+                                join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
+                                join movie in db.Movies on schedule.MovieId equals movie.MovieId
+                                join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
+                                where  user.IsActive == true && reservation.IsActive == true
+                                select new ReservationDTO()
+                                {
+                                    ReservationId = reservation.ReservationId,
+                                    TheaterName = theater.TheaterName,
+                                    UserName = user.UserName,
+                                    MovieName = movie.Title,
+                                    Date = schedule.Date,
+                                    ShowTiming = TimingConvert.ConvertToString(time.ShowTiming),
+                                    Tickets = reservation.PremiumTickets,
+                                      }).ToList();
+            return reservations;
+        }
         #region Private Methods
 
         private List<ReservationDetails> ReservationDetailsByUserId(int id)

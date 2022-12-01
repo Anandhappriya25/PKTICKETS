@@ -25,7 +25,7 @@ namespace PKTickets.Controllers
         private readonly ITheaterRepository _theaterRepository;
         private readonly IMovieRepository _movieRepository;
         private readonly IScreenRepository _screenRepository;
-        private readonly IScheduleRepository _seatRepository;
+        private readonly IScheduleRepository _scheduleRepository;
         private readonly IShowTimeRepository _showTimeRepository;
         private readonly IReservationRepository _reservationRepository;
         private readonly IWebHostEnvironment WebHostEnvironment;
@@ -33,7 +33,7 @@ namespace PKTickets.Controllers
 
         public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IMovieRepository movieRepository,
             ITheaterRepository theaterRepository, IScreenRepository screenRepository,
-            IScheduleRepository seatRepository, IShowTimeRepository showTimeRepository,
+            IScheduleRepository scheduleRepository, IShowTimeRepository showTimeRepository,
             IReservationRepository reservationRepository,
             IWebHostEnvironment _webHostEnvironment)
         {
@@ -42,7 +42,7 @@ namespace PKTickets.Controllers
             _movieRepository = movieRepository;
             _theaterRepository = theaterRepository;
             _screenRepository = screenRepository;
-            _seatRepository = seatRepository;
+            _scheduleRepository = scheduleRepository;
             _showTimeRepository = showTimeRepository;
             _reservationRepository = reservationRepository;
             WebHostEnvironment = _webHostEnvironment;
@@ -173,6 +173,19 @@ namespace PKTickets.Controllers
             var screen = _screenRepository.RemoveScreen(id);
             return Json(screen);
         }
+
+        [HttpGet]
+        public IActionResult ScreenScheduleById(int id)
+        {
+            var schedule = _scheduleRepository.SchedulesListByScreenId(id);
+            ViewBag.csd = id;
+            return View("ScreenSchedules",schedule);
+        }
+        public IActionResult ScreenSchedules()
+        {
+            return View();
+        }
+
         public IActionResult Movies()
         {
             var movie = _movieRepository.GetAllMovies();
@@ -223,7 +236,7 @@ namespace PKTickets.Controllers
 
         public IActionResult ReservationsList()
         {
-            var list = _reservationRepository.ReservationList();
+            var list = _reservationRepository.ListOfReservations();
             return View(list);
         }
 
