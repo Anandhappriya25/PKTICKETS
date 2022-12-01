@@ -9,6 +9,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\js\AddTheater.js" />
     <Content Remove="wwwroot\js\ConfirmDelete.js" />
+    <Content Remove="wwwroot\js\MovieDelete.js" />
     <Content Remove="wwwroot\js\ScreenDelete.js" />
     <Content Remove="wwwroot\js\TheaterDelete.js" />
     <Content Remove="wwwroot\js\UserDelete.js" />
@@ -21,6 +22,7 @@
   <ItemGroup>
     <None Include="wwwroot\css\logo\logo.jpg" />
     <None Include="wwwroot\js\AddTheater.js" />
+    <None Include="wwwroot\js\MovieDelete.js" />
     <None Include="wwwroot\js\TheaterDelete.js" />
     <None Include="wwwroot\js\ScreenDelete.js" />
     <None Include="wwwroot\js\UserDelete.js" />
