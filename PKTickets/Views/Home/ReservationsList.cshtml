@@ -1,5 +1,4 @@
-﻿
-@using PKTickets.Models.DTO
+﻿@using PKTickets.Models.DTO
 @model List<ReservationDTO>
 @{
     Layout = "~/views/shared/_userlayout.cshtml";
@@ -11,12 +10,12 @@
 <a class=" text-black mb-3" id="add" title="Add User" asp-area="" asp-controller="Home" asp-action="CreateUser">
     <i class="fa-regular fa-square-plus Add"></i>
 
-    </a>
+</a>
 
 <table class="table table-hover pt-2" id="dataTable">
     <thead class="text-dark" id="thead">
         <tr>
-            <th >Reservation Id</th>
+            <th>Reservation Id</th>
             <th class="text-center">User Name</th>
             <th class="text-center">Theater Name</th>
             <th class="text-center">Movie Name</th>
@@ -31,12 +30,14 @@
         {
             <tr class="text-center align-text-bottom">
                 <td>@reservation.ReservationId</td>
-                <td >@{
-                    
+                <td>
+                    @{
+
                     }
                     <a class="nav-link " asp-area="" asp-controller="Home" asp-action="ReservationsByUserId" asp-route-id="@reservation.UserId">
                         @reservation.UserName
-                     </a></td>
+                    </a>
+                </td>
                 <td>@reservation.TheaterName</td>
                 <td>@reservation.MovieName</td>
                 <td>@String.Format("{0:d/M/yyyy}",@reservation.Date)</td>
@@ -51,10 +52,10 @@
                     </a>
 
 
-                    <div class="nav-link text-danger" id="de" title="Delete"  onclick="UserDelete(@reservation.ReservationId)">
+                    <div class="nav-link text-danger" id="de" title="Delete" onclick="UserDelete(@reservation.ReservationId)">
                         <i class="fa-solid fa-trash-can"></i>
-                        </div>
-                   
+                    </div>
+
                 </td>
             </tr>
         }    

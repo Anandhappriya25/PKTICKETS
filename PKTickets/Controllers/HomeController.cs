@@ -226,12 +226,12 @@ namespace PKTickets.Controllers
             if (movie.MovieId > 0)
             {
                 var obj = _movieRepository.UpdateMovie(movie);
-                return RedirectToAction("MovieList");
+                return RedirectToAction("Movies");
             }
             else
             {
                 var obj = _movieRepository.CreateMovie(movie);
-                return RedirectToAction("MovieList");
+                return RedirectToAction("Movies");
             }
         }
 

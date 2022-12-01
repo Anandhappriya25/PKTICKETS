@@ -11,50 +11,6 @@
     Layout = "~/views/shared/_userlayout.cshtml";
 
 }
-@*<section class="text-center text-lg-start">
-
-    <div class="container py-4">
-        <div class="row g-0 align-items-center">
-            <div class="col-lg-6 mb-5 mb-lg-0">
-                <div class="card cascading-right" id="form">
-                    <div class="card-body p-5 shadow-5 text-center">
-                        <h2 class="fw-bold mb-5">@title</h2>
-                        @using (Html.BeginForm(FormMethod.Post, new { id = "AddTheater" }))
-                        {
-                            @Html.HiddenFor(m => m.TheaterId )
-                            <div class="form-outline mb-4 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.TheaterName , new {@class="form-control", required = "required" , maxlength = "20"} )
-                                <label class="form-label required">Theater Name</label>
-                            </div>
-
-                            <div class="form-outline mb-4 col-6 " id="margin">
-                                @Html.TextBoxFor(m => m.Location , new {@class="form-control", required = "required" , maxlength = "20"})
-                                <label class="form-label required">Location</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg btn-block mb-4 col-12">
-                                @if (Model.TheaterId > 0)
-                                {
-                                    name = "Update";
-
-                                }
-                                else
-                                {
-                                    name = "Create";
-                                }@name
-                            </button>
-
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 mb-5 mb-lg-0">
-                <img src="~/css/logo/theatre.jpg" class="w-100 rounded-4 shadow-4"
-                     alt="" />
-            </div>
-        </div>
-    </div>
-</section>*@
 
 <div class="container register">
     <div class="row">
@@ -104,6 +60,6 @@
 </div>
 
 @section scripts{
-      <script src="~/js/addtheater.js"></script>
+    <script src="~/js/addtheater.js"></script>
     <link href="~/css/layout.css" rel="stylesheet" />
 }
