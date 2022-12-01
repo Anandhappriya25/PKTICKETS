@@ -221,15 +221,16 @@ namespace PKTickets.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Movie movie)
         {
-
-            var uploadDirectory = "Css/Image/";
-            var uploadPath = Path.Combine(WebHostEnvironment.WebRootPath, uploadDirectory);
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-            var fileName = Guid.NewGuid() + Path.GetExtension(movie.CoverPhoto.FileName);
-            var imagePath = Path.Combine(uploadPath, fileName);
-            await movie.CoverPhoto.CopyToAsync(new FileStream(imagePath, FileMode.Create));
-            movie.ImagePath = fileName;
+           
+                var uploadDirectory = "Css/Image/";
+                var uploadPath = Path.Combine(WebHostEnvironment.WebRootPath, uploadDirectory);
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+                var fileName = Guid.NewGuid() + Path.GetExtension(movie.CoverPhoto.FileName);
+                var imagePath = Path.Combine(uploadPath, fileName);
+                await movie.CoverPhoto.CopyToAsync(new FileStream(imagePath, FileMode.Create));
+                movie.ImagePath = fileName;
+           
             if (movie.MovieId > 0)
             {
                 var obj = _movieRepository.UpdateMovie(movie);
@@ -247,7 +248,18 @@ namespace PKTickets.Controllers
             var list = _reservationRepository.ListOfReservations();
             return View(list);
         }
-
+        [HttpGet]
+        public IActionResult InvoiceById(int id)
+        {
+            var invoice = _reservationRepository.InvoiceById(id);
+          
+            return View("Invoice", invoice);
+        }
+        public IActionResult Invoice()
+        {
+            Invoice invoice = new Invoice();
+            return View(invoice);
+        }
 
     }
 }
