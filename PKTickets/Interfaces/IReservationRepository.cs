@@ -17,5 +17,6 @@ namespace PKTickets.Interfaces
         public Schedule ScheduleById(int id);
 
         public List<ReservationDTO> ListOfReservations();
+        public Invoice InvoiceById(int id);
     }
 }

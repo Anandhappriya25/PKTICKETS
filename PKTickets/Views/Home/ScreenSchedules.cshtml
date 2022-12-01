@@ -71,7 +71,7 @@
             <tr class="text-center align-text-bottom">
                 <td>@schedule.ScheduleId</td>
                 <td>@schedule.MovieName</td>
-                <td>@schedule.Date.ToString("dd-MM-yyyy")</td>
+                <td>@String.Format("{0:d/M/yyyy}",@schedule.Date)</td>
                 <td>@schedule.ShowTime</td>
                 <td>@schedule.AvailablePremiumSeats</td>
                 <td>@schedule.AvailableEliteSeats</td>

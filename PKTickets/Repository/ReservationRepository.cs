@@ -204,13 +204,43 @@ namespace PKTickets.Repository
                                 {
                                     ReservationId = reservation.ReservationId,
                                     TheaterName = theater.TheaterName,
+                                    UserId = user.UserId,
                                     UserName = user.UserName,
                                     MovieName = movie.Title,
                                     Date = schedule.Date,
                                     ShowTiming = TimingConvert.ConvertToString(time.ShowTiming),
-                                    Tickets = reservation.PremiumTickets,
+                                    Tickets = reservation.PremiumTickets + reservation.EliteTickets,
                                       }).ToList();
             return reservations;
+        }
+
+        public Invoice InvoiceById(int id)
+        {
+            var invoice = (from reservation in db.Reservations
+                           join user in db.Users on reservation.UserId equals user.UserId
+                           join schedule in db.Schedules on reservation.ScheduleId equals schedule.ScheduleId
+                           join screen in db.Screens on schedule.ScreenId equals screen.ScreenId
+                           join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
+                           join movie in db.Movies on schedule.MovieId equals movie.MovieId
+                           join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
+                           where reservation.ReservationId == id && reservation.IsActive == true
+                           select new Invoice()
+                           {
+                               ReservationId = reservation.ReservationId,
+                               UserName = user.UserName,
+                               TheaterName = theater.TheaterName,
+                               ScreenName = screen.ScreenName,
+                               MovieName = movie.Title,
+                               Language = movie.Language,
+                               Date = schedule.Date,
+                               ShowTime = TimingConvert.ConvertToString(time.ShowTiming),
+                               PremiumTicket = reservation.PremiumTickets,
+                               EliteTicket = reservation.EliteTickets,
+                               PremiumPrice = screen.PremiumPrice,
+                               ElitePrice = screen.ElitePrice,
+                               TotalAmount = (reservation.PremiumTickets * screen.PremiumPrice) + (reservation.EliteTickets * screen.ElitePrice),
+                           }).ToList();
+            return invoice.ToList()[0];
         }
         #region Private Methods
 
@@ -240,7 +270,9 @@ namespace PKTickets.Repository
                            }).ToList();
             return reservations;
         }
-      private Messages UpdateSave(Reservation reservation, Reservation reservationExist, Schedule schedule)
+
+       
+        private Messages UpdateSave(Reservation reservation, Reservation reservationExist, Schedule schedule)
       {
         Messages messages = new Messages();
         messages.Success = false;
