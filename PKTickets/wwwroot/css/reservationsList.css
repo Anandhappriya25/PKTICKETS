@@ -1,6 +1,5 @@
-﻿#add {
+﻿.add {
     float: right;
-    margin-right: 1%;
 }
 .Add {
     font-size: 35px;
@@ -13,7 +12,6 @@
     margin-top: -59%;
     font-size: 22px;
 }
-
 .delete {
     margin-right: 24%;
     margin-top: -58%;

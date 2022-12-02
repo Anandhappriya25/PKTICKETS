@@ -7,10 +7,12 @@
     background-color: #edf5ed;
 }
 .edit {
-    margin-left: -71%;
+    margin-left: -75%;
+    font-size: 22px;
 }
 
 .delete {
-    margin-right: -63%;
-    margin-top: -61%;
+    margin-right: -48%;
+    margin-top: -70%;
+    font-size: 22px;
 }

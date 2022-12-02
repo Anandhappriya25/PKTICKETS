@@ -7,7 +7,7 @@
 <div id="heading">Users List</div>
 
 
-<a class=" text-black mb-3" id="add" title="Add User" asp-area="" asp-controller="Home" asp-action="CreateUser">
+<a class=" text-black mb-3 add"  title="Add User" asp-area="" asp-controller="Home" asp-action="CreateUser">
     <i class="fa-regular fa-square-plus Add"></i>
 
 </a>
@@ -37,9 +37,10 @@
                 <td>@user.Location</td>
                 <td>@user.EmailId</td>
                 <td>
-                    <a class="nav-link text-success" id="ed" title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@user.UserId">
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@user.UserId">
                         <i class="fa-regular fa-pen-to-square"></i>
-                    </a>   <div class="nav-link text-danger" id="de" title="Delete" onclick="UserDelete(@user.UserId)">
+                    </a>   
+                    <div class="nav-link text-danger delete" title="Delete" onclick="UserDelete(@user.UserId)">
                         <i class="fa-solid fa-trash-can"></i>
                     </div>
                 </td>
@@ -49,7 +50,8 @@
 </table>
 
 @section scripts{  
-    <link href="~/css/color.css" rel="stylesheet" />
+    @*<link href="~/css/color.css" rel="stylesheet" />*@
+    <link href="~/css/userlist.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
     <script src="~/js/userdelete.js"></script>

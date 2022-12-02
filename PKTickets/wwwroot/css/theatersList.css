@@ -1,36 +1,32 @@
 ﻿.edit{
     margin-left: -50%;
-    font-size: 25px;
+    font-size: 22px;
 }
 .delete{
-    margin-right: -28%;
-    margin-top: -28%;
-    font-size: 25px;
+    margin-right: -30%;
+    margin-top: -25%;
+    font-size: 22px;
 }
-#heading {
+#heading{
     color: black;
     text-decoration: underline;
     font-size: 2.5em;
     margin-bottom:4%;
 }
-#add {
+#add{
     float: right;
 }
-
-.Add {
+.Add{
     font-size: 35px;
     float: right;
     margin-right: 34px;
     margin-top: 75px;
 }
-.tab {
+.tab{
     font-size: 35px;
     float: right;
     margin-top: -4%;
 }
-
-
-
-#thead {
+#thead{
     background-color: #edf5ed;
 }
