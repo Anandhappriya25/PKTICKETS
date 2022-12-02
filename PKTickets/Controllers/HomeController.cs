@@ -291,5 +291,40 @@ namespace PKTickets.Controllers
             ViewBag.mId = mId;
             return View(screens);
         }
+        [HttpGet]
+        public IActionResult MovieSchedules(int sId, int mId)
+        {
+            var schedules = _scheduleRepository.ScheduleByMovieAndScreenId(mId, sId);
+            return View(schedules);
+        }
+        public IActionResult BookTicket(int id)
+        {
+            BookTicketDTO reservation=new BookTicketDTO();
+            reservation.ScheduleId = id;
+            reservation.Users = _userRepository.GetAllUsers().Select(a => new SelectListItem
+            {
+                Text = a.UserName + "(" + a.UserId + ")",
+                Value = a.UserId.ToString()
+            }).ToList();
+            reservation.Users.Insert(0,new SelectListItem { Text="Select the User",Value=null });
+            return View(reservation);
+        }
+        public IActionResult SaveTicket(BookTicketDTO booking)
+        {
+            Reservation reservation = new Reservation();
+            reservation.ScheduleId = booking.ScheduleId;
+            reservation.PremiumTickets = booking.PremiumTickets;
+            reservation.EliteTickets=booking.EliteTickets;
+            reservation.UserId = booking.UserId;
+            
+            if(reservation.ReservationId==0)
+            {
+                return Json(_reservationRepository.CreateReservation(reservation));
+            }
+            else
+            {
+                return Json(_reservationRepository.UpdateReservation(reservation));
+            }
+        }
     }
 }

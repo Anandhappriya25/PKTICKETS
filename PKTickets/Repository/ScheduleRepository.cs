@@ -38,7 +38,12 @@ namespace PKTickets.Repository
             }
             return screen;
         }
-        public List<Schedule> SchedulesList()
+        public List<SchedulesDTO> ScheduleByMovieAndScreenId(int mId, int sId)
+        {
+            var list = SchedulesListScreenId(sId).Where(x => x.MovieId == mId).ToList();
+            return list;
+        }
+            public List<Schedule> SchedulesList()
         {
             return db.Schedules.ToList();
         }
@@ -293,6 +298,7 @@ namespace PKTickets.Repository
                            {
                                ScheduleId = schedule.ScheduleId,
                                MovieName=movie.Title,
+                               MovieId=movie.MovieId,
                                Date = schedule.Date,
                                ShowTime = TimingConvert.ConvertToString(showTime.ShowTiming),
                                AvailablePremiumSeats = schedule.AvailablePreSeats,

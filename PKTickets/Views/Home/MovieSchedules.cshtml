@@ -1,0 +1,44 @@
+﻿@using PKTickets.Models.DTO
+@model List<SchedulesDTO>
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div id="heading">Schedules</div>
+<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th class ="text-center">Date</th>
+            <th class="text-center">Show Time</th>
+            <th class="text-center">Available PremiumSeats</th>
+            <th class="text-center">Available EliteSeats</th>
+            <th class="text-center"data-orderable="false">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (SchedulesDTO schedule in Model)
+        {
+            <tr class="text-center align-text-bottom">
+                <td>
+                    @String.Format("{0:d/M/yyyy}",@schedule.Date)
+                </td>
+                <td>@schedule.ShowTime</td>
+                <td>@schedule.AvailablePremiumSeats</td>
+                <td>@schedule.AvailableEliteSeats</td>
+                <td>
+                    <a class="nav-link btn btn-danger text-light" asp-area="" asp-controller="Home" asp-action="BookTicket" asp-route-id="@schedule.ScheduleId">
+                     Select
+                    </a>
+                </td>
+                
+            </tr>
+        }    
+    </tbody>
+</table>
+
+@section scripts{  
+    <link href="~/css/color.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+}
+

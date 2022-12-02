@@ -20,5 +20,6 @@ namespace PKTickets.Interfaces
         public MovieDTO DetailsByMovieId(int id);
         public List<Theater> TheaterByMovieId(int id);
         public List<Screen> ScreenByMovieAndTheaterId(int mId, int tId);
+        public List<SchedulesDTO> ScheduleByMovieAndScreenId(int mId, int sId);
     }
 }

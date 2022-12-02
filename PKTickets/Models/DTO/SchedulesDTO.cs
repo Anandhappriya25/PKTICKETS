@@ -3,6 +3,7 @@
     public class SchedulesDTO
     {
         public int ScheduleId { get; set; }
+        public int MovieId { get; set; }
         public string MovieName { get; set; }
         public DateTime Date { get; set; }
         public string ShowTime { get; set; }

@@ -20,11 +20,13 @@
         @foreach (Theater theater in Model)
         {
            <tr class="text-center align-text-bottom">
-                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="TheaterScreens" asp-route-id="@theater.TheaterId">
                     <td>@theater.TheaterId</td>
-                    <td> @theater.TheaterName </td>
+                <td>
+                    <a class="nav-link " asp-area="" asp-controller="Home" asp-action="MovieScreens" asp-route-tId="@theater.TheaterId" asp-route-mId=@ViewBag.mId>
+                     @theater.TheaterName 
+                    </a>
+                </td>
                     <td>@theater.Location</td>
-                </a>
            </tr>
         }    
     </tbody>

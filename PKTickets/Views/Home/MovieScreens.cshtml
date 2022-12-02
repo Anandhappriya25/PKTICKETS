@@ -19,7 +19,7 @@
         @foreach (Screen screen in Model)
         {
             <tr class="text-center align-text-bottom">
-               <td> <a class="nav-link " asp-area="" asp-controller="Home" asp-action="" asp-route-id="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
+               <td> <a class="nav-link " asp-area="" asp-controller="Home" asp-action="MovieSchedules" asp-route-sId="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
                         @screen.ScreenName
                     </a>
                 </td>
