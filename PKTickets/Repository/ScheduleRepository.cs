@@ -100,6 +100,11 @@ namespace PKTickets.Repository
             {
                 messages.Message = "The Schedule Id ("+ id+") is not found";
             }
+            var reservation=db.Reservations.Where(x => x.ScheduleId == id).Where(x => x.IsActive == true).FirstOrDefault();
+            if (reservation != null)
+            {
+                messages.Message = "The Reservation is Already Started to Schedule Id (" + id + ") ,so can't Delete";
+            }
             var timeExist = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == scheduleExist.ShowTimeId);
             if (date.Date >= scheduleExist.Date && timeExist.ShowTiming > timeValue)
             {
@@ -110,7 +115,7 @@ namespace PKTickets.Repository
             }
             else
             {
-                messages.Message = "The Reservation is Already Started to Schedule Id ("+ id + ") ,so can't Delete";
+                messages.Message = "The Show is Started for this Schedule Id ("+ id + ") ,so can't Delete";
             }
             return messages;
         }
