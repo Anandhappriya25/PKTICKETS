@@ -1,0 +1,41 @@
+﻿@using PKTickets.Models
+@model List<Screen>
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div id="heading">Screens</div>
+<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th class ="text-center">Screen Name</th>
+            <th class="text-center">Premium Capacity</th>
+            <th class="text-center">Elite Capacity</th>
+            <th class="text-center">Premium Price</th>
+            <th class="text-center">Elite Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Screen screen in Model)
+        {
+            <tr class="text-center align-text-bottom">
+               <td> <a class="nav-link " asp-area="" asp-controller="Home" asp-action="" asp-route-id="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
+                        @screen.ScreenName
+                    </a>
+                </td>
+                <td>@screen.PremiumCapacity</td>
+                <td>@screen.EliteCapacity</td>
+                <td>@screen.PremiumPrice</td>
+                <td>@screen.ElitePrice</td>
+                
+            </tr>
+        }    
+    </tbody>
+</table>
+
+@section scripts{  
+    <link href="~/css/color.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+}
+

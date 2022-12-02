@@ -26,6 +26,18 @@ namespace PKTickets.Repository
             }
             return theater;
         }
+        public List<Screen> ScreenByMovieAndTheaterId(int mId,int tId)
+        {
+            var details = DetailsByMovieId(mId);
+            var theater = details.Theaters.FirstOrDefault(x=>x.TheaterId==tId);
+            List<Screen> screen = new List<Screen>();
+            foreach (var item in theater.Screens)
+            {
+                var obj = db.Screens.FirstOrDefault(x => x.ScreenId == item.ScreenId);
+                screen.Add(obj);
+            }
+            return screen;
+        }
         public List<Schedule> SchedulesList()
         {
             return db.Schedules.ToList();

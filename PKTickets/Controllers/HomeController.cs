@@ -276,12 +276,20 @@ namespace PKTickets.Controllers
             Movie movie = new Movie();
             return View(movie);
         }
+
         [HttpGet]
         public IActionResult MovieTheaters(int id)
         {
             var theaters = _scheduleRepository.TheaterByMovieId(id);
-
+            ViewBag.mId = id;
             return View(theaters);
+        }
+        [HttpGet]
+        public IActionResult MovieScreens(int tId,int mId)
+        {
+            var screens = _scheduleRepository.ScreenByMovieAndTheaterId(mId,tId);
+            ViewBag.mId = mId;
+            return View(screens);
         }
     }
 }
