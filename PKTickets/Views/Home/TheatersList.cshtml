@@ -9,7 +9,7 @@
 
 
 
-<a class=" text-black  mb-3" title="Add Theater" asp-area="" asp-controller="Home" asp-action="AddTheater">
+<a class=" text-black  mb-3"  title="Add Theater" asp-area="" asp-controller="Home" asp-action="AddTheater">
     <i class="fa-regular fa-square-plus tab"></i>
 
 </a>
@@ -34,10 +34,10 @@
                 </td>
                 <td>@theater.Location</td>
                 <td>
-                    <a class="nav-link text-success" id="it" title="Edit" asp-area="" asp-controller="Home" asp-action="EditTheater" asp-route-id="@theater.TheaterId">
-
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditTheater" asp-route-id="@theater.TheaterId">
                         <i class="fa-regular fa-pen-to-square"></i>
-                    </a>     <div class="nav-link text-danger" id="et" title="Delete" asp-area="" onclick="UserDelete(@theater.TheaterId)">
+                    </a>
+                    <div class="nav-link text-danger delete" title="Delete" asp-area="" onclick="UserDelete(@theater.TheaterId)">
                         <i class="fa-solid fa-trash-can"></i>
                     </div>
                 </td>
@@ -47,8 +47,7 @@
 </table>
 
 @section scripts{  
-    <link href="~/css/theaters.css" rel="stylesheet" />
-    <link href="~/css/color.css" rel="stylesheet" />
+    <link href="~/css/theaterslist.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
     <script src="~/js/theaterdelete.js"></script>

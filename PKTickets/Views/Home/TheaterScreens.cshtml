@@ -11,12 +11,8 @@
 </div>
 
 
-<a class=" text-black mb-3" id="add" title="Add Screen" asp-area="" asp-controller="Home" asp-action="AddScreen" asp-route-id="@ViewBag.csd">
-    <i class="fa-regular fa-square-plus Add"></i>
-
-</a>
 <div class="container" style="float:left">
-    <div class="row ">
+    <div class="row name">
         <div class="col-4">
             <h5>
                 Theater Name :     
@@ -25,6 +21,11 @@
         </div>
     </div>
 </div>
+
+<a class=" text-black mb-3 add" title="Add Screen" asp-area="" asp-controller="Home" asp-action="AddScreen" asp-route-id="@ViewBag.csd">
+    <i class="fa-regular fa-square-plus Add"></i>
+</a>
+
 <table class="table table-hover pt-2" id="dataTable">
     <thead class="text-dark" id="thead">
         <tr>
@@ -53,12 +54,12 @@
                 <td>@screen.ElitePrice</td>
                 <td>
 
-                    <a class="nav-link text-success" id="edt" title="Edit" asp-area="" asp-controller="Home" asp-action="EditScreen" asp-route-id="@screen.ScreenId">
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditScreen" asp-route-id="@screen.ScreenId">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </a>
 
 
-                    <div class="nav-link text-danger" id="delete" title="Delete" asp-area="" onclick="ScreenDelete(@screen.ScreenId)">
+                    <div class="nav-link text-danger delete" title="Delete" asp-area="" onclick="ScreenDelete(@screen.ScreenId)">
                         <i class="fa-solid fa-trash-can"></i>
                     </div>
 
@@ -69,11 +70,8 @@
 </table>
 
 @section scripts{
-
-    <link href="~/css/color.css" rel="stylesheet" />
-    <link href="~/css/screenlist.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />
-    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <link href="~/css/theaterscreens.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
     <script src="~/js/screendelete.js"></script>
 }

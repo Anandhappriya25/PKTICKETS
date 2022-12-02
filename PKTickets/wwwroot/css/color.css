@@ -36,8 +36,8 @@
     font-size: 22px;
 }
 #de {
-    margin-right: -44%;
-    margin-top: -41%;
+    margin-right: -19%;
+    margin-top: -43%;
     font-size: 22px;
 }
 #e {
@@ -48,8 +48,9 @@
     margin-right: -63%;
     margin-top: -61%;
 }
-.home{
-    font-size:23px;
+.home {
+    font-size: 25px;
+    margin-top: 7px;
 }
 .Size {
     font-size: 23px;
