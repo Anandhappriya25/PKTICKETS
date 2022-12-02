@@ -14,13 +14,6 @@
 </div>
 
 
-<a class=" text-black mb-3" id="add" title="Add Screen" asp-area="" asp-controller="Home" asp-action="AddScreen" asp-route-id="@ViewBag.csd">
-    <i class="fa-regular fa-square-plus Add"></i>
-</a>
-
-
-
-
 <div class="container" style="float:left">
     <div class="row side">
         <div class="col-4">
@@ -78,10 +71,10 @@
                 <td>@schedule.AvailablePremiumSeats</td>
                 <td>@schedule.AvailableEliteSeats</td>
                 <td >
-                    <a class="nav-link text-success" id="edt" title="Edit" asp-area="" asp-controller="Home" asp-action="EditScreen" asp-route-id="@schedule.ScheduleId">
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditScreen" asp-route-id="@schedule.ScheduleId">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </a>
-                    <a class="nav-link text-danger" id="delete" title="Delete" asp-area="" onclick="ScreenDelete(@schedule.ScheduleId)">
+                    <a class="nav-link text-danger delete" title="Delete" asp-area="" onclick="ScreenDelete(@schedule.ScheduleId)">
                         <i class="fa-solid fa-trash-can"></i>
                     </a>
                 </td>
@@ -93,6 +86,8 @@
 
 
 @section scripts{
-    <link href="~/css/schedulelist.css" rel="stylesheet" />
+    <link href="~/css/screenschedules.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
 }
 

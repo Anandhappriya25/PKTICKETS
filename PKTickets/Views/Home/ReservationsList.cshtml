@@ -44,17 +44,15 @@
                 <td>@reservation.ShowTiming</td>
                 <td>@reservation.Tickets</td>
                 <td>
-                    <a class="nav-link text-primary" id="ed" title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@reservation.ReservationId">
+                    <a class="nav-link text-primary info"  title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@reservation.ReservationId">
                         <i class="fa-solid fa-circle-info"></i>
                     </a>
-                    <a class="nav-link text-success" id="ed" title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@reservation.ReservationId">
+                    <a class="nav-link text-success edit"  title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@reservation.ReservationId">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </a>
-
-
-                    <div class="nav-link text-danger" id="de" title="Delete" onclick="UserDelete(@reservation.ReservationId)">
+                    <a class="nav-link text-danger delete" title="Delete" onclick="UserDelete(@reservation.ReservationId)">
                         <i class="fa-solid fa-trash-can"></i>
-                    </div>
+                    </a>
 
                 </td>
             </tr>
@@ -63,7 +61,7 @@
 </table>
 
 @section scripts{  
-    <link href="~/css/color.css" rel="stylesheet" />
+    <link href="~/css/reservationslist.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
     <script src="~/js/userdelete.js"></script>

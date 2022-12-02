@@ -1,0 +1,26 @@
+﻿#add {
+    float: right;
+    margin-right: 1%;
+}
+.Add {
+    font-size: 35px;
+}
+#thead {
+    background-color: #edf5ed;
+}
+.edit {
+    margin-left: -114%;
+    margin-top: -59%;
+    font-size: 22px;
+}
+
+.delete {
+    margin-right: 24%;
+    margin-top: -58%;
+    font-size: 22px;
+}
+.info {
+    margin-right: -67%;
+    margin-top: -8%;
+    font-size: 22px;
+}

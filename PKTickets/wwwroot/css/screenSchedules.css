@@ -1,13 +1,13 @@
-﻿#edt {
+﻿.edit {
     font-size: 25px;
-    margin-left: -66%;
+    margin-left: -84%;
 }
 
 
-#delete {
-    margin-top: -57%;
+.delete {
+    margin-top: -62%;
     font-size: 25px;
-    margin-left: 45%;
+    margin-left: 40%;
 }
 #thead {
     background-color: #edf5ed;
@@ -15,7 +15,7 @@
 .Add {
     float: right;
     font-size: 35px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 

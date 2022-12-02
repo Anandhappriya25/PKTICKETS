@@ -1,0 +1,27 @@
+﻿.edit {
+    margin-left: -77%;
+    font-size: x-large;
+}
+
+.delete {
+    margin-top: -55%;
+    margin-left: 44%;
+    font-size: 24px;
+}
+.name {
+    margin-left: -25px;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+.add {
+    float: right;
+}
+.Add {
+    font-size: 35px;
+}
+#thead {
+    background-color: #edf5ed;
+}

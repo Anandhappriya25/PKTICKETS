@@ -37,10 +37,10 @@
                 <td>@movie.Genre</td>
                 <td>@movie.Duration</td>
                 <td>
-                    <a class="nav-link text-success" id="ed" title="Edit" asp-area="" asp-controller="Home" asp-action="EditMovie" asp-route-id="@movie.MovieId">
+                    <a class="nav-link text-success edit"  title="Edit" asp-area="" asp-controller="Home" asp-action="EditMovie" asp-route-id="@movie.MovieId">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </a>
-                    <div class="nav-link text-danger" id="de" title="Delete" onclick="MovieDelete(@movie.MovieId)">
+                    <div class="nav-link text-danger delete" id="de" title="Delete" onclick="MovieDelete(@movie.MovieId)">
                         <i class="fa-solid fa-trash-can"></i>
                     </div>
                 </td>
@@ -50,7 +50,7 @@
 </table>
 
 @section scripts{  
-    <link href="~/css/color.css" rel="stylesheet" />
+    <link href="~/css/movies.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
 }

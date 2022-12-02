@@ -20,20 +20,18 @@
         @foreach (Theater theater in Model)
         {
            <tr class="text-center align-text-bottom">
-                <td>@theater.TheaterId</td>
-                <td> <a class="nav-link " asp-area="" asp-controller="Home" asp-action="MovieScreens" asp-route-tId="@theater.TheaterId" asp-route-mId="@ViewBag.mId">
-                        @theater.TheaterName
-                    </a>
-                </td>
-                <td>@theater.Location</td>
-               
-            </tr>
+                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="TheaterScreens" asp-route-id="@theater.TheaterId">
+                    <td>@theater.TheaterId</td>
+                    <td> @theater.TheaterName </td>
+                    <td>@theater.Location</td>
+                </a>
+           </tr>
         }    
     </tbody>
 </table>
 
 @section scripts{  
-    <link href="~/css/color.css" rel="stylesheet" />
+    <link href="~/css/movietheaters.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
 }

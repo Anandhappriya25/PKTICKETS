@@ -17,7 +17,7 @@
         <div class="col-md-3 register-left">
             <img src="~/css/logo/logo.jpg" class=" rounded-4 shadow-4" alt="f" />
             <p>Welcome to PKTickets</p>
-            <p>You can Add an Movie for Easy Booking</p>
+            <p>You can Add a Screen for Easy Booking</p>
         </div>
         <div class="col-md-9 register-right">
             <div class="tab-content" id="myTabContent">
@@ -43,7 +43,7 @@
                                         <label class="form-label required">Premium Capacity</label>
                                     </div>
                                     <div class="col-5">
-                                        @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max= "300" ,@disabled="disabled"})
+                                        @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control",@disabled="disabled"})
                                     </div>
                                 </div>
                                 <div class="mb-3  row justify-content-center">
@@ -51,7 +51,23 @@
                                         <label class="form-label required">Elite Capacity</label>
                                     </div>
                                     <div class="col-5">
-                                        @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250",@disabled="disabled"})
+                                        @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">PremiumPrice</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Elite Price</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control",@disabled="disabled"})
                                     </div>
                                 </div>
                             }
@@ -73,24 +89,25 @@
                                         @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250"})
                                     </div>
                                 </div>
+
+
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">PremiumPrice</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "1000"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Elite Price</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "2000"})
+                                    </div>
+                                </div>
                             }
-                            
-                            <div class="mb-3  row justify-content-center">
-                                <div class="col-3">
-                                    <label class="form-label required">PremiumPrice</label>
-                                </div>
-                                <div class="col-5">
-                                    @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "1000"})
-                                </div>
-                            </div>
-                            <div class="mb-3  row justify-content-center">
-                                <div class="col-3">
-                                    <label class="form-label required">Elite Price</label>
-                                </div>
-                                <div class="col-5">
-                                    @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "2000"})
-                                </div>
-                            </div>
                             <input type="submit" class="btnRegister" value="@name" />
                         }
                     </div>
