@@ -316,7 +316,7 @@ namespace PKTickets.Controllers
             reservation.PremiumTickets = booking.PremiumTickets;
             reservation.EliteTickets=booking.EliteTickets;
             reservation.UserId = booking.UserId;
-            
+             
             if(reservation.ReservationId==0)
             {
                 return Json(_reservationRepository.CreateReservation(reservation));

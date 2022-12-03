@@ -70,7 +70,7 @@ namespace PKTickets.Repository
 
         public Messages CreateReservation(Reservation reservation)
         {
-            Messages messages = new Messages();
+             Messages messages = new Messages();
             messages.Success = false;
             DateTime date = DateTime.Now;
             TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
