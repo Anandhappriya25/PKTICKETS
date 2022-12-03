@@ -56,4 +56,44 @@
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
     <script src="~/js/userdelete.js"></script>
 }
-
+    <div class="row row-cols-3 row-cols-sm-3 row-cols-md-3 row-cols-lg-3">
+ @foreach (User user in Model)
+        {
+    <div class="card size">
+        <div class="card-body">
+            <div class="row">
+                <div class="head">
+                    UserName 
+                </div>
+                <div class="value">
+                   :  @user.UserName
+                </div>
+            </div>
+                <div class="row">
+                    <div class="head">
+                        Phone Number
+                    </div>
+                    <div class="value">
+                        :  @user.PhoneNumber
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Location
+                    </div>
+                    <div class="value">
+                        :  @user.Location
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Email Id
+                    </div>
+                    <div class="value">
+                        :  @user.EmailId
+                    </div>
+                </div>
+        </div>
+    </div>
+        }
+        </div>
