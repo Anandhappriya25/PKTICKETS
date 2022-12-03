@@ -1,7 +1,7 @@
 ﻿
 .card {
-    margin-left: 25%;
-    width: 51%;
+    margin-left: 33%;
+    width: 39%;
 }
 .card-header {
     text-align: center;
@@ -15,7 +15,10 @@
     font-size: x-large;
 }
 .small {
-    margin-top: -5%;
-    font-size: larger;
-    margin-left: 30%;
+    margin-top: -6%;
+    font-size: large;
+    margin-left: 39%;
+}
+.image {
+    width: 65%;
 }

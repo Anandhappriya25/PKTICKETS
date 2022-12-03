@@ -5,7 +5,6 @@
 }
 #add {
     float: right;
-    margin-right: 1%;
 }
 .Add {
     font-size: 35px;
@@ -15,7 +14,7 @@
 }
 .edit {
     margin-left: -79%;
-    font-size: 22px;
+    font-size: 22px; 
 }
 
 .delete {

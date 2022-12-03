@@ -1,0 +1,48 @@
+﻿.add {
+    float: right;
+}
+.Add {
+    font-size: 35px;
+}
+#thead {
+    background-color: #edf5ed;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+.edit {
+    margin-left: -79%;
+    font-size: 22px;
+}
+
+.delete {
+    margin-right: -38%;
+    margin-top: -42%;
+    font-size: 22px;
+}
+
+.card {
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.4);
+    transition: 0.3s;
+    width: 40%;
+}
+
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+.size {
+    width: 25rem;
+    margin-right: 40px;
+    margin-top: 38px;
+}
+.head{
+    font-size:larger;
+}
+.value {
+    font-size: large;
+    margin-left: 38%;
+    margin-top: -7%;
+}
+

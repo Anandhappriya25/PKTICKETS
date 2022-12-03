@@ -38,31 +38,6 @@ border-bottom-left-radius: 10% 50%;
 margin-top: -17%;
 margin-bottom: 5%;
 width: 64%;
-animation: mover 1s infinite alternate;
-}
-
-@-webkit-keyframes mover {
-0% {
-transform: translateY(0);
-
-}
-
-100% {
-transform: translateY(-20px);
-
-}
-}
-
-@keyframes mover {
-0% {
-transform: translateY(0);
-
-}
-
-100% {
-transform: translateY(-20px);
-
-}
 }
 
 .register-left p {
