@@ -15,6 +15,7 @@ using PKTickets.Interfaces;
 using PKTickets.Models.DTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Hosting;
+using System.Data;
 
 namespace PKTickets.Controllers
 {
@@ -48,7 +49,7 @@ namespace PKTickets.Controllers
             WebHostEnvironment = _webHostEnvironment;
         }
 
-       
+
         public IActionResult Index()
         {
             return View();
@@ -66,7 +67,7 @@ namespace PKTickets.Controllers
         }
         public IActionResult CreateUser()
         {
-            User user=new User();
+            User user = new User();
             return View(user);
         }
 
@@ -74,21 +75,21 @@ namespace PKTickets.Controllers
         public IActionResult EditUser(int id)
         {
             var user = _userRepository.UserById(id);
-            return View("CreateUser",user);
+            return View("CreateUser", user);
         }
-        
-         [HttpPost]
+
+        [HttpPost]
         public IActionResult Save(User user)
         {
-                if (user.UserId == 0)
-                {
-                    return Json(_userRepository.CreateUser(user));
-                }
-                else
-                {
-                    return Json(_userRepository.UpdateUser(user));
-                }
-         
+            if (user.UserId == 0)
+            {
+                return Json(_userRepository.CreateUser(user));
+            }
+            else
+            {
+                return Json(_userRepository.UpdateUser(user));
+            }
+
         }
         public IActionResult AddTheater()
         {
@@ -126,7 +127,7 @@ namespace PKTickets.Controllers
             ViewBag.csd = id;
             return View(theater);
         }
-        public IActionResult RemoveTheater (int id)
+        public IActionResult RemoveTheater(int id)
         {
             var theater = _theaterRepository.DeleteTheater(id);
             return Json(theater);
@@ -152,7 +153,7 @@ namespace PKTickets.Controllers
         public IActionResult AddScreen(int id)
         {
             Screen screen = new Screen();
-            screen.TheaterId= id;
+            screen.TheaterId = id;
             return View(screen);
         }
 
@@ -167,7 +168,6 @@ namespace PKTickets.Controllers
             {
                 return Json(_screenRepository.UpdateScreen(screen));
             }
-
         }
 
         [HttpGet]
@@ -187,13 +187,44 @@ namespace PKTickets.Controllers
         {
             var schedule = _scheduleRepository.SchedulesListByScreenId(id);
             ViewBag.csd = id;
-            return View("ScreenSchedules",schedule);
+            return View("ScreenSchedules", schedule);
         }
         public IActionResult ScreenSchedules()
         {
             return View();
         }
 
+        public IActionResult AddSchedule(int id)
+        {
+            Schedule schedule = new Schedule();
+            schedule.ScreenId = id;
+            return View(schedule);
+        }
+
+        [HttpPost]
+        public IActionResult SaveSchedule(Schedule schedule)
+        {
+            if (schedule.ScheduleId == 0)
+            {
+                return Json(_scheduleRepository.CreateSchedule(schedule));
+            }
+            else
+            {
+                return Json(_scheduleRepository.UpdateSchedule(schedule));
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EditSchedule(int id)
+        {
+            var schedule = _scheduleRepository.ScheduleById(id);
+            return View("AddSchedule", schedule);
+        }
+        public IActionResult RemoveSchedule(int id)
+        {
+            var schedule = _scheduleRepository.DeleteSchedule(id);
+            return Json(schedule);
+        }
         public IActionResult Movies()
         {
             var movie = _movieRepository.GetAllMovies();
@@ -205,7 +236,7 @@ namespace PKTickets.Controllers
             return View(movie);
         }
 
-      
+
         public IActionResult AddMovie()
         {
             Movie movie = new Movie();
@@ -221,16 +252,16 @@ namespace PKTickets.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Movie movie)
         {
-           
-                var uploadDirectory = "Css/Image/";
-                var uploadPath = Path.Combine(WebHostEnvironment.WebRootPath, uploadDirectory);
-                if (!Directory.Exists(uploadPath))
-                    Directory.CreateDirectory(uploadPath);
-                var fileName = Guid.NewGuid() + Path.GetExtension(movie.CoverPhoto.FileName);
-                var imagePath = Path.Combine(uploadPath, fileName);
-                await movie.CoverPhoto.CopyToAsync(new FileStream(imagePath, FileMode.Create));
-                movie.ImagePath = fileName;
-           
+
+            var uploadDirectory = "Css/Image/";
+            var uploadPath = Path.Combine(WebHostEnvironment.WebRootPath, uploadDirectory);
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+            var fileName = Guid.NewGuid() + Path.GetExtension(movie.CoverPhoto.FileName);
+            var imagePath = Path.Combine(uploadPath, fileName);
+            await movie.CoverPhoto.CopyToAsync(new FileStream(imagePath, FileMode.Create));
+            movie.ImagePath = fileName;
+
             if (movie.MovieId > 0)
             {
                 var obj = _movieRepository.UpdateMovie(movie);
@@ -252,13 +283,18 @@ namespace PKTickets.Controllers
         public IActionResult InvoiceById(int id)
         {
             var invoice = _reservationRepository.InvoiceById(id);
-          
+
             return View("Invoice", invoice);
         }
         public IActionResult Invoice()
         {
             Invoice invoice = new Invoice();
             return View(invoice);
+        }
+        public IActionResult CancelReservation(int id)
+        {
+            var ticket = _reservationRepository.DeleteReservation(id);
+            return Json(ticket);
         }
         public IActionResult RemoveMovie(int id)
         {
@@ -285,9 +321,9 @@ namespace PKTickets.Controllers
             return View(theaters);
         }
         [HttpGet]
-        public IActionResult MovieScreens(int tId,int mId)
+        public IActionResult MovieScreens(int tId, int mId)
         {
-            var screens = _scheduleRepository.ScreenByMovieAndTheaterId(mId,tId);
+            var screens = _scheduleRepository.ScreenByMovieAndTheaterId(mId, tId);
             ViewBag.mId = mId;
             return View(screens);
         }
@@ -299,14 +335,14 @@ namespace PKTickets.Controllers
         }
         public IActionResult BookTicket(int id)
         {
-            BookTicketDTO reservation=new BookTicketDTO();
+            BookTicketDTO reservation = new BookTicketDTO();
             reservation.ScheduleId = id;
             reservation.Users = _userRepository.GetAllUsers().Select(a => new SelectListItem
             {
                 Text = a.UserName + "(" + a.UserId + ")",
                 Value = a.UserId.ToString()
             }).ToList();
-            reservation.Users.Insert(0,new SelectListItem { Text="Select the User",Value=null });
+            reservation.Users.Insert(0, new SelectListItem { Text = "Select the User", Value = null });
             return View(reservation);
         }
         public IActionResult SaveTicket(BookTicketDTO booking)
@@ -314,10 +350,10 @@ namespace PKTickets.Controllers
             Reservation reservation = new Reservation();
             reservation.ScheduleId = booking.ScheduleId;
             reservation.PremiumTickets = booking.PremiumTickets;
-            reservation.EliteTickets=booking.EliteTickets;
+            reservation.EliteTickets = booking.EliteTickets;
             reservation.UserId = booking.UserId;
-            
-            if(reservation.ReservationId==0)
+
+            if (reservation.ReservationId == 0)
             {
                 return Json(_reservationRepository.CreateReservation(reservation));
             }

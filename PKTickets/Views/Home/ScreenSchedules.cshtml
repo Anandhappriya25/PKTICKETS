@@ -9,7 +9,7 @@
 
 <div class="row">
     <div id="heading">
-       Screens
+       Schedules
     </div>
 </div>
 
@@ -44,7 +44,7 @@
         </div>
     </div>
 </div>
-<a class=" text-black mb-3"  title="Add Screen" asp-area="" asp-controller="Home" asp-action="AddScreen" asp-route-id="@ViewBag.csd">
+<a class=" text-black mb-3"  title="Add Schedule" asp-area="" asp-controller="Home" asp-action="AddSchedule" asp-route-id="@ViewBag.csd">
     <i class="fa-regular fa-square-plus Add"></i>
 
 </a>
@@ -71,12 +71,12 @@
                 <td>@schedule.AvailablePremiumSeats</td>
                 <td>@schedule.AvailableEliteSeats</td>
                 <td >
-                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditScreen" asp-route-id="@schedule.ScheduleId">
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditSchedule" asp-route-id="@schedule.ScheduleId">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </a>
-                    <a class="nav-link text-danger delete" title="Delete" asp-area="" onclick="ScreenDelete(@schedule.ScheduleId)">
+                    <div class="nav-link text-danger delete" title="Delete"  onclick="ScheduleDelete(@schedule.ScheduleId)">
                         <i class="fa-solid fa-trash-can"></i>
-                    </a>
+                    </div>
                 </td>
             </tr>
         }    
@@ -87,6 +87,7 @@
 
 @section scripts{
     <link href="~/css/screenschedules.css" rel="stylesheet" />
+    <script src="~/js/deleteschedule.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
 }

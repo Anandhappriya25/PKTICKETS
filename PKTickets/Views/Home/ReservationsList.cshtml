@@ -1,6 +1,8 @@
 ﻿@using PKTickets.Models.DTO
 @model List<ReservationDTO>
 @{
+    var minDate = DateTime.Now.ToString("yyyy-MM-d");
+    var currentDate = Convert.ToDateTime(minDate);
     Layout = "~/views/shared/_userlayout.cshtml";
 }
 
@@ -41,13 +43,18 @@
                     <a class="nav-link text-primary info"  title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@reservation.ReservationId">
                         <i class="fa-solid fa-circle-info"></i>
                     </a>
-                    <a class="nav-link text-success edit"  title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@reservation.ReservationId">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                    </a>
-                    <a class="nav-link text-danger delete" title="Delete" onclick="UserDelete(@reservation.ReservationId)">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </a>
-
+                    @if (currentDate > @reservation.Date)
+                    {
+                        <a class="nav-link text-danger delete" title="Delete"  aria-disabled="true" disabled>
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="nav-link text-danger delete" title="Delete" onclick="DeleteTicket(@reservation.ReservationId)">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    }
                 </td>
             </tr>
         }    
@@ -56,8 +63,8 @@
 
 @section scripts{  
     <link href="~/css/reservationslist.css" rel="stylesheet" />
+    <script src="~/js/deleteticket.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
-    <script src="~/js/userdelete.js"></script>
 }
 

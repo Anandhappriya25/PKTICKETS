@@ -40,6 +40,5 @@ namespace PKTickets.Models
 
         public int AvailableEliSeats { get; set; } 
         public bool IsActive { get; set; } = true;
-
     }
 }

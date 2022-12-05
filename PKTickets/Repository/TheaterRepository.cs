@@ -46,6 +46,12 @@ namespace PKTickets.Repository
             {
                 messages.Message = "Theater Id  ("+ theaterId + ") is not found";
             }
+            var theaters = db.Screens.Where(x => x.TheaterId == theaterId).FirstOrDefault();
+            if (theaters != null)
+            {
+                messages.Message = "This Theater(" + theater.TheaterName + ") is Already scheduled, so you can't delete the theater";
+                return messages;
+            }
             else
             {
                 theater.IsActive = false;

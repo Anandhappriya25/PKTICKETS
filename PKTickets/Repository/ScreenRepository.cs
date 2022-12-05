@@ -86,18 +86,24 @@ namespace PKTickets.Repository
         {
             Messages messages = new Messages();
             messages.Success = false;
-            var ScreenExist = ScreenById(screenId);
-            if (ScreenExist == null)
+            var screenExist = ScreenById(screenId);
+            if (screenExist == null)
             {
                 messages.Message = "Screen Id(" + screenId + ") is not found";
                 return messages;
             }
+            var screen = db.Schedules.Where(x => x.ScreenId == screenId).FirstOrDefault();
+            if(screen != null)
+            {
+                messages.Message = "This Screen(" + screenExist.ScreenName+") is Already scheduled, so you can't delete the screen";
+                return messages;
+            }
             else
             {
-                ScreenExist.IsActive = false;
+                screenExist.IsActive = false;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "Screen ("+ ScreenExist .ScreenName+ ") is succssfully Removed";
+                messages.Message = "Screen ("+ screenExist .ScreenName+ ") is succssfully Removed";
                 return messages;
             }
         }

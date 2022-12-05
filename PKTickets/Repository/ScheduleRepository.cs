@@ -106,16 +106,27 @@ namespace PKTickets.Repository
                 messages.Message = "The Reservation is Already Started to Schedule Id (" + id + ") ,so can't Delete";
             }
             var timeExist = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == scheduleExist.ShowTimeId);
-            if (date.Date >= scheduleExist.Date && timeExist.ShowTiming > timeValue)
+            if(date.Date > scheduleExist.Date)
+            {
+                messages.Message = "The Show is Started for this Schedule Id (" + id + ") ,so can't Delete";
+            }
+            if (date.Date == scheduleExist.Date && timeExist.ShowTiming > timeValue)
             {
                 scheduleExist.IsActive = false;
-                    db.SaveChanges();
-                    messages.Success = true;
-                    messages.Message = "The Schedule Id ("+ id+") is Removed From reservation"; 
+                db.SaveChanges();
+                messages.Success = true;
+                messages.Message = "The Schedule Id ("+ id+") is Removed From reservation"; 
+            }
+            else if(date.Date == scheduleExist.Date && timeExist.ShowTiming < timeValue)
+            {
+                messages.Message = "The Show is Started for this Schedule Id (" + id + ") ,so can't Delete";
             }
             else
             {
-                messages.Message = "The Show is Started for this Schedule Id ("+ id + ") ,so can't Delete";
+                scheduleExist.IsActive = false;
+                db.SaveChanges();
+                messages.Success = true;
+                messages.Message = "The Schedule Id (" + id + ") is Removed From reservation";
             }
             return messages;
         }
@@ -193,11 +204,11 @@ namespace PKTickets.Repository
             else
             {
                 scheduleExist.MovieId = schedule.MovieId;
-                    db.SaveChanges();
-                    messages.Success = true;
-                    messages.Message = "The Schedule Id ("+ schedule.ScheduleId + ") is Successfully Updated";
+                db.SaveChanges();
+                messages.Success = true;
+                messages.Message = "The Schedule Id ("+ schedule.ScheduleId + ") is Successfully Updated";
             }
-                return messages;
+            return messages;
         }
 
         public SchedulesListDTO SchedulesListByScreenId(int id)
