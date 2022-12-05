@@ -54,7 +54,21 @@ namespace PKTickets.Controllers
         {
             return View();
         }
-
+        [HttpGet]
+        public ActionResult UserList(string searchString)
+        {
+            ViewData["CurrentFilter"] = searchString;
+            var usersList = _userRepository.GetAllUsers();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var userList = usersList.Where(s => s.UserName.ToLower().Contains(searchString)
+                                        || s.Location.ToLower().Contains(searchString)
+                                    || s.EmailId.ToLower().Contains(searchString)
+                                     || s.PhoneNumber.Contains(searchString)).ToList();
+                return View("UserList", userList);
+            }
+            return View("UserList", usersList);
+        }
         public IActionResult UserList()
         {
             var usersList = _userRepository.GetAllUsers();
@@ -352,8 +366,8 @@ namespace PKTickets.Controllers
             reservation.PremiumTickets = booking.PremiumTickets;
             reservation.EliteTickets = booking.EliteTickets;
             reservation.UserId = booking.UserId;
-
-            if (reservation.ReservationId == 0)
+             
+            if(reservation.ReservationId==0)
             {
                 return Json(_reservationRepository.CreateReservation(reservation));
             }
