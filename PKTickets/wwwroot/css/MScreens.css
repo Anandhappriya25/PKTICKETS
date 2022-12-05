@@ -1,0 +1,29 @@
+﻿.head {
+    font-size: larger;
+    margin-left: -4%;
+}
+
+.value {
+    font-size: large;
+    margin-left: 42%;
+    margin-top: -7%;
+}
+.card {
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.4);
+    transition: 0.3s;
+    width: 40%;
+}
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+.size {
+    width: 26rem;
+    margin-right: 24px;
+    margin-top: 38px;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}

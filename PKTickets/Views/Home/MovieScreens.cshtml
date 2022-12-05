@@ -5,7 +5,7 @@
 }
 
 <div id="heading">Screens</div>
-<table class="table table-hover pt-2" id="dataTable">
+@*<table class="table table-hover pt-2" id="dataTable">
     <thead class="text-dark" id="thead">
         <tr>
             <th class ="text-center">Screen Name</th>
@@ -32,10 +32,63 @@
         }    
     </tbody>
 </table>
-
+*@
 @section scripts{  
     <link href="~/css/color.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
-    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+    <link href="~/css/mscreens.css" rel="stylesheet" />
 }
 
+    <div class="row row-cols-3 row-cols-sm-3 row-cols-md-3 row-cols-lg-3">
+    @foreach (Screen screen in Model)
+    {
+        <div class="card size">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MovieSchedules" asp-route-sId="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
+            <div class="card-body">
+                
+                <div class="row">
+                    <div class="head">
+                        ScreenName
+                    </div>
+                    <div class="value">
+                        :  @screen.ScreenName
+                        
+                    </div>
+                </div>
+                <div class="row ad">
+                    <div class="head">
+                        Premium Capacity
+                    </div>
+                    <div class="value">
+                        :  @screen.PremiumCapacity
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Premium Price
+                    </div>
+                    <div class="value">
+                        :  @screen.PremiumPrice
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Elite Capacity
+                    </div>
+                    <div class="value">
+                        :  @screen.EliteCapacity
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Elite Price
+                    </div>
+                    <div class="value">
+                        :  @screen.ElitePrice
+                    </div>
+                </div>
+               
+            </div>
+            </a>
+        </div>
+    }
+</div>

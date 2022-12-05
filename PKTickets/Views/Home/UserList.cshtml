@@ -11,15 +11,6 @@
     <i class="fa-regular fa-square-plus Add"></i>
 
 </a>
-<form asp-action="UserList" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="UserList">Back to Full List</a>
-        </p>
-    </div>
-</form>
 
 <table class="table table-hover pt-2" id="dataTable">
     <thead class="text-dark" id="thead">
@@ -64,54 +55,3 @@
     <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
     <script src="~/js/userdelete.js"></script>
 }
-    <div class="row row-cols-3 row-cols-sm-3 row-cols-md-3 row-cols-lg-3">
- @foreach (User user in Model)
-        {
-    <div class="card size">
-        <div class="card-body">
-            <div class="row">
-                <div class="head">
-                    UserName 
-                </div>
-                <div class="value">
-                        :  <a class="nav-link li" asp-area="" asp-controller="Home" asp-action="ReservationsByUserId" asp-route-id="@user.UserId">
-                            @user.UserName
-                        </a>
-                </div>
-            </div>
-                <div class="row ad">
-                    <div class="head">
-                        Phone Number
-                    </div>
-                    <div class="value">
-                        :  @user.PhoneNumber
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="head">
-                        Location
-                    </div>
-                    <div class="value">
-                        :  @user.Location
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="head">
-                        Email Id
-                    </div>
-                    <div class="value">
-                        :  @user.EmailId
-                    </div>
-                </div>
-                <div class="row">
-                 <a class="nav-link text-success ed" title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@user.UserId">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                    </a>   
-                    <div class="nav-link text-danger de" title="Delete" onclick="UserDelete(@user.UserId)">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </div>
-                    </div>
-        </div>
-    </div>
-        }
-        </div>

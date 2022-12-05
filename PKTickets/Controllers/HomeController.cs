@@ -55,20 +55,7 @@ namespace PKTickets.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult UserList(string searchString)
-        {
-            ViewData["CurrentFilter"] = searchString;
-            var usersList = _userRepository.GetAllUsers();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                var userList = usersList.Where(s => s.UserName.ToLower().Contains(searchString)
-                                        || s.Location.ToLower().Contains(searchString)
-                                    || s.EmailId.ToLower().Contains(searchString)
-                                     || s.PhoneNumber.Contains(searchString)).ToList();
-                return View("UserList", userList);
-            }
-            return View("UserList", usersList);
-        }
+       
         public IActionResult UserList()
         {
             var usersList = _userRepository.GetAllUsers();
@@ -208,16 +195,33 @@ namespace PKTickets.Controllers
             return View();
         }
 
-        public IActionResult AddSchedule(int id)
+        public IActionResult CreateSchedule(int id)
         {
-            Schedule schedule = new Schedule();
+            CreateSchedule schedule = new CreateSchedule();
             schedule.ScreenId = id;
+            schedule.Movies=_movieRepository.GetAllMovies().Select(a => new SelectListItem
+              {
+                      Text = a.Title + "(" + a.Language + ")",
+                      Value = a.MovieId.ToString()
+                  }).ToList();
+            schedule.Movies.Insert(0, new SelectListItem { Text = "Select the Movie", Value = null });
+            schedule.Times = _showTimeRepository.GetAllShowTimes().Select(a => new SelectListItem
+            {
+                Text = a.ShowTiming ,
+                Value = a.ShowTimeId.ToString()
+            }).ToList();
+            schedule.Times.Insert(0, new SelectListItem { Text = "Select the Time", Value = null });
             return View(schedule);
         }
 
         [HttpPost]
-        public IActionResult SaveSchedule(Schedule schedule)
+        public IActionResult SaveSchedule(CreateSchedule scheduleDTO)
         {
+            Schedule schedule=new Schedule();
+            schedule.ScreenId = scheduleDTO.ScreenId;
+            schedule.MovieId = scheduleDTO.MovieId;
+            schedule.ShowTimeId = scheduleDTO.ShowTimeId;
+            schedule.Date=Convert.ToDateTime(scheduleDTO.Date);
             if (schedule.ScheduleId == 0)
             {
                 return Json(_scheduleRepository.CreateSchedule(schedule));
@@ -231,8 +235,28 @@ namespace PKTickets.Controllers
         [HttpGet]
         public IActionResult EditSchedule(int id)
         {
-            var schedule = _scheduleRepository.ScheduleById(id);
-            return View("AddSchedule", schedule);
+            var schedules = _scheduleRepository.ScheduleById(id);
+            CreateSchedule schedule = new CreateSchedule();
+            schedule.ScreenId = schedules.ScreenId;
+            schedule.Movies = _movieRepository.GetAllMovies().Select(a => new SelectListItem
+            {
+                Text = a.Title + "(" + a.Language + ")",
+                Value = a.MovieId.ToString()
+            }).ToList();
+            schedule.Movies.Insert(0, new SelectListItem { Text = "Select the Movie", Value = null });
+            schedule.Times = _showTimeRepository.GetAllShowTimes().Select(a => new SelectListItem
+            {
+                Text = a.ShowTiming,
+                Value = a.ShowTimeId.ToString()
+            }).ToList();
+            schedule.Times.Insert(0, new SelectListItem { Text = "Select the Time", Value = null });
+            schedule.ScheduleId = schedules.ScheduleId;
+            schedule.MovieId = schedules.MovieId;
+            schedule.ShowTimeId = schedules.ShowTimeId;
+            schedule.Date = schedules.Date.ToString("yyyy-MM-dd"); 
+            schedule.AvailablePreSeats = schedules.AvailablePreSeats;
+            schedule.AvailableEliSeats = schedules.AvailableEliSeats;
+            return View("CreateSchedule", schedule);
         }
         public IActionResult RemoveSchedule(int id)
         {
@@ -339,6 +363,7 @@ namespace PKTickets.Controllers
         {
             var screens = _scheduleRepository.ScreenByMovieAndTheaterId(mId, tId);
             ViewBag.mId = mId;
+            ViewBag.tId = tId;
             return View(screens);
         }
         [HttpGet]
@@ -353,7 +378,7 @@ namespace PKTickets.Controllers
             reservation.ScheduleId = id;
             reservation.Users = _userRepository.GetAllUsers().Select(a => new SelectListItem
             {
-                Text = a.UserName + "(" + a.UserId + ")",
+                Text = a.UserName + "(" + a.PhoneNumber + ")",
                 Value = a.UserId.ToString()
             }).ToList();
             reservation.Users.Insert(0, new SelectListItem { Text = "Select the User", Value = null });

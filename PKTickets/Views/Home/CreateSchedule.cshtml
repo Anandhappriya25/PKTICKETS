@@ -1,6 +1,7 @@
-﻿@using PKTickets.Models
-@model Schedule
+﻿@using PKTickets.Models.DTO
+@model CreateSchedule
 @{
+    var minDate = DateTime.Now.ToString("yyyy-MM-dd");
     string name = "Submit";
     string title = "Schedule Form";
     if (Model.ScheduleId > 0)
@@ -27,50 +28,54 @@
                         @using (Html.BeginForm(FormMethod.Post, new { id = "AddSchedule" }))
                         {
                             @Html.HiddenFor(m => m.ScreenId )
-                            @*@Html.HiddenFor(m => m.TheaterId )*@
+                            @Html.HiddenFor(m => m.AvailableEliSeats )
+                            @Html.HiddenFor(m => m.AvailablePreSeats )
                             <div class="mb-3  row justify-content-center">
                                 <div class="col-3">
-                                    <label class="form-label required">Movie Id</label>
+                                    <label class="form-label required">Movie</label>
                                 </div>
                                 <div class="col-5">
-                                    @Html.TextBoxFor(m => m.MovieId , new {@class="form-control", required = "required"} )
-                                </div>
+                                    @Html.DropDownListFor(m => m.MovieId ,Model.Movies, new {@class="form-control"} )
+                                    </div>
                             </div>
-                            <div class="mb-3  row justify-content-center">
-                                <div class="col-3">
-                                    <label class="form-label required">Date</label>
-                                </div>
-                                <div class="col-5">
-                                    @Html.TextBoxFor(m => m.Date , new {@class="form-control", required = "required" ,type="date"} )
-                                </div>
-                            </div>
-                            <div class="mb-3  row justify-content-center">
-                                <div class="col-3">
-                                    <label class="form-label required">ShowTime Id</label>
-                                </div>
-                                <div class="col-5">
-                                    @Html.TextBoxFor(m => m.ShowTimeId , new {@class="form-control", required = "required"} )
-                                </div>
-                            </div>
-                            @if (Model.ScheduleId != 0)
+                            @if (Model.ScheduleId == 0)
                             {
                                 <div class="mb-3  row justify-content-center">
                                     <div class="col-3">
-                                        <label class="form-label required">AvailablePreSeats</label>
+                                        <label class="form-label required">Date</label>
                                     </div>
                                     <div class="col-5">
-                                        @Html.TextBoxFor(m => m.AvailablePreSeats , new {@class="form-control",@disabled="disabled"})
+                                        @Html.TextBoxFor(m => m.Date , new {@class="form-control", required = "required" ,type="date",min=minDate} )
                                     </div>
                                 </div>
                                 <div class="mb-3  row justify-content-center">
                                     <div class="col-3">
-                                        <label class="form-label required">AvailableEliSeats</label>
+                                        <label class="form-label required">ShowTime</label>
                                     </div>
                                     <div class="col-5">
-                                        @Html.TextBoxFor(m => m.AvailableEliSeats , new {@class="form-control",@disabled="disabled"})
+                                        @Html.DropDownListFor(m => m.ShowTimeId ,Model.Times, new {@class="form-control"} )
                                     </div>
-                                </div>                                
-                            }                       
+                                </div>
+                            }
+                            else{
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Date</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.Date , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">ShowTime</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.DropDownListFor(m => m.ShowTimeId ,Model.Times, new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                            }
+                                               
                             <input type="submit" class="btnRegister" value="@name" />
                         }
                     </div>
