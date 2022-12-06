@@ -13,3 +13,16 @@
 .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+.round {
+    width:18rem;
+    margin-right:36px;
+    margin-top:49px;
+    background-image:linear-gradient(lightblue, lightyellow);
+    border-radius:18px;
+}
+.try {
+    margin-top:4px;
+    width:258px;
+    height:360px;
+    border-radius:14px;
+}
