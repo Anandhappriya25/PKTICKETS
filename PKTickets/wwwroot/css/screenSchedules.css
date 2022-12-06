@@ -5,7 +5,7 @@
 
 
 .delete {
-    margin-top: -62%;
+    margin-top: -58%;
     font-size: 22px;
     margin-left: 40%;
 }
@@ -14,8 +14,9 @@
 }
 .Add {
     float: right;
-    font-size: 35px;
-    margin-bottom: 6px;
+    margin-right: 22px;
+    font-size: 29px;
+    margin-bottom: 1%;
 }
 
 
@@ -26,4 +27,24 @@
 }
 .side {
     margin-left: -25px;
+}
+#tag {
+    margin-top: 5px;
+    margin-right: -63px;
+    float: right;
+}
+.Add:hover {
+    color: blue;
+}
+
+#tag:hover {
+    color: blue;
+}
+
+.fa-pen-to-square:hover {
+    font-size: 28px;
+}
+
+.fa-trash-can:hover {
+    font-size: 28px;
 }

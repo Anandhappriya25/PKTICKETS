@@ -24,47 +24,47 @@
     <tbody>
         @foreach (ReservationDTO reservation in Model)
         {
-            <tr class="text-center align-text-bottom">
-                <td>@reservation.ReservationId</td>
-                <td>
+                <tr class="text-center align-text-bottom">
+                    <td>@reservation.ReservationId</td>
+                    <td>
                     @{
 
                     }
-                    <a class="nav-link " asp-area="" asp-controller="Home" asp-action="ReservationsByUserId" asp-route-id="@reservation.UserId">
+                        <a class="nav-link " asp-area="" asp-controller="Home" asp-action="ReservationsByUserId" asp-route-id="@reservation.UserId">
                         @reservation.UserName
-                    </a>
-                </td>
-                <td>@reservation.TheaterName</td>
-                <td>@reservation.MovieName</td>
-                <td>@String.Format("{0:d/M/yyyy}",@reservation.Date)</td>
-                <td>@reservation.ShowTiming</td>
-                <td>@reservation.Tickets</td>
-                <td>
-                    <a class="nav-link text-primary info"  title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@reservation.ReservationId">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </a>
+                        </a>
+                    </td>
+                    <td>@reservation.TheaterName</td>
+                    <td>@reservation.MovieName</td>
+                    <td>@String.Format("{0:d/M/yyyy}",@reservation.Date)</td>
+                    <td>@reservation.ShowTiming</td>
+                    <td>@reservation.Tickets</td>
+                    <td>
+                        <a class="nav-link text-primary info"  title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@reservation.ReservationId">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </a>
                     @if (currentDate > @reservation.Date)
                     {
-                        <a class="nav-link text-danger delete" title="Delete"  aria-disabled="true" disabled>
-                            <i class="fa-solid fa-trash-can"></i>
-                        </a>
+                                <a class="nav-link text-danger delete" title="Delete"  aria-disabled="true" disabled>
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
                     }
                     else
                     {
-                        <a class="nav-link text-danger delete" title="Delete" onclick="DeleteTicket(@reservation.ReservationId)">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </a>
+                                <a class="nav-link text-danger delete" title="Delete" onclick="DeleteTicket(@reservation.ReservationId)">
+                                    <i class="fa-solid fa-trash-can hi"></i>
+                                </a>
                     }
-                </td>
-            </tr>
+                    </td>
+                </tr>
         }    
     </tbody>
 </table>
 
 @section scripts{  
-    <link href="~/css/reservationslist.css" rel="stylesheet" />
-    <script src="~/js/deleteticket.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
-    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+        <link href="~/css/reservationslist.css" rel="stylesheet" />
+        <script src="~/js/deleteticket.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+        <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
 }
 

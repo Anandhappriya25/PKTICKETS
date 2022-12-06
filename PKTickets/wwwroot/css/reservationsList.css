@@ -13,12 +13,25 @@
     font-size: 22px;
 }
 .delete {
-    margin-right: 24%;
+    margin-right: 41%;
     margin-top: -58%;
     font-size: 22px;
 }
 .info {
-    margin-right: -67%;
+    margin-right: -51%;
     margin-top: -8%;
     font-size: 22px;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+
+.fa-circle-info:hover {
+    font-size: 28px;
+}
+
+.hi:hover {
+    font-size: 28px;
 }

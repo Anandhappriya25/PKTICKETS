@@ -20,8 +20,28 @@
     float: right;
 }
 .Add {
-    font-size: 35px;
+    font-size: 29px;
+    margin-left: -17px;
 }
 #thead {
     background-color: #edf5ed;
+}
+#tag {
+    margin-top: -25px;
+    margin-left: 50%;
+}
+.Add:hover {
+    color: blue;
+}
+
+#tag:hover {
+    color: blue;
+}
+
+.fa-pen-to-square:hover {
+    font-size: 28px;
+}
+
+.fa-trash-can:hover {
+    font-size: 28px;
 }

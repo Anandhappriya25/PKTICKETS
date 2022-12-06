@@ -14,9 +14,8 @@
 <div class="container" style="float:left">
     <div class="row ">
         <div class="col-4">
-            <h5>
-                User Name :     
-                <b> @Model.UserName</b>
+            <h5 style="margin-left:-3%;">
+                User Name :<b> @Model.UserName</b>
             </h5>
         </div>
     </div>
@@ -49,7 +48,9 @@
                 <td>@user.EliteTickets</td>
                 <td>@user.TotalAmount</td>
                 <td>
-
+                    <a class="nav-link text-primary info" title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@user.ReservationId">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
                     @if (currentDate > @user.Date)
                     {
                         <div>
@@ -64,7 +65,7 @@
                         <div>
                             
                             <a class="nav-link text-danger delete" title="Delete" asp-area="" onclick="ConfirmDelete(@user.ReservationId)">
-                                <i class="fa-solid fa-trash-can"></i>
+                                <i class="fa-solid fa-trash-can hi"></i>
                             </a>
                           
                         </div>

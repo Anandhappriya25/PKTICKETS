@@ -12,7 +12,19 @@
 }
 
 .delete {
-    margin-right: -48%;
-    margin-top: -70%;
+    margin-right: 61px;
+    margin-top: -40%;
     font-size: 22px;
+}
+
+.info {
+    margin-right: -37%;
+    font-size: 22px;
+}
+.fa-circle-info:hover {
+    font-size: 28px;
+}
+
+.hi:hover {
+    font-size: 28px;
 }

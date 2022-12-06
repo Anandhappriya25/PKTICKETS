@@ -2,7 +2,9 @@
     float: right;
 }
 .Add {
-    font-size: 35px;
+    font-size: 29px;
+    margin-left: -18px;
+    margin-right: 13%;
 }
 #thead {
     background-color: #edf5ed;
@@ -22,6 +24,37 @@
     margin-top: -42%;
     font-size: 22px;
 }
-
-
-
+#tag {
+    margin-top: -77%;
+    margin-left: 51%;
+}
+.Add:hover{
+    color:blue;
+}
+#tag:hover {
+    color: blue;
+}
+.fa-pen-to-square:hover {
+    font-size: 28px;
+}
+.fa-trash-can:hover {
+    font-size: 28px;
+}
+.add .msg {
+    visibility: hidden;
+    font-size: 12px;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 81%;
+    left: 85%;
+}
+.add:hover .msg {
+    visibility: visible;
+}
