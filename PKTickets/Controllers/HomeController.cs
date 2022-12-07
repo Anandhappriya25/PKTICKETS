@@ -270,7 +270,7 @@ namespace PKTickets.Controllers
         }
         public IActionResult MovieList()
         {
-            var movie = _movieRepository.GetAllMovies();
+            var movie = _movieRepository.ScheduledMovies();
             return View(movie);
         }
 

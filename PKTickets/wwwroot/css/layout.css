@@ -64,6 +64,19 @@ font-weight: 700;
 width: 17%;
 cursor: pointer;
 }
+    .btnRegister:hover {
+        margin-top: 2%;
+        margin-left: 36%;
+        border: none;
+        border-radius: 2.5rem;
+        padding: 2%;
+        background: #0062cc;
+        color: #fff;
+        font-weight: 700;
+        width: 17%;
+        background-color:green;
+        cursor: pointer;
+    }
 
 .register .nav-tabs {
 margin-top: 3%;
@@ -110,3 +123,4 @@ color: #495057;
 .para {
     margin-bottom:-1rem;
 }
+

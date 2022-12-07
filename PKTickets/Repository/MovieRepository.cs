@@ -1,6 +1,7 @@
 ﻿using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
+using System.Collections.Generic;
 
 namespace PKTickets.Repository
 {
@@ -8,14 +9,28 @@ namespace PKTickets.Repository
     {
 
         private readonly PKTicketsDbContext db;
-        public MovieRepository(PKTicketsDbContext db)
+        private readonly IScheduleRepository schedules;
+        public MovieRepository(PKTicketsDbContext db, IScheduleRepository _schedules)
         {
             this.db = db;
+            this.schedules = _schedules;
         }
 
         public List<Movie> GetAllMovies()
         {
             return db.Movies.Where(x => x.IsPlaying == true).ToList();
+        }
+        public List<Movie> ScheduledMovies()
+        {
+            var list = schedules.AvailableSchedulesList();
+            List<Movie> movies= new List<Movie>();
+            foreach (var schedule in list)
+            {
+                var movie = db.Movies.FirstOrDefault(x=>x.MovieId==schedule.MovieId);
+                movies.Add(movie);
+            }
+            var movielist= movies.DistinctBy(x=> x.MovieId).ToList();
+            return movielist;
         }
 
         public Movie MovieById(int id)
