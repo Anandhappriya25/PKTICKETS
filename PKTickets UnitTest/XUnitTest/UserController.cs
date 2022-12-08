@@ -72,7 +72,7 @@ namespace PKTicketsUnitTest.XUnitTest
         {
             User newUser = new User {  UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
-                 message.Message = "The (9441004834) , PhoneNumber is already Registered.";
+            message.Message = "The (9441004834) , PhoneNumber is already Registered.";
             message.Success = false;
             var mockservice = new Mock<IUserRepository>();
             mockservice.Setup(x => x.CreateUser(newUser)).Returns(message);
