@@ -15,9 +15,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PKTicketsUnitTest.XUnitTest
+namespace PKTickets_UnitTest.TestCase
 {
-    public class UserController
+    public class UserControllerTestCase
     {
 
         [Fact]
@@ -34,13 +34,31 @@ namespace PKTicketsUnitTest.XUnitTest
             var lists = list.Value as List<User>;
             Assert.IsType<OkObjectResult>(okResult);
             Assert.Equal(customers, lists);
-            lists.Count().CompareTo(1);
+            Assert.NotEmpty(lists);
+            Assert.StrictEqual(customers.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void List_NullOk()
+        {
+            List<User> customers = new List<User>();
+            var mockservice = new Mock<IUserRepository>();
+            mockservice.Setup(x => x.GetAllUsers()).Returns(customers);
+            var controller = new UsersController(mockservice.Object);
+            var okResult = controller.List();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<User>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(customers, lists);
+            Assert.Empty(lists);
+            Assert.StrictEqual(customers.Count(), lists.Count());
             Assert.StrictEqual(200, list.StatusCode);
         }
         [Fact]
         public void GetById_ok()
         {
-            User user = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true }; 
+            User user = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             var mockservice = new Mock<IUserRepository>();
             mockservice.Setup(x => x.UserById(It.IsAny<int>())).Returns(user);
             var controller = new UsersController(mockservice.Object);
@@ -70,17 +88,17 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void Add_PhoneConflict()
         {
-            User newUser = new User {  UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
+            User newUser = new User { UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
-                 message.Message = "The (9441004834) , PhoneNumber is already Registered.";
+            message.Message = "The (9441004834) , PhoneNumber is already Registered.";
             message.Success = false;
             var mockservice = new Mock<IUserRepository>();
             mockservice.Setup(x => x.CreateUser(newUser)).Returns(message);
             var controller = new UsersController(mockservice.Object);
             var output = controller.Add(newUser);
             var result = output as ConflictObjectResult;
-            Assert.Equal(message.Message,result.Value);
-            Assert.StrictEqual(409,result.StatusCode);
+            Assert.Equal(message.Message, result.Value);
+            Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
 
@@ -104,7 +122,7 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void Add_Success()
         {
-           User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
+            User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
             message.Message = "Vijay, Your Account is Successfully Registered";
             message.Success = true;
@@ -122,7 +140,7 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void Update_BadRequest()
         {
-            User newUser = new User { UserId = 0};
+            User newUser = new User { UserId = 0 };
             var mockservice = new Mock<IUserRepository>();
             var controller = new UsersController(mockservice.Object);
             var output = controller.Update(newUser);
@@ -146,7 +164,7 @@ namespace PKTicketsUnitTest.XUnitTest
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
             Assert.StrictEqual(message.Message, result.Value);
-            Assert.StrictEqual(404, result.StatusCode);  
+            Assert.StrictEqual(404, result.StatusCode);
         }
 
         [Fact]
@@ -168,7 +186,7 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void Update_EmailConflict()
         {
-           User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth5@gmail.com", Password = "123456", IsActive = true };
+            User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth5@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
             message.Message = "The (karth56@gmail.com), EmailId is already Registered.";
             message.Success = false;
@@ -214,13 +232,13 @@ namespace PKTicketsUnitTest.XUnitTest
             var result = output as OkObjectResult;
             Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(200, result.StatusCode);
-           
+
         }
 
         [Fact]
         public void Remove_NotFound()
         {
-           Messages message = new Messages();
+            Messages message = new Messages();
             message.Message = "User Id (3) is not found";
             message.Success = false;
             var mockservice = new Mock<IUserRepository>();
