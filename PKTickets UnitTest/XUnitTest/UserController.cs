@@ -23,7 +23,6 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void List_Ok()
         {
-            //User user = new User { UserId = 3, UserName = "Vijaya", PhoneNumber = "9441009834", Location = "Vellore",EmailId="karthi56@gmail.com",Password="123456",IsActive=true };
             User user2 = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             List<User> customers = new List<User>();
             customers.Add(user2);
@@ -71,7 +70,6 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void Add_PhoneConflict()
         {
-            User user = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             User newUser = new User {  UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
                  message.Message = "The (9441004834) , PhoneNumber is already Registered.";
@@ -89,7 +87,6 @@ namespace PKTicketsUnitTest.XUnitTest
         [Fact]
         public void Add_EmailConflict()
         {
-            User user = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             User newUser = new User { UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
             message.Message = "The (karth56@gmail.com), EmailId is already Registered.";
@@ -153,9 +150,9 @@ namespace PKTicketsUnitTest.XUnitTest
         }
 
         [Fact]
-        public void Update_Conflict()
+        public void Update_PhoneConflict()
         {
-            User newUser = new User { UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
+            User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004832", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
             Messages message = new Messages();
             message.Message = "The (9443004834), PhoneNumber is already Registered.";
             message.Success = false;
@@ -167,6 +164,39 @@ namespace PKTicketsUnitTest.XUnitTest
             Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
+        }
+        [Fact]
+        public void Update_EmailConflict()
+        {
+           User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004834", Location = "Vellore", EmailId = "karth5@gmail.com", Password = "123456", IsActive = true };
+            Messages message = new Messages();
+            message.Message = "The (karth56@gmail.com), EmailId is already Registered.";
+            message.Success = false;
+            var mockservice = new Mock<IUserRepository>();
+            mockservice.Setup(x => x.UpdateUser(newUser)).Returns(message);
+            var controller = new UsersController(mockservice.Object);
+            var output = controller.Update(newUser);
+            var result = output as ConflictObjectResult;
+            Assert.Equal(message.Message, result.Value);
+            Assert.StrictEqual(409, result.StatusCode);
+            Assert.IsType<ConflictObjectResult>(output);
+        }
+
+        [Fact]
+        public void Update_SuccessOk()
+        {
+            User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004835", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
+            Messages message = new Messages();
+            message.Message = "The Vijay Account is Successfully Updated";
+            message.Success = true;
+            var mockservice = new Mock<IUserRepository>();
+            mockservice.Setup(x => x.UpdateUser(newUser)).Returns(message);
+            var controller = new UsersController(mockservice.Object);
+            var output = controller.Update(newUser);
+            var result = output as OkObjectResult;
+            Assert.Equal(message.Message, result.Value);
+            Assert.StrictEqual(200, result.StatusCode);
+            Assert.IsType<OkObjectResult>(output);
         }
     }
 }
