@@ -198,5 +198,39 @@ namespace PKTicketsUnitTest.XUnitTest
             Assert.StrictEqual(200, result.StatusCode);
             Assert.IsType<OkObjectResult>(output);
         }
+
+        [Fact]
+        public void Remove_SucessOk()
+        {
+            User newUser = new User { UserId = 3, UserName = "Vijay", PhoneNumber = "9443004835", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
+            Messages message = new Messages();
+            message.Message = "The Vijay Account is Successfully removed";
+            message.Success = true;
+            var mockservice = new Mock<IUserRepository>();
+            mockservice.Setup(x => x.DeleteUser(It.IsAny<int>())).Returns(message);
+            var controller = new UsersController(mockservice.Object);
+            var output = controller.Remove(3);
+            Assert.IsType<OkObjectResult>(output);
+            var result = output as OkObjectResult;
+            Assert.Equal(message.Message, result.Value);
+            Assert.StrictEqual(200, result.StatusCode);
+           
+        }
+
+        [Fact]
+        public void Remove_NotFound()
+        {
+           Messages message = new Messages();
+            message.Message = "User Id (3) is not found";
+            message.Success = false;
+            var mockservice = new Mock<IUserRepository>();
+            mockservice.Setup(x => x.DeleteUser(It.IsAny<int>())).Returns(message);
+            var controller = new UsersController(mockservice.Object);
+            var output = controller.Remove(3);
+            var result = output as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(output);
+            Assert.StrictEqual(message.Message, result.Value);
+            Assert.StrictEqual(404, result.StatusCode);
+        }
     }
 }
