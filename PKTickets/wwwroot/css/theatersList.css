@@ -25,15 +25,11 @@
 .tab {
     font-size: 29px;
     float: right;
-    margin-right: 18px;
-    margin-bottom: -66%;
+    margin-right: -17px;
+    margin-bottom: 21%;
 }
 #thead{
     background-color: #edf5ed;
-}
-#tag {
-    margin-top: -15px;
-    margin-left: 63%;
 }
 
 
@@ -41,9 +37,6 @@
     color: blue;
 }
 
-#tag:hover {
-    color: blue;
-}
 
 .fa-pen-to-square:hover {
     font-size: 28px;
@@ -55,7 +48,7 @@
 .s .msg {
     visibility: hidden;
     font-size: 12px;
-    width: 130px;
+    width: 115px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -65,7 +58,7 @@
     position: absolute;
     z-index: 1;
     bottom: 78%;
-    left: 86%;
+    left: 88%;
 }
 
 .s:hover .msg {

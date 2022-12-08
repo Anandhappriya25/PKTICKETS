@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKTickets", "PKTickets\PKTickets.csproj", "{4310C394-08A0-4208-808A-BC32B4C53E71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKTickets UnitTest", "PKTickets UnitTest\PKTickets UnitTest.csproj", "{D7423842-5EA5-4D98-B94F-57F9162F2DB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKTicketsUnitTest", "PKTickets UnitTest\PKTicketsUnitTest.csproj", "{D7423842-5EA5-4D98-B94F-57F9162F2DB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

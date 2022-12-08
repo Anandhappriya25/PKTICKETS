@@ -1,10 +1,9 @@
 ﻿.add {
     float: right;
+    margin-right: -18px;
 }
 .Add {
-    font-size: 29px;
-    margin-left: -18px;
-    margin-right: 13%;
+    font-size: 30px;
 }
 #thead {
     background-color: #edf5ed;
@@ -24,16 +23,11 @@
     margin-top: -42%;
     font-size: 22px;
 }
-#tag {
-    margin-top: -77%;
-    margin-left: 51%;
-}
+
 .Add:hover{
     color:blue;
 }
-#tag:hover {
-    color: blue;
-}
+
 .fa-pen-to-square:hover {
     font-size: 28px;
 }
@@ -52,8 +46,8 @@
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
-    bottom: 81%;
-    left: 85%;
+    bottom: 86%;
+    left: 88%;
 }
 .add:hover .msg {
     visibility: visible;

@@ -8,7 +8,7 @@
 }
 .Add {
     font-size: 29px;
-    margin-left: -56%;
+    margin-left: 66%;
 }
 }
 #thead {
@@ -24,17 +24,11 @@
     margin-top: -41%;
     font-size: 22px;
 }
-#tag {
-    margin-top: -25px;
-    margin-left: 50%;
-}
+
 .Add:hover {
     color: blue;
 }
 
-#tag:hover {
-    color: blue;
-}
 
 .fa-pen-to-square:hover {
     font-size: 28px;
@@ -42,4 +36,23 @@
 
 .fa-trash-can:hover {
     font-size: 28px;
+}
+#add .msg {
+    visibility: hidden;
+    font-size: 12px;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 84%;
+    left: 88%;
+}
+
+#add:hover .msg {
+    visibility: visible;
 }
