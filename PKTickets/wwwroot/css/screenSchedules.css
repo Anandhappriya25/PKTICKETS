@@ -14,8 +14,8 @@
 }
 .Add {
     float: right;
-    margin-right: 22px;
-    font-size: 29px;
+    margin-right: -16px;
+    font-size: 30px;
     margin-bottom: 1%;
 }
 
@@ -28,18 +28,11 @@
 .side {
     margin-left: -25px;
 }
-#tag {
-    margin-top: 5px;
-    margin-right: -63px;
-    float: right;
-}
+
 .Add:hover {
     color: blue;
 }
 
-#tag:hover {
-    color: blue;
-}
 
 .fa-pen-to-square:hover {
     font-size: 28px;
@@ -47,4 +40,23 @@
 
 .fa-trash-can:hover {
     font-size: 28px;
+}
+.add .msg {
+    visibility: hidden;
+    font-size: 12px;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 69%;
+    left: 88%;
+}
+
+.add:hover .msg {
+    visibility: visible;
 }

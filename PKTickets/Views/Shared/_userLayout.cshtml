@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PKTickets.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link href="~/css/color.css" rel="stylesheet" />
+    <link href="~/css/home.css" rel="stylesheet" />
+    <link href="~/lib/toast/jquery.toast.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -39,12 +41,12 @@
         </main>
     </div>
 
-
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <link href="~/css/color.css" rel="stylesheet" />
-    <link href="~/css/home.css" rel="stylesheet" />
+    
+    <script src="~/lib/toast/jquery.toast.min.js"></script>
     
     @await RenderSectionAsync("Scripts", required: false)
 </body>
