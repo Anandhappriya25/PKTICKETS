@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\Image\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\css\logo\logo.jpg" />
     <None Include="wwwroot\js\BookTicket.js" />
     <None Include="wwwroot\js\AddTheater.js" />

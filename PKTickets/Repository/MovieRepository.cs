@@ -91,7 +91,13 @@ namespace PKTickets.Repository
             var movie = MovieById(movieId);
             if (movie == null)
             {
-                messages.Message = "Movie Id ("+ movieId + ") is not found";
+                messages.Message = "Movie Id (" + movieId + ") is not found";
+                return messages;
+            }
+            var movies = db.Schedules.Where(x => x.MovieId == movieId).FirstOrDefault();
+            if (movies != null)
+            {
+                messages.Message = "This Movie(" + movie.Title + ") is Already scheduled, so you can't remove the movie";
                 return messages;
             }
             else

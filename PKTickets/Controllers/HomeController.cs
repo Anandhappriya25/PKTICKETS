@@ -218,6 +218,7 @@ namespace PKTickets.Controllers
         public IActionResult SaveSchedule(CreateSchedule scheduleDTO)
         {
             Schedule schedule=new Schedule();
+            schedule.ScheduleId = scheduleDTO.ScheduleId;
             schedule.ScreenId = scheduleDTO.ScreenId;
             schedule.MovieId = scheduleDTO.MovieId;
             schedule.ShowTimeId = scheduleDTO.ShowTimeId;

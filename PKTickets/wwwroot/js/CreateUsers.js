@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $("#CreateUsers").submit(function (e) {
         e.preventDefault();
         $.ajax({
