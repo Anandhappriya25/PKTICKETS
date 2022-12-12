@@ -33,12 +33,24 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
             return mockservice;
         }
-        private Mock<ITheaterRepository> GetByLocationMock(List<Theater> theater)
+        private Mock<ITheaterRepository> GetScreenByTheaterId(ScreensListDTO theater)
         {
             var mockservice = Mock();
-            mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theater);
+            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(theater);
             return mockservice;
         }
+        private Mock<ITheaterRepository> GetByLocationMock(string s,List<Theater> theaters)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theaters);
+            return mockservice;
+        }
+        //private Mock<ITheaterRepository> GetByLocationMock(List<Theater> theater)
+        //{
+        //    var mockservice = Mock();
+        //    mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theater);
+        //    return mockservice;
+        //}
         private Mock<ITheaterRepository> AddMock(Messages message)
         {
             var mockservice = Mock();
@@ -107,6 +119,12 @@ namespace PKTickets_UnitTest.TestCase
         }
 
         [Fact]
+        public void GetScreensByTheaterId_Ok()
+        {
+            //var controller = new TheatersController
+        }
+
+        [Fact]
         public void GetById_Null()
         {
             Theater theater = null;
@@ -121,15 +139,13 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void GetByLocation_Success()
         {
-            Theater theater = new Theater { TheaterId = 7, TheaterName = "Vijay cinemas", Location = "Vellore", IsActive = true };
             List<Theater> theaters = new List<Theater>();
-            theaters.Add(theater);
-            var controller = new TheatersController(GetByLocationMock(theaters).Object);
+            var controller = new TheatersController(GetByLocationMock("Vellore",theaters).Object);
             var okResult = controller.GetByLocation("Vellore");
             var list = okResult as OkObjectResult;
             var results = list.Value as List<Theater>;
             Assert.IsType<OkObjectResult>(okResult);
-            Assert.Equal(theaters, results);
+            //Assert.Equal(theaters, results);
             Assert.StrictEqual(200, list.StatusCode);
             Assert.StrictEqual(theaters.Count(), results.Count());
         }
@@ -138,12 +154,11 @@ namespace PKTickets_UnitTest.TestCase
         public void GetByLocation_NullOk()
         {
             List<Theater> theaters = new List<Theater>();
-            var controller = new TheatersController(GetByLocationMock(theaters).Object);
-            var okResult = controller.List();
+            var controller = new TheatersController(GetByLocationMock("Kolathur",theaters).Object);
+            var okResult = controller.GetByLocation("Vellore");
             var list = okResult as OkObjectResult;
             var lists = list.Value as List<Theater>;
             Assert.IsType<OkObjectResult>(okResult);
-            Assert.Empty(lists);
             Assert.StrictEqual(theaters.Count(), lists.Count());
             Assert.StrictEqual(200, list.StatusCode);
         }
@@ -261,5 +276,6 @@ namespace PKTickets_UnitTest.TestCase
             Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
+
     }
 }
