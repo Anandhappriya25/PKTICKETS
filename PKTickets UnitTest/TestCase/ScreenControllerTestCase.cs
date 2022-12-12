@@ -43,6 +43,18 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.AddScreen(It.IsAny<Screen>())).Returns(message);
             return mockservice;
         }
+        private Mock<IScreenRepository> UpdateMock(Messages message)
+        {
+            var mockservice = Mock(); 
+            mockservice.Setup(x => x.UpdateScreen(It.IsAny<Screen>())).Returns(message);
+            return mockservice;
+        }
+        private Mock<IScreenRepository> DeleteMock(Messages message)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.RemoveScreen(It.IsAny<int>())).Returns(message);
+            return mockservice;
+        }
         private Screen TestScreen => new()
         { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
         
@@ -155,8 +167,7 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_BadRequest()
         {
             Screen screen = new Screen { ScreenId = 0 };
-            var mockservice = new Mock<IScreenRepository>();
-            var controller = new ScreensController(mockservice.Object);
+            var controller = new ScreensController(Mock().Object);
             var output = controller.Update(screen);
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
@@ -167,14 +178,11 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_NotFound()
         {
-            Screen screen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
             Messages message = new Messages();
             message.Message = "Screen Id is not found";
             message.Success = false;
-            var mockservice = new Mock<IScreenRepository>();
-            mockservice.Setup(x => x.UpdateScreen(It.IsAny<Screen>())).Returns(message);
-            var controller = new ScreensController(mockservice.Object);
-            var output = controller.Update(screen);
+            var controller = new ScreensController(UpdateMock(message).Object);
+            var output = controller.Update(TestScreen);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
             Assert.StrictEqual("Screen Id is not found", result.Value);
@@ -184,14 +192,11 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_NameConflict()
         {
-            Screen screen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
             Messages message = new Messages();
             message.Message = "Screen Name(Vijay) is Already Registered.";
             message.Success = false;
-            var mockservice = new Mock<IScreenRepository>();
-            mockservice.Setup(x => x.UpdateScreen(It.IsAny<Screen>())).Returns(message);
-            var controller = new ScreensController(mockservice.Object);
-            var output = controller.Update(screen);
+            var controller = new ScreensController(UpdateMock(message).Object);
+            var output = controller.Update(TestScreen);
             var result = output as ConflictObjectResult;
             Assert.Equal("Screen Name(Vijay) is Already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
@@ -201,16 +206,13 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_SuccessOk()
         {
-            Screen screen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
             Messages message = new Messages();
             message.Message = "Screen Vijay is succssfully Updated";
             message.Success = true;
-            var mockservice = new Mock<IScreenRepository>();
-            mockservice.Setup(x => x.UpdateScreen(It.IsAny<Screen>())).Returns(message);
-            var controller = new ScreensController(mockservice.Object);
-            var output = controller.Update(screen);
+            var controller = new ScreensController(UpdateMock(message).Object);
+            var output = controller.Update(TestScreen);
             var result = output as OkObjectResult;
-            Assert.Equal(message.Message, result.Value);
+            Assert.Equal("Screen Vijay is succssfully Updated", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
             Assert.IsType<OkObjectResult>(output);
         }
@@ -218,34 +220,42 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Remove_SucessOk()
         {
-            Screen screen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
             Messages message = new Messages();
             message.Message = "Screen (Vijay) is succssfully Removed";
             message.Success = true;
-            var mockservice = new Mock<IScreenRepository>();
-            mockservice.Setup(x => x.RemoveScreen(It.IsAny<int>())).Returns(message);
-            var controller = new ScreensController(mockservice.Object);
+            var controller = new ScreensController(DeleteMock(message).Object);
             var output = controller.Remove(3);
             Assert.IsType<OkObjectResult>(output);
             var result = output as OkObjectResult;
-            Assert.Equal(message.Message, result.Value);
+            Assert.Equal("Screen (Vijay) is succssfully Removed", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
 
         }
 
         [Fact]
-        public void Remove_NotFound()
+        public void Remove_IdNotFound()
         {
             Messages message = new Messages();
             message.Message = "Screen Id(3) is not found";
             message.Success = false;
-            var mockservice = new Mock<IScreenRepository>();
-            mockservice.Setup(x => x.RemoveScreen(It.IsAny<int>())).Returns(message);
-            var controller = new ScreensController(mockservice.Object);
+            var controller = new ScreensController(DeleteMock(message).Object);
             var output = controller.Remove(3);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual(message.Message, result.Value);
+            Assert.StrictEqual("Screen Id(3) is not found", result.Value);
+            Assert.StrictEqual(404, result.StatusCode);
+        }
+        [Fact]
+        public void Remove_AlreadyStarted()
+        {
+            Messages message = new Messages();
+            message.Message = "This Screen(3) is Already scheduled, so you can't delete the screen";
+            message.Success = false;
+            var controller = new ScreensController(DeleteMock(message).Object);
+            var output = controller.Remove(3);
+            var result = output as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(output);
+            Assert.StrictEqual("This Screen(3) is Already scheduled, so you can't delete the screen", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
     }
