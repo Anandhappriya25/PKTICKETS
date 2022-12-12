@@ -34,7 +34,7 @@ namespace PKTickets.Controllers
             var theater = theaterRepository.TheaterById(theaterId);
             if (theater == null)
             {
-                return NotFound();
+                return NotFound("This Theater Id is not Registered");
             }
             return Ok(theater);
         }

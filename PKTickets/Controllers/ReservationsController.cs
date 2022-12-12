@@ -44,7 +44,7 @@ namespace PKTickets.Controllers
             var reservation = reservationRepository.ReservationById(id);
             if (reservation == null)
             {
-               return NotFound();
+               return NotFound("This Reservation Id is Not Registered");
             }
             return Ok(reservation);
         }

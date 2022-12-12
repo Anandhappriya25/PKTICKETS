@@ -41,7 +41,7 @@ namespace PKTickets.Controllers
             var show = scheduleRepository.ScheduleById(id);
             if (show == null)
             {
-                return NotFound();
+                return NotFound("This Schedule Id is not Registered");
             }
             return Ok(show);
         }

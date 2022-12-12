@@ -24,6 +24,12 @@ namespace PKTickets_UnitTest.TestCase
             var mockservice = new Mock<IMovieRepository>();
             return mockservice;
         }
+        private Mock<IMovieRepository> TitleMock(string name,List<Movie> movies)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.MovieByTitle(It.IsAny<string>())).Returns(movies);
+            return mockservice;
+        }
         private Mock<IMovieRepository> GetAllMock(List<Movie> movies)
         {
             var mockservice = Mock();
@@ -57,6 +63,35 @@ namespace PKTickets_UnitTest.TestCase
         private Movie TestMovie => new()
         { MovieId = 3, Title = "Theri", Duration =120,Genre="action", CastAndCrew ="vijay and samantha",Language="tamil",Director="atlee",ImagePath="css",IsPlaying=true};
 
+
+        [Fact]
+        public void ListByTitle_Ok()
+        {
+            List<Movie> movies = new List<Movie>();
+            movies.Add(TestMovie);
+            var controller = new MoviesController(TitleMock("Theri",movies).Object);
+            var okResult = controller.ListByTitle("Theri");
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Movie>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(movies, lists);
+            Assert.NotEmpty(lists);
+            Assert.StrictEqual(movies.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void ListByTitle_NotFound()
+        {
+            List<Movie> movies = new List<Movie>();
+            var controller = new MoviesController(TitleMock("Theri", movies).Object);
+            var okResult = controller.ListByTitle("Theri");
+            var result=okResult as NotFoundObjectResult;
+            var check = okResult as StatusCodeResult;
+            Assert.IsType<NotFoundObjectResult>(okResult);
+            Assert.Equal(404, check.StatusCode);
+            Assert.StrictEqual("This Movie Titles is Not Registered",result.Value);
+        }
 
         [Fact]
         public void List_Ok()
@@ -109,7 +144,7 @@ namespace PKTickets_UnitTest.TestCase
             var controller = new MoviesController(GetByIdMock(movie).Object);
             var result = controller.GetById(3);
             var check = result as StatusCodeResult;
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
         }
 

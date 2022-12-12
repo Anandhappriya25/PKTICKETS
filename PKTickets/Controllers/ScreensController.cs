@@ -33,7 +33,7 @@ namespace PKTickets.Controllers
             var screen = screenRepository.ScreenById(screenId);
             if (screen == null)
             {
-               return NotFound();
+               return NotFound("Thios Screen Id is not Registered");
             }
             return Ok(screen);
         }
