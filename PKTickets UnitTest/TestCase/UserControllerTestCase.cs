@@ -57,6 +57,7 @@ namespace PKTickets_UnitTest.TestCase
         private User TestUser => new()
         { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
 
+
         [Fact]
         public void List_Ok()
         {

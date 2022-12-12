@@ -16,17 +16,56 @@ namespace PKTickets_UnitTest.TestCase
 {
     public class TheaterControllerTestCase
     {
+        private Mock<ITheaterRepository> Mock()
+        {
+            var mockservice = new Mock<ITheaterRepository>();
+            return mockservice;
+        }
+        private Mock<ITheaterRepository> GetAllMock(List<Theater> theaters)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.GetTheaters()).Returns(theaters);
+            return mockservice;
+        }
+        private Mock<ITheaterRepository> GetByIdMock(Theater theater)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
+            return mockservice;
+        }
+        private Mock<ITheaterRepository> GetByLocationMock(List<Theater> theater)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theater);
+            return mockservice;
+        }
+        private Mock<ITheaterRepository> AddMock(Messages message)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.CreateTheater(It.IsAny<Theater>())).Returns(message);
+            return mockservice;
+        }
+        private Mock<ITheaterRepository> UpdateMock(Messages message)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.UpdateTheater(It.IsAny<Theater>())).Returns(message);
+            return mockservice;
+        }
+        private Mock<ITheaterRepository> RemoveMock(Messages message)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.DeleteTheater(It.IsAny<int>())).Returns(message);
+            return mockservice;
+        }
+        private Theater TestTheater => new()
+        { TheaterId = 3, TheaterName = "Vijaya Cinemas", Location = "Maduravoyal", IsActive = true };
+        
         [Fact]
         public void TheatersList_Ok()
         {
-            Theater theater = new Theater { TheaterId = 3, TheaterName = "Vijaya Cinemas", Location = "Maduravoyal", IsActive = true};
-            Theater theater2 = new Theater { TheaterId = 4, TheaterName = "Priya Cinemas", Location = "Kolathur", IsActive = true };
             List<Theater> theaters = new List<Theater>();
-            theaters.Add(theater);
-            theaters.Add(theater2);
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.GetTheaters()).Returns(theaters);
-            var controller = new TheatersController(mockservice.Object);
+            theaters.Add(TestTheater);
+            var controller = new TheatersController(GetAllMock(theaters).Object);
             var okResult = controller.List();
             var list = okResult as OkObjectResult;
             var lists = list.Value as List<Theater>;
@@ -40,9 +79,7 @@ namespace PKTickets_UnitTest.TestCase
         public void List_NullOk()
         {
             List<Theater> theaters = new List<Theater>();
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.GetTheaters()).Returns(theaters);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(GetAllMock(theaters).Object);
             var okResult = controller.List();
             var list = okResult as OkObjectResult;
             var lists = list.Value as List<Theater>;
@@ -56,29 +93,24 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void GetById_OK()
         {
-            Theater theater = new Theater { TheaterId = 7, TheaterName = "Vijay cinemas", Location = "Vellore", IsActive = true };
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(GetByIdMock(TestTheater).Object);
             var okResult = controller.GetById(3);
             var list = okResult as OkObjectResult;
             var result = list.Value as Theater;
             Assert.IsType<OkObjectResult>(okResult);
-            Assert.Equal(theater, result);
+            Assert.Equal(TestTheater.TheaterName, result.TheaterName);
             Assert.NotNull(result);
-            Assert.NotEqual(3, result.TheaterId);
+            Assert.NotEqual(9, result.TheaterId);
             Assert.True(result.IsActive);
             Assert.StrictEqual(200, list.StatusCode);
-            Assert.StrictEqual(theater.TheaterId, result.TheaterId);
+            Assert.StrictEqual(TestTheater.TheaterId, result.TheaterId);
         }
 
         [Fact]
         public void GetById_Null()
         {
             Theater theater = null;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(GetByIdMock(theater).Object);
             var result = controller.GetById(30);
             var check = result as StatusCodeResult;
             Assert.IsType<NotFoundResult>(result);
@@ -92,9 +124,7 @@ namespace PKTickets_UnitTest.TestCase
             Theater theater = new Theater { TheaterId = 7, TheaterName = "Vijay cinemas", Location = "Vellore", IsActive = true };
             List<Theater> theaters = new List<Theater>();
             theaters.Add(theater);
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theaters);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(GetByLocationMock(theaters).Object);
             var okResult = controller.GetByLocation("Vellore");
             var list = okResult as OkObjectResult;
             var results = list.Value as List<Theater>;
@@ -108,14 +138,11 @@ namespace PKTickets_UnitTest.TestCase
         public void GetByLocation_NullOk()
         {
             List<Theater> theaters = new List<Theater>();
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.GetTheaters()).Returns(theaters);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(GetByLocationMock(theaters).Object);
             var okResult = controller.List();
             var list = okResult as OkObjectResult;
             var lists = list.Value as List<Theater>;
             Assert.IsType<OkObjectResult>(okResult);
-            Assert.Equal(theaters, lists);
             Assert.Empty(lists);
             Assert.StrictEqual(theaters.Count(), lists.Count());
             Assert.StrictEqual(200, list.StatusCode);
@@ -124,32 +151,26 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Add_Success()
         {
-            Theater theater = new Theater { TheaterId = 9, TheaterName = "Priyan cinemas", Location = "Chennai", IsActive = true };
             Messages message = new Messages();
             message.Message = "Theater Priyan Cinemas, is Successfully Added";
             message.Success = true;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.CreateTheater(theater)).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
-            var output = controller.Add(theater);
+            var controller = new TheatersController(AddMock(message).Object);
+            var output = controller.Add(TestTheater);
             var result = output as CreatedResult;
             Assert.IsType<CreatedResult>(output);
             Assert.StrictEqual(message.Message, result.Value);
-            Assert.StrictEqual("https://localhost:7221/api/Theaters/9", result.Location);
+            Assert.StrictEqual("https://localhost:7221/api/Theaters/3", result.Location);
             Assert.StrictEqual(201, result.StatusCode);
         }
 
         [Fact]
-        public void Add_Conflict()
+        public void Add_NameConflict()
         {
-            Theater theater = new Theater { TheaterId = 9, TheaterName = "Priyan cinemas", Location = "Chennai", IsActive = true };
             Messages message = new Messages();
             message.Message = "Theater Priyan Cinemas, is already registered";
             message.Success = false;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.CreateTheater(theater)).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
-            var output = controller.Add(theater);
+            var controller = new TheatersController(AddMock(message).Object);
+            var output = controller.Add(TestTheater);
             var result = output as ConflictObjectResult;
             Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual(409, result.StatusCode);
@@ -159,8 +180,10 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_BadRequest()
         {
             Theater theater = new Theater { TheaterId = 0 };
-            var mockservice = new Mock<ITheaterRepository>();
-            var controller = new TheatersController(mockservice.Object);
+            Messages message = new Messages();
+            message.Message = "Enter the Theater Id field";
+            message.Success = false;
+            var controller = new TheatersController(UpdateMock(message).Object);
             var output = controller.Update(theater);
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
@@ -171,31 +194,26 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_NotFound()
         {
-            Theater theater = new Theater { TheaterId = 15, TheaterName = "Dharshini cinemas", Location = "Chennai", IsActive = true };
             Messages message = new Messages();
             message.Message = "Theater Id is not found";
             message.Success = false;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.UpdateTheater(theater)).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
-            var output = controller.Update(theater);
+            var controller = new TheatersController(UpdateMock(message).Object);
+            var output = controller.Update(TestTheater);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
             Assert.StrictEqual(message.Message, result.Value);
+            Assert.NotEqual("Theater Id is not founds", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
 
         [Fact]
         public void Update_NameConflict()
         {
-            Theater theater = new Theater { TheaterId = 9, TheaterName = "Priyan cinemas", Location = "Chennai", IsActive = true };
             Messages message = new Messages();
             message.Message = "Theater Priyan Cinemas, is already registered";
-            message.Success = false;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.UpdateTheater(theater)).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
-            var output = controller.Update(theater);
+            message.Success = false; 
+            var controller = new TheatersController(UpdateMock(message).Object);
+            var output = controller.Update(TestTheater);
             var result = output as ConflictObjectResult;
             Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(409, result.StatusCode);
@@ -205,14 +223,11 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_SuccessOk()
         {
-            Theater theater = new Theater { TheaterId = 9, TheaterName = "Priyan cinemas", Location = "Chennai", IsActive = true };
             Messages message = new Messages();
             message.Message = "Theater Priyan Cinemas, is Successfully Updated";
             message.Success = true;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.UpdateTheater(theater)).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
-            var output = controller.Update(theater);
+            var controller = new TheatersController(UpdateMock(message).Object);
+            var output = controller.Update(TestTheater);
             var result = output as OkObjectResult;
             Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(200, result.StatusCode);
@@ -221,13 +236,10 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Remove_SucessOk()
         {
-            Theater theater = new Theater { TheaterId = 9, TheaterName = "Priyan cinemas", Location = "Chennai", IsActive = true };
             Messages message = new Messages();
             message.Message = "Theater Priyan Cinemas is Successfully removed";
             message.Success = true;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.DeleteTheater(It.IsAny<int>())).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(RemoveMock(message).Object);
             var output = controller.Remove(9);
             Assert.IsType<OkObjectResult>(output);
             var result = output as OkObjectResult;
@@ -242,9 +254,7 @@ namespace PKTickets_UnitTest.TestCase
             Messages message = new Messages();
             message.Message = "Theater Id (3) is not found";
             message.Success = false;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.DeleteTheater(It.IsAny<int>())).Returns(message);
-            var controller = new TheatersController(mockservice.Object);
+            var controller = new TheatersController(RemoveMock(message).Object);
             var output = controller.Remove(3);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);

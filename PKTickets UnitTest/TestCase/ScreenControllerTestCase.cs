@@ -150,7 +150,6 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Add_Success()
         {
-
             Messages message = new Messages();
             message.Message = "Screen (Vijay) is succssfully Added";
             message.Success = true;
