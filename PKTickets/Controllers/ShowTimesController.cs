@@ -31,7 +31,7 @@ namespace PKTickets.Controllers
             var showTime = showTimeRepository.ShowTimeasStringById(showTimeId);
             if (showTime == null)
             {
-                return NotFound();
+                return NotFound("This ShowTime Id is not registered");
             }
             return Ok(showTime);
         }

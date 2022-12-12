@@ -32,7 +32,7 @@ namespace PKTickets.Controllers
             var list = movieRepository.MovieByTitle(title);
             if(list.Count() == 0)
             {
-                return NotFound();
+                return NotFound("This Movie Titles is Not Registered");
             }
             return Ok(list);
         }
@@ -43,7 +43,7 @@ namespace PKTickets.Controllers
             var list = movieRepository.MovieByGenre(Genre);
             if (list.Count() == 0)
             {
-                return NotFound("Given Genre is not in our list");
+                return NotFound("This Genre of Movies is Not Registered");
             }
             return Ok(list);
         }
@@ -55,7 +55,7 @@ namespace PKTickets.Controllers
             var movie = movieRepository.MovieById(movieId);
             if (movie == null)
             {
-                return NotFound();
+                return NotFound("This Movie Id is Not Registered");
             }
             return Ok(movie);
         }
