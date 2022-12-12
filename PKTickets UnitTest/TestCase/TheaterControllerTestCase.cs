@@ -33,10 +33,10 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
             return mockservice;
         }
-        private Mock<ITheaterRepository> GetScreenByTheaterId(ScreensListDTO theater)
+        private Mock<ITheaterRepository> GetScreenByTheaterId(ScreensListDTO screensList)
         {
             var mockservice = Mock();
-            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(theater);
+            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensList);
             return mockservice;
         }
         private Mock<ITheaterRepository> GetByLocationMock(string s,List<Theater> theaters)
@@ -45,12 +45,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theaters);
             return mockservice;
         }
-        //private Mock<ITheaterRepository> GetByLocationMock(List<Theater> theater)
-        //{
-        //    var mockservice = Mock();
-        //    mockservice.Setup(x => x.TheaterByLocation(It.IsAny<string>())).Returns(theater);
-        //    return mockservice;
-        //}
+
         private Mock<ITheaterRepository> AddMock(Messages message)
         {
             var mockservice = Mock();
@@ -121,7 +116,15 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void GetScreensByTheaterId_Ok()
         {
-            //var controller = new TheatersController
+            Theater theater = new Theater { TheaterId = 3 };
+            var controller = new TheatersController(GetByIdMock(TestTheater).Object);
+            var okResult = controller.GetScreensByTheaterId(3);
+            ScreensListDTO screensListDTO = new ScreensListDTO();
+            var controllers = new TheatersController(GetScreenByTheaterId(screensListDTO).Object);            
+            var list = okResult as OkObjectResult;
+            var result = list.Value as ScreensListDTO;
+            Assert.IsType<OkObjectResult>(result);
+            Assert.StrictEqual(200, list.StatusCode);
         }
 
         [Fact]

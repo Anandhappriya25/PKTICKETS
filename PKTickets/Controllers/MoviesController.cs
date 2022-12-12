@@ -43,7 +43,7 @@ namespace PKTickets.Controllers
             var list = movieRepository.MovieByGenre(Genre);
             if (list.Count() == 0)
             {
-                return NotFound();
+                return NotFound("Given Genre is not in our list");
             }
             return Ok(list);
         }
