@@ -1,6 +1,7 @@
 ﻿using Blazorise;
 using Castle.Core.Resource;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
 using PKTickets.Controllers;
 using PKTickets.Interfaces;
@@ -116,14 +117,20 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void GetScreensByTheaterId_Ok()
         {
-            Theater theater = new Theater { TheaterId = 3 };
-            var controller = new TheatersController(GetByIdMock(TestTheater).Object);
+            ScreensListDTO screensListDTO = new ScreensListDTO() { TheaterName = "Vijaya Cinemas", ScreensCount = 1 };
+            List<ScreensDTO> screens = new List<ScreensDTO>();
+            ScreensDTO screen = new ScreensDTO()
+            { ScreenId = 3, ScreenName = "Vijay", PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250};
+            screens.Add(screen);
+            screensListDTO.Screens = screens;
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
+            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensListDTO);
+            var controller = new TheatersController(mockservice.Object);
             var okResult = controller.GetScreensByTheaterId(3);
-            ScreensListDTO screensListDTO = new ScreensListDTO();
-            var controllers = new TheatersController(GetScreenByTheaterId(screensListDTO).Object);            
             var list = okResult as OkObjectResult;
             var result = list.Value as ScreensListDTO;
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<OkObjectResult>(list);
             Assert.StrictEqual(200, list.StatusCode);
         }
 
@@ -133,10 +140,11 @@ namespace PKTickets_UnitTest.TestCase
             Theater theater = null;
             var controller = new TheatersController(GetByIdMock(theater).Object);
             var result = controller.GetById(30);
-            var check = result as StatusCodeResult;
-            Assert.IsType<NotFoundResult>(result);
+            var check = result as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(result);
             Assert.Null(theater);
             Assert.Equal(404, check.StatusCode);
+            Assert.Equal("This Theater Id is not Registered", check.Value);
         }
 
         [Fact]

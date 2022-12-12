@@ -112,10 +112,11 @@ namespace PKTickets_UnitTest.TestCase
             Screen screen = null;
             var controller = new ScreensController(GetByIdMock(screen).Object);
             var result = controller.GetById(3);
-            var check = result as StatusCodeResult;
-            Assert.IsType<NotFoundResult>(result);
+            var check = result as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
             Assert.Null(screen);
+            Assert.Equal("This Screen Id is not Registered", check.Value);
         }
 
         [Fact]

@@ -87,9 +87,8 @@ namespace PKTickets_UnitTest.TestCase
             var controller = new MoviesController(TitleMock("Theri", movies).Object);
             var okResult = controller.ListByTitle("Theri");
             var result=okResult as NotFoundObjectResult;
-            var check = okResult as StatusCodeResult;
             Assert.IsType<NotFoundObjectResult>(okResult);
-            Assert.Equal(404, check.StatusCode);
+            Assert.Equal(404, result.StatusCode);
             Assert.StrictEqual("This Movie Titles is Not Registered",result.Value);
         }
 
@@ -143,9 +142,10 @@ namespace PKTickets_UnitTest.TestCase
             Movie movie = null;
             var controller = new MoviesController(GetByIdMock(movie).Object);
             var result = controller.GetById(3);
-            var check = result as StatusCodeResult;
+            var check = result as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
+            Assert.Equal("This Movie Id is Not Registered", check.Value);
         }
 
         [Fact]

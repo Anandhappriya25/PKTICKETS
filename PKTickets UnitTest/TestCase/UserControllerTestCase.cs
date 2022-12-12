@@ -108,9 +108,10 @@ namespace PKTickets_UnitTest.TestCase
             User user = null;
             var controller = new UsersController(GetByIdMock(user).Object);
             var result = controller.GetById(3);
-            var check = result as StatusCodeResult;
-            Assert.IsType<NotFoundResult>(result);
+            var check = result as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
+            Assert.Equal("This User Id Not Registered.", check.Value);
         }
 
         [Fact]
