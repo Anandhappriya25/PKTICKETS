@@ -143,7 +143,6 @@ namespace PKTickets_UnitTest.TestCase
             var list = okResult as OkObjectResult;
             var lists = list.Value as List<Theater>;
             Assert.IsType<OkObjectResult>(okResult);
-            Assert.Empty(lists);
             Assert.StrictEqual(theaters.Count(), lists.Count());
             Assert.StrictEqual(200, list.StatusCode);
         }

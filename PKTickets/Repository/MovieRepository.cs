@@ -94,12 +94,7 @@ namespace PKTickets.Repository
                 messages.Message = "Movie Id (" + movieId + ") is not found";
                 return messages;
             }
-            var movies = db.Schedules.Where(x => x.MovieId == movieId).FirstOrDefault();
-            if (movies != null)
-            {
-                messages.Message = "This Movie(" + movie.Title + ") is Already scheduled, so you can't remove the movie";
-                return messages;
-            }
+           
             else
             {
                 movie.IsPlaying = false;
@@ -141,16 +136,7 @@ namespace PKTickets.Repository
             }
         }
        
-        #region PrivateMethods
-
-     
-    
-        private int TimesValue(DateTime date)
-        {
-            TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
-            return (TimingConvert.ConvertToInt(Convert.ToString(time)));
-        }
-        #endregion
+        
 
     }
 }
