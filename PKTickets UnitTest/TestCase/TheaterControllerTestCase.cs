@@ -34,12 +34,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
             return mockservice;
         }
-        private Mock<ITheaterRepository> GetScreenByTheaterId(ScreensListDTO screensList)
-        {
-            var mockservice = Mock();
-            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensList);
-            return mockservice;
-        }
+        
         private Mock<ITheaterRepository> GetByLocationMock(string s,List<Theater> theaters)
         {
             var mockservice = Mock();
@@ -112,26 +107,6 @@ namespace PKTickets_UnitTest.TestCase
             Assert.True(result.IsActive);
             Assert.StrictEqual(200, list.StatusCode);
             Assert.StrictEqual(TestTheater.TheaterId, result.TheaterId);
-        }
-
-        [Fact]
-        public void GetScreensByTheaterId_Ok()
-        {
-            ScreensListDTO screensListDTO = new ScreensListDTO() { TheaterName = "Vijaya Cinemas", ScreensCount = 1 };
-            List<ScreensDTO> screens = new List<ScreensDTO>();
-            ScreensDTO screen = new ScreensDTO()
-            { ScreenId = 3, ScreenName = "Vijay", PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250};
-            screens.Add(screen);
-            screensListDTO.Screens = screens;
-            var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
-            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensListDTO);
-            var controller = new TheatersController(mockservice.Object);
-            var okResult = controller.GetScreensByTheaterId(3);
-            var list = okResult as OkObjectResult;
-            var result = list.Value as ScreensListDTO;
-            Assert.IsType<OkObjectResult>(list);
-            Assert.StrictEqual(200, list.StatusCode);
         }
 
         [Fact]
@@ -286,6 +261,47 @@ namespace PKTickets_UnitTest.TestCase
             Assert.IsType<NotFoundObjectResult>(output);
             Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual(404, result.StatusCode);
+        }
+
+        [Fact]
+        public void GetScreensByTheaterId_Ok()
+        {
+            ScreensListDTO screensListDTO = new ScreensListDTO() { TheaterName = "Vijaya Cinemas", ScreensCount = 1 };
+            List<ScreensDTO> screens = new List<ScreensDTO>();
+            ScreensDTO screen = new ScreensDTO()
+            { ScreenId = 3, ScreenName = "Vijay", PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250 };
+            screens.Add(screen);
+            screensListDTO.Screens = screens;
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
+            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensListDTO);
+            var controller = new TheatersController(mockservice.Object);
+            var okResult = controller.GetScreensByTheaterId(3);
+            var list = okResult as OkObjectResult;
+            var result = list.Value as ScreensListDTO;
+            Assert.IsType<OkObjectResult>(list);
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void GetScreensByTheaterId_NotFound()
+        {
+            Theater theater = null;
+            ScreensListDTO screensListDTO = new ScreensListDTO();
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
+            var controller = new TheatersController(mockservice.Object);
+            var okResult = controller.GetScreensByTheaterId(8);
+            var list = okResult as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(okResult);
+            Assert.StrictEqual(404, list.StatusCode);
+            Assert.Equal("This Theater Id is not Registered", list.Value);
+        }
+
+        [Fact]
+        public void ScheduleListByTheaterId()
+        {
+
         }
 
     }

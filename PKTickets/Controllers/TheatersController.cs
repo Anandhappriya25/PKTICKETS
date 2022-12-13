@@ -97,7 +97,7 @@ namespace PKTickets.Controllers
             var theater = theaterRepository.TheaterById(id);
             if (theater == null)
             {
-                return NotFound();
+                return NotFound("This Theater Id is not Registered");
             }
             return Ok(theaterRepository.TheaterScreens(id));
         }
