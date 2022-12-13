@@ -44,7 +44,7 @@ namespace PKTickets_UnitTest.TestCase
             return mockservice;
         }
         private Mock<IScheduleRepository> UpdateMock(Messages message)
-        {
+        { 
             var mockservice = Mock();
             mockservice.Setup(x => x.UpdateSchedule(It.IsAny<Schedule>())).Returns(message);
             return mockservice;
