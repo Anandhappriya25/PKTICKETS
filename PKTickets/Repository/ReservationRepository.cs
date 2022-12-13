@@ -78,18 +78,18 @@ namespace PKTickets.Repository
             var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
             if (schedule == null)
             {
-                messages.Message = "Schedule Id(" + reservation.ScheduleId + ") is Not found";
+                messages.Message = "Schedule Id is Not found";
                 return messages;
             }
             var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == reservation.UserId);
             if (user == null)
             {
-                messages.Message = "User Id(" + reservation.UserId + ") is Not found";
+                messages.Message = "User Id is Not found";
                 return messages;
             }
             else if (reservation.PremiumTickets==0 && reservation.EliteTickets== 0)
             {
-                messages.Message = " Please reaserve atleast a seat";
+                messages.Message = "Please reaserve atleast a seat";
                 return messages;
             }
            
