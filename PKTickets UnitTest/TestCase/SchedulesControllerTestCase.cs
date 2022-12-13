@@ -20,99 +20,143 @@ namespace PKTickets_UnitTest.TestCase
 {
     public class SchedulesControllerTestCase
     {
-        //private Mock<IScheduleRepository> Mock()
-        //{
-        //    var mockservice = new Mock<IScheduleRepository>();
-        //    return mockservice;
-        //}
-        //private Mock<IScheduleRepository> GetAllMock(List<Schedule> schedules)
-        //{
-        //    var mockservice = Mock();
-        //    mockservice.Setup(x => x.SchedulesList()).Returns(schedules);
-        //    return mockservice;
-        //}
-        //private Mock<IScheduleRepository> GetByIdMock(Schedule schedule)
-        //{
-        //    var mockservice = Mock();
-        //    mockservice.Setup(x => x.ScheduleById(It.IsAny<int>())).Returns(schedule);
-        //    return mockservice;
-        //}
-        //private Mock<IScheduleRepository> AddMock(Messages message)
-        //{
-        //    var mockservice = Mock();
-        //    mockservice.Setup(x => x.CreateSchedule(It.IsAny<Schedule>())).Returns(message);
-        //    return mockservice;
-        //}
-        //private Mock<IScheduleRepository> UpdateMock(Messages message)
-        //{ 
-        //    var mockservice = Mock();
-        //    mockservice.Setup(x => x.UpdateSchedule(It.IsAny<Schedule>())).Returns(message);
-        //    return mockservice;
-        //}
-        //private Mock<IScheduleRepository> DeleteMock(Messages message)
-        //{
-        //    var mockservice = Mock();
-        //    mockservice.Setup(x => x.DeleteSchedule(It.IsAny<int>())).Returns(message);
-        //    return mockservice;
-        //}
-        //private Schedule TestSchedule => new()
-        //{ ScheduleId = 3, ScreenId=2, MovieId=3, ShowTimeId=3, Date= DateTime.Now, PremiumSeats=200, EliteSeats=150, AvailablePreSeats=200, AvailableEliSeats=150, IsActive=true};
+        private Mock<IScheduleRepository> Mock()
+        {
+            var mockservice = new Mock<IScheduleRepository>();
+            return mockservice;
+        }
+        private Mock<IScheduleRepository> GetAllMock(List<Schedule> schedules)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.SchedulesList()).Returns(schedules);
+            return mockservice;
+        }
+        private Mock<IScheduleRepository> GetAvailableMock(List<Schedule> schedules)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.AvailableSchedulesList()).Returns(schedules);
+            return mockservice;
+        }
+        private Mock<IScheduleRepository> GetByIdMock(Schedule schedule)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.ScheduleById(It.IsAny<int>())).Returns(schedule);
+            return mockservice;
+        }
+        private Mock<IScheduleRepository> AddMock(Messages message)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.CreateSchedule(It.IsAny<Schedule>())).Returns(message);
+            return mockservice;
+        }
+        private Mock<IScheduleRepository> UpdateMock(Messages message)
+        { 
+            var mockservice = Mock();
+            mockservice.Setup(x => x.UpdateSchedule(It.IsAny<Schedule>())).Returns(message);
+            return mockservice;
+        }
+        private Mock<IScheduleRepository> DeleteMock(Messages message)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.DeleteSchedule(It.IsAny<int>())).Returns(message);
+            return mockservice;
+        }
+        private Schedule TestSchedule => new()
+        { ScheduleId = 3, ScreenId=2, MovieId=3, ShowTimeId=3, Date= DateTime.Now, PremiumSeats=200, EliteSeats=150, AvailablePreSeats=200, AvailableEliSeats=150, IsActive=true};
 
-        ////[Fact]
-        ////public void List_Ok()
-        ////{
-        ////    List<Schedule> screens = new List<Schedule>();
-        ////    screens.Add(TestSchedule);
-        ////    var controller = new ScreensController(GetAllMock(TestSchedule).Object);
-        ////    var okResult = controller.List();
-        ////    var list = okResult as OkObjectResult;
-        ////    var lists = list.Value as List<Screen>;
-        ////    Assert.IsType<OkObjectResult>(okResult);
-        ////    Assert.Equal(screens, lists);
-        ////    Assert.NotEmpty(lists);
-        ////    Assert.StrictEqual(screens.Count(), lists.Count());
-        ////    Assert.StrictEqual(200, list.StatusCode);
-        ////}
-        //[Fact]
-        //public void List_NullOk()
-        //{
-        //    List<Screen> screens = new List<Screen>();
-        //    var controller = new ScreensController(GetAllMock(screens).Object);
-        //    var okResult = controller.List();
-        //    var list = okResult as OkObjectResult;
-        //    var lists = list.Value as List<Screen>;
-        //    Assert.IsType<OkObjectResult>(okResult);
-        //    Assert.Equal(screens, lists);
-        //    Assert.Empty(lists);
-        //    Assert.StrictEqual(screens.Count(), lists.Count());
-        //    Assert.StrictEqual(200, list.StatusCode);
-        //}
-        //[Fact]
-        //public void GetById_ok()
-        //{
 
-        //    var controller = new ScreensController(GetByIdMock(TestScreen).Object);
-        //    var okResult = controller.GetById(3);
-        //    var list = okResult as OkObjectResult;
-        //    var result = list.Value as Screen;
-        //    Assert.IsType<OkObjectResult>(okResult);
-        //    Assert.Equal(TestScreen.ScreenName, result.ScreenName);
-        //    Assert.NotNull(result);
-        //    Assert.StrictEqual(3, result.ScreenId);
-        //    Assert.True(result.IsActive);
-        //    Assert.StrictEqual(200, list.StatusCode);
-        //}
+        [Fact]
+        public void List_Ok()
+        {
+            List<Schedule> schedules = new List<Schedule>();
+            schedules.Add(TestSchedule);
+            var controller = new SchedulesController(GetAllMock(schedules).Object);
+            var okResult = controller.List();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(schedules, lists);
+            Assert.StrictEqual(schedules.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void List_NullOk()
+        {
+            List<Schedule> schedules = new List<Schedule>();
+            var controller = new SchedulesController(GetAllMock(schedules).Object);
+            var okResult = controller.List();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(schedules, lists);
+            Assert.Empty(lists);
+            Assert.StrictEqual(schedules.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void AvailableList_Ok()
+        {
+            List<Schedule> schedules = new List<Schedule>();
+            schedules.Add(TestSchedule);
+            var controller = new SchedulesController(GetAvailableMock(schedules).Object);
+            var okResult = controller.AvailableList();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(schedules, lists);
+            Assert.StrictEqual(schedules.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void AvailableList_NullOk()
+        {
+            List<Schedule> schedules = new List<Schedule>();
+            var controller = new SchedulesController(GetAvailableMock(schedules).Object);
+            var okResult = controller.AvailableList();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(schedules, lists);
+            Assert.StrictEqual(schedules.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void GetById_ok()
+        {
+            var controller = new SchedulesController(GetByIdMock(TestSchedule).Object);
+            var okResult = controller.GetById(3);
+            var list = okResult as OkObjectResult;
+            var result = list.Value as Schedule;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.NotEqual(TestSchedule, result);
+            Assert.NotNull(result);
+            Assert.StrictEqual(3, result.ScheduleId);
+            Assert.True(result.IsActive);
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void GetById_Null()
+        {
+            Schedule schedule = null;
+            var controller = new SchedulesController(GetByIdMock(schedule).Object);
+            var result = controller.GetById(3);
+            var check = result as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal(404, check.StatusCode);
+            Assert.Null(schedule);
+            Assert.Equal("This Schedule Id is not Registered", check.Value);
+        }
+
         //[Fact]
-        //public void GetById_Null()
+        //public void ListByMovieId_Ok()
         //{
-        //    Screen screen = null;
-        //    var controller = new ScreensController(GetByIdMock(screen).Object);
-        //    var result = controller.GetById(3);
-        //    var check = result as NotFoundObjectResult;
-        //    Assert.IsType<NotFoundObjectResult>(result);
-        //    Assert.Equal(404, check.StatusCode);
-        //    Assert.Null(screen);
-        //    Assert.Equal("This Screen Id is not Registered", check.Value);
+        //    Movie movie = new Movie() { MovieId = 3,};
+
         //}
 
         //[Fact]
@@ -144,20 +188,20 @@ namespace PKTickets_UnitTest.TestCase
         //    Assert.IsType<ConflictObjectResult>(output);
         //}
 
-        //[Fact]
-        //public void Add_Success()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Screen (Vijay) is succssfully Added";
-        //    message.Success = true;
-        //    var controller = new ScreensController(AddMock(message).Object);
-        //    var output = controller.Add(TestScreen);
-        //    var result = output as CreatedResult;
-        //    Assert.IsType<CreatedResult>(output);
-        //    Assert.StrictEqual("Screen (Vijay) is succssfully Added", result.Value);
-        //    Assert.StrictEqual("https://localhost:7221/api/Screens/3", result.Location);
-        //    Assert.StrictEqual(201, result.StatusCode);
-        //}
+        [Fact]
+        public void Add_Success()
+        {
+            Messages message = new Messages();
+            message.Message = "Schedule Id (3) is succssfully Added";
+            message.Success = true;
+            var controller = new SchedulesController(AddMock(message).Object);
+            var output = controller.Add(TestSchedule);
+            var result = output as CreatedResult;
+            Assert.IsType<CreatedResult>(output);
+            Assert.StrictEqual("Schedule Id (3) is succssfully Added", result.Value);
+            Assert.StrictEqual("https://localhost:7221/api/Schedules/3", result.Location);
+            Assert.StrictEqual(201, result.StatusCode);
+        }
 
         //[Fact]
         //public void Update_BadRequest()
@@ -199,19 +243,19 @@ namespace PKTickets_UnitTest.TestCase
         //    Assert.IsType<ConflictObjectResult>(output);
         //}
 
-        //[Fact]
-        //public void Update_SuccessOk()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Screen Vijay is succssfully Updated";
-        //    message.Success = true;
-        //    var controller = new ScreensController(UpdateMock(message).Object);
-        //    var output = controller.Update(TestScreen);
-        //    var result = output as OkObjectResult;
-        //    Assert.Equal("Screen Vijay is succssfully Updated", result.Value);
-        //    Assert.StrictEqual(200, result.StatusCode);
-        //    Assert.IsType<OkObjectResult>(output);
-        //}
+        [Fact]
+        public void Update_SuccessOk()
+        {
+            Messages message = new Messages();
+            message.Message = "The Schedule Id is succssfully Updated";
+            message.Success = true;
+            var controller = new SchedulesController(UpdateMock(message).Object);
+            var output = controller.Update(TestSchedule);
+            var result = output as OkObjectResult;
+            Assert.Equal("The Schedule Id is succssfully Updated", result.Value);
+            Assert.StrictEqual(200, result.StatusCode);
+            Assert.IsType<OkObjectResult>(output);
+        }
 
         //[Fact]
         //public void Remove_SucessOk()
