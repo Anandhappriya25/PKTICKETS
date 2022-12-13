@@ -134,13 +134,13 @@ namespace PKTickets.Controllers
             return Json(theater);
         }
 
-        [HttpGet]
-        public IActionResult ScreenSchedules(int id)
-        {
-            var schedule = _scheduleRepository.SchedulesListByScreenId(id);
-            ViewBag.csd = id;
-            return View(schedule);
-        }
+        //[HttpGet]
+        //public IActionResult ScreenSchedules(int id)
+        //{
+        //    var schedule = _scheduleRepository.SchedulesListByScreenId(id);
+        //    ViewBag.csd = id;
+        //    return View(schedule);
+        //}
         public IActionResult ReservationsByUserId(int id)
         {
             var usersList = _reservationRepository.ReservationsByUserId(id);
@@ -183,13 +183,13 @@ namespace PKTickets.Controllers
             return Json(screen);
         }
 
-        [HttpGet]
-        public IActionResult ScreenScheduleById(int id)
-        {
-            var schedule = _scheduleRepository.SchedulesListByScreenId(id);
-            ViewBag.csd = id;
-            return View("ScreenSchedules", schedule);
-        }
+        //[HttpGet]
+        //public IActionResult ScreenScheduleById(int id)
+        //{
+        //    var schedule = _scheduleRepository.SchedulesListByScreenId(id);
+        //    ViewBag.csd = id;
+        //    return View("ScreenSchedules", schedule);
+        //}
         public IActionResult ScreenSchedules()
         {
             return View();
