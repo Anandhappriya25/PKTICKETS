@@ -56,13 +56,13 @@ namespace PKTickets.Controllers
         {
 
             var result = reservationRepository.CreateReservation(reservation);
-            if (result.Message == "Atleast Please reaserve a seat")
+            if (result.Message == "Schedule Id is Not found" || result.Message == "User Id is Not found")
             {
-                return BadRequest(result.Message);
+                return NotFound(result.Message);
             }
             else if (result.Success == false)
             {
-                return NotFound(result.Message);
+                return BadRequest(result.Message);
             }
             return Created(""+ TimingConvert.LocalHost("Reservations") + reservation.ReservationId + "", result.Message);
         }
