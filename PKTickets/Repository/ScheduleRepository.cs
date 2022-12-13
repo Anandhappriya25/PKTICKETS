@@ -211,19 +211,7 @@ namespace PKTickets.Repository
             return messages;
         }
 
-        public SchedulesListDTO SchedulesListByScreenId(int id)
-        {
-            var screens = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == id);
-            var theater = db.Theaters.FirstOrDefault(x => x.TheaterId == screens.TheaterId);
-            
-            SchedulesListDTO list = new SchedulesListDTO();
-            list.TheaterName = theater.TheaterName;
-            list.ScreenName = screens.ScreenName; 
-            list.PremiumCapacity = screens.PremiumCapacity;
-            list.EliteCapacity = screens.EliteCapacity;
-            list.Schedules = SchedulesListScreenId(id);
-            return list;
-        }
+      
         public Screen ScreenById(int id)
         {
             var screen = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == id);

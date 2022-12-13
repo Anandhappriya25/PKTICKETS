@@ -24,17 +24,7 @@ namespace PKTickets.Repository
             return userExist;
         }
 
-        public User UserByPhone(string phone)
-        {
-            var userExist = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.PhoneNumber == phone);
-            return userExist;
-        }
-
-        public User UserByEmail(string email)
-        {
-            var userExist = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.EmailId == email);
-            return userExist;
-        }
+ 
 
         public Messages CreateUser(User user)
         {

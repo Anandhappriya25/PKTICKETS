@@ -51,17 +51,7 @@ namespace PKTickets.Repository
             return movieExists;
         }
 
-        public List<Movie> MovieByLanguage(string language)
-        {
-            var movieExists = db.Movies.Where(x => x.IsPlaying == true).Where(x => x.Genre == language).ToList();
-            return movieExists;
-        }
-
-        public List<Movie> MovieByDirector(string name)
-        {
-            var movieExists = db.Movies.Where(x => x.IsPlaying == true).Where(x => x.Director == name).ToList();
-            return movieExists;
-        }
+      
 
         public Messages CreateMovie(Movie movie)
         {

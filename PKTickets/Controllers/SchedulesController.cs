@@ -108,19 +108,6 @@ namespace PKTickets.Controllers
             return Ok(result.Message);
         }
 
-
-        [HttpGet("ScreenId/{id}")]
-        public IActionResult ListByScreenId(int id)
-        {
-            var screen= scheduleRepository.ScreenById(id);
-            if(screen == null)
-            {
-                return NotFound("Screen Id is notfound");
-            }
-            return Ok(scheduleRepository.SchedulesListByScreenId(id));
-        }
-
-
        
 
         [HttpGet("Details/Movie/{id}")]

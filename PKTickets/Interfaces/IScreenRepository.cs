@@ -11,6 +11,6 @@ namespace PKTickets.Interfaces
         public Messages UpdateScreen(Screen screen);
         public Messages RemoveScreen(int screenId);
         
-        public Theater TheaterById(int id);
+       
     }
 }

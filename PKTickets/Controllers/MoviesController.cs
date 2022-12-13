@@ -25,7 +25,11 @@ namespace PKTickets.Controllers
         {
             return Ok(movieRepository.GetAllMovies());
         }
-
+        [HttpGet("Available")]
+        public IActionResult AvailableSchedules()
+        {
+            return Ok(movieRepository.ScheduledMovies());
+        }
         [HttpGet("Title/{title}")]
         public IActionResult ListByTitle(string title)
         {

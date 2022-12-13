@@ -55,27 +55,24 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.DeleteSchedule(It.IsAny<int>())).Returns(message);
             return mockservice;
         }
-        private Schedule TestScreen => new()
-        { ScheduleId = 3, };
+        private Schedule TestSchedule => new()
+        { ScheduleId = 3, ScreenId=2, MovieId=3, ShowTimeId=3, Date= DateTime.Now, PremiumSeats=200, EliteSeats=150, AvailablePreSeats=200, AvailableEliSeats=150, IsActive=true};
 
-        [Fact]
-        public void List_Ok()
-        {
-            Screen screen1 = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
-            Screen screen2 = new Screen { ScreenId = 2, ScreenName = "theri", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
-            List<Screen> screens = new List<Screen>();
-            screens.Add(screen2);
-            screens.Add(screen1);
-            var controller = new ScreensController(GetAllMock(screens).Object);
-            var okResult = controller.List();
-            var list = okResult as OkObjectResult;
-            var lists = list.Value as List<Screen>;
-            Assert.IsType<OkObjectResult>(okResult);
-            Assert.Equal(screens, lists);
-            Assert.NotEmpty(lists);
-            Assert.StrictEqual(screens.Count(), lists.Count());
-            Assert.StrictEqual(200, list.StatusCode);
-        }
+        //[Fact]
+        //public void List_Ok()
+        //{
+        //    List<Schedule> screens = new List<Schedule>();
+        //    screens.Add(TestSchedule);
+        //    var controller = new ScreensController(GetAllMock(TestSchedule).Object);
+        //    var okResult = controller.List();
+        //    var list = okResult as OkObjectResult;
+        //    var lists = list.Value as List<Screen>;
+        //    Assert.IsType<OkObjectResult>(okResult);
+        //    Assert.Equal(screens, lists);
+        //    Assert.NotEmpty(lists);
+        //    Assert.StrictEqual(screens.Count(), lists.Count());
+        //    Assert.StrictEqual(200, list.StatusCode);
+        //}
         [Fact]
         public void List_NullOk()
         {

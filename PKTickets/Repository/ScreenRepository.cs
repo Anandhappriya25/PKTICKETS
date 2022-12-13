@@ -110,12 +110,7 @@ namespace PKTickets.Repository
 
         
        
-        public Theater TheaterById(int id)
-        {
-         var   theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
-            return theater;
-        }
-
+     
      
     }
 }
