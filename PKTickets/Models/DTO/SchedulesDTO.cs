@@ -10,7 +10,6 @@
        
         public int AvailablePremiumSeats { get; set; }
         public int AvailableEliteSeats { get; set; }
-        public List<ShowTime> ShowTimes { get; set; }
     }
     public class SchedulesListDTO
     {

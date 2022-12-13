@@ -8,6 +8,7 @@ using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -299,9 +300,67 @@ namespace PKTickets_UnitTest.TestCase
         }
 
         [Fact]
-        public void ScheduleListByTheaterId()
+        public void ScheduleListByTheaterId_Ok()
         {
+            TheatersSchedulesDTO theater = new TheatersSchedulesDTO();
+            theater.TheaterName = "Vijaya Cinemas";
+            theater.ScreensCount = 1;
+            ScreenSchedulesDTO screens = new ScreenSchedulesDTO();
+            screens.ScreenId = 1;
+            screens.ScreenName = "Silver Screen";
+            screens.PremiumCapacity = 150;
+            screens.EliteCapacity = 100;
+            List<SchedulesDTO> schedulesDTOs = new List<SchedulesDTO>();
+            SchedulesDTO schedule = new SchedulesDTO();
+            schedule.ScheduleId = 1;
+            schedule.MovieName = "Theri";
+            schedule.MovieId = 1;   
+                schedule.Date= DateTime.Now;
+            schedule.ShowTime = "3:00 pm";
+            schedule.AvailablePremiumSeats = 150;
+            schedule.AvailableEliteSeats = 100;
+            schedulesDTOs.Add(schedule);
+            screens.Schedules = schedulesDTOs;
+            List<ScreenSchedulesDTO> screenSchedulesDTOs= new List<ScreenSchedulesDTO>();
+            screenSchedulesDTOs.Add(screens);
+            theater.Screens = screenSchedulesDTOs;
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
+            mockservice.Setup(x => x.TheaterSchedulesById(It.IsAny<int>())).Returns(theater);
+            var controller = new TheatersController(mockservice.Object);
+            var okResult = controller.ListByTheaterId(3);
+            var list = okResult as OkObjectResult;
+            var result = list.Value as TheatersSchedulesDTO;
+            Assert.IsType<OkObjectResult>(list);
+            Assert.StrictEqual(200, list.StatusCode);
+        }
 
+        [Fact]
+        public void ScheduleListByTheaterId_NullOk()
+        {
+            TheatersSchedulesDTO theater = new TheatersSchedulesDTO();
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
+            mockservice.Setup(x => x.TheaterSchedulesById(It.IsAny<int>())).Returns(theater);
+            var controller = new TheatersController(mockservice.Object);
+            var okResult = controller.ListByTheaterId(3);
+            var list = okResult as OkObjectResult;
+            var result = list.Value as TheatersSchedulesDTO;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+        [Fact]
+        public void ScheduleListByTheaterId_NotFound()
+        {
+            Theater theater = null;
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
+            var controller = new TheatersController(mockservice.Object);
+            var okResult = controller.ListByTheaterId(3);
+            var list = okResult as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(okResult);
+            Assert.StrictEqual(404, list.StatusCode);
+            Assert.Equal("Theater Id is notfound", list.Value);
         }
 
     }

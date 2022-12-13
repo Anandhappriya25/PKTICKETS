@@ -36,6 +36,12 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.GetAllMovies()).Returns(movies);
             return mockservice;
         }
+        private Mock<IMovieRepository> AvailableScheduleMock(List<Movie> movies)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.ScheduledMovies()).Returns(movies);
+            return mockservice;
+        }
         private Mock<IMovieRepository> GetByIdMock(Movie movie)
         {
             var mockservice = Mock();
@@ -63,7 +69,7 @@ namespace PKTickets_UnitTest.TestCase
         private Movie TestMovie => new()
         { MovieId = 3, Title = "Theri", Duration =120,Genre="action", CastAndCrew ="vijay and samantha",Language="tamil",Director="atlee",ImagePath="css",IsPlaying=true};
 
-
+        
         [Fact]
         public void ListByTitle_Ok()
         {
@@ -108,6 +114,36 @@ namespace PKTickets_UnitTest.TestCase
             Assert.StrictEqual(200, list.StatusCode);
         }
 
+        [Fact]
+        public void AvailableSchedules_Ok()
+        {
+            List<Movie> movies = new List<Movie>();
+            movies.Add(TestMovie);
+            var controller = new MoviesController(AvailableScheduleMock(movies).Object);
+            var okResult = controller.AvailableSchedules();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Movie>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(movies, lists);
+            Assert.NotEmpty(lists);
+            Assert.StrictEqual(movies.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void AvailableSchedules_NullOk()
+        {
+            List<Movie> movies = new List<Movie>();
+            var controller = new MoviesController(AvailableScheduleMock(movies).Object);
+            var okResult = controller.AvailableSchedules();
+            var list = okResult as OkObjectResult;
+            var lists = list.Value as List<Movie>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.Equal(movies, lists);
+            Assert.Empty(lists);
+            Assert.StrictEqual(movies.Count(), lists.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
         [Fact]
         public void List_NullOk()
         {
