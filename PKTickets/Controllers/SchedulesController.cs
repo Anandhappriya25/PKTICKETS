@@ -46,11 +46,7 @@ namespace PKTickets.Controllers
         public IActionResult ListByMovieId(int id)
         {
             var schedule= scheduleRepository.SchedulesByMovieId(id);
-            if (schedule.Count() == 0)
-            {
-                return NotFound("Movie is Not Registered in any Schedules");
-            }
-            return Ok(schedule);
+            return (schedule.Count() == 0) ? NotFound("Movie is Not Registered in any Schedules") : Ok(schedule);
         }
 
 
@@ -58,31 +54,16 @@ namespace PKTickets.Controllers
         public IActionResult Add(Schedule schedule)
         {
             var result = scheduleRepository.CreateSchedule(schedule);
-            if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Created(""+ TimingConvert.LocalHost("Schedules") + schedule.ScheduleId + "", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Schedules")}{schedule.ScheduleId}", result.Message) :
+               OutPut(result);
         }
 
 
         [HttpPut("")]
-        public ActionResult Update(Schedule schedule)
+        public IActionResult Update(Schedule schedule)
         {
-            if (schedule.ScheduleId == 0)
-            {
-                return BadRequest("Enter the Schedule Id field");
-            }
             var result = scheduleRepository.UpdateSchedule(schedule);
-            if (result.Message == "The Schedule Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -91,31 +72,17 @@ namespace PKTickets.Controllers
 
         public IActionResult Remove(int id)
         {
-            var schedule = scheduleRepository.ScheduleById(id);
-            if (schedule == null)
-            {
-                return NotFound("Schedule Id(3) is not found");
-            }
             var result = scheduleRepository.DeleteSchedule(id);
-            if (result.Success == false)
-            {
-                return BadRequest(result.Message);
-                
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
        
 
-        [HttpGet("Details/Movie/{id}")]
+        [HttpGet("Movie/{id}")]
         public IActionResult DetailsByMovieId(int id)
         {
-            var movie = scheduleRepository.MovieById(id);
-            if (movie == null)
-            {
-                return NotFound("Movie Id is Not Found");
-            }
-            return Ok(scheduleRepository.DetailsByMovieId(id));
+            var list = scheduleRepository.DetailsByMovieId(id);
+            return (list.MovieName == null) ? NotFound("Movie Id is Not Found") : Ok(list);
         }
         private IActionResult OutPut(Messages result)
         {
