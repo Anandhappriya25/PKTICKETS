@@ -75,9 +75,10 @@ namespace PKTickets.Repository
             var theaterExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
             if (theaterExist != null)
             {
-                return messages;
+               
                 messages.Status = Statuses.Conflict;
                 messages.Message = $"Theater Name {theater.TheaterName} is already Registered.";
+                return messages;
             }
             else
             {
@@ -98,7 +99,7 @@ namespace PKTickets.Repository
             if (theater.TheaterId == 0)
             {
                 messages.Message = "Enter the Theater Id field";
-                messages.Status = Statuses.NotFound;
+                messages.Status = Statuses.BadRequest;
                 return messages;
             }
             var theaterExist = TheaterById(theater.TheaterId);

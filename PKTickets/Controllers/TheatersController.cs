@@ -32,11 +32,7 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int theaterId)
         {
             var theater = theaterRepository.TheaterById(theaterId);
-            if (theater == null)
-            {
-                return NotFound("This Theater Id is not Registered");
-            }
-            return Ok(theater);
+            return (theater == null) ? NotFound("This Theater Id is not Registered") : Ok(theater);
         }
 
         [HttpGet("Location/{location}")]
@@ -52,11 +48,9 @@ namespace PKTickets.Controllers
         public IActionResult Add(Theater theater)
         {
             var result = theaterRepository.CreateTheater(theater);
-            if (result.Status == Statuses.Conflict)
-            {
-                return Conflict(result.Message);
-            }
-            return Created("" + TimingConvert.LocalHost("Theaters") + theater.TheaterId +"", result.Message);
+            return (result.Status == Statuses.Conflict) ? Conflict(result.Message) :
+                Created($"{TimingConvert.LocalHost("Theaters")}{theater.TheaterId}", result.Message);
+        
         }
 
 
@@ -64,13 +58,14 @@ namespace PKTickets.Controllers
         public ActionResult Update(Theater theater)
         {
             var result = theaterRepository.UpdateTheater(theater);
-            if (result.Status == Statuses.NotFound)
+            switch (result.Status)
             {
-                return NotFound(result.Message);
-            }
-            else if (result.Status == Statuses.Conflict)
-            {
-                return Conflict(result.Message);
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
@@ -80,13 +75,12 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int theaterId)
         {
             var result = theaterRepository.DeleteTheater(theaterId);
-            if (result.Status == Statuses.NotFound)
+            switch (result.Status)
             {
-                return NotFound(result.Message);
-            }
-            else if (result.Status == Statuses.Conflict)
-            {
-                return Conflict(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
@@ -95,22 +89,14 @@ namespace PKTickets.Controllers
         public IActionResult GetScreensByTheaterId(int id)
         {
             var theater = theaterRepository.TheaterScreens(id);
-            if (theater.TheaterName == null)
-            {
-                return NotFound("This Theater Id is not Registered");
-            }
-            return Ok(theater);
+            return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
         }
 
         [HttpGet("{id}/Schedules")]
         public IActionResult ListByTheaterId(int id)
         {
             var theater = theaterRepository.TheaterSchedulesById(id);
-            if (theater.TheaterName == null)
-            {
-                return NotFound("Theater Id is notfound");
-            }
-            return Ok(theater);
+            return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
         }
     }
 }

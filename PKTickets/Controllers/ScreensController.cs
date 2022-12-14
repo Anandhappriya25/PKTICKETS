@@ -31,11 +31,7 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int screenId)
         {
             var screen = screenRepository.ScreenById(screenId);
-            if (screen == null)
-            {
-               return NotFound("This Screen Id is not Registered");
-            }
-            return Ok(screen);
+            return (screen == null) ? NotFound("This Screen Id is not Registered") : Ok(screen);
         }
 
 
@@ -44,31 +40,16 @@ namespace PKTickets.Controllers
         public IActionResult Add(Screen screen)
         {
             var result = screenRepository.AddScreen(screen);
-            if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Created("" + TimingConvert.LocalHost("Screens") + screen.ScreenId + "", result.Message);
+            return (result.Success == false) ? OutPut(result) :
+                Created($"{TimingConvert.LocalHost("Screens")}{ screen.ScreenId}", result.Message);
         }
 
 
         [HttpPut("")]
-        public ActionResult Update(Screen screen)
+        public IActionResult Update(Screen screen)
         {
-            if (screen.ScreenId == 0)
-            {
-                return BadRequest("Enter the Screen Id field");
-            }
             var result = screenRepository.UpdateScreen(screen);
-            if (result.Message == "Screen Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -76,14 +57,23 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int screenId)
         {
             var result = screenRepository.RemoveScreen(screenId);
-            if (result.Success == false)
+            return OutPut(result);
+        }
+        public IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
             {
-                return NotFound(result.Message);
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
 
-       
+
 
     }
 }
