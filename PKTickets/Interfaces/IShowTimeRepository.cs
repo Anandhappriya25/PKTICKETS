@@ -9,7 +9,6 @@ namespace PKTickets.Interfaces
         public List<ShowTimeDTO> GetAllShowTimes();
         public ShowTime TimeById(int id);
         public ShowTime DetailsByTiming(int time);
-        public Messages DeleteShowTime(int showTimeId);
         public Messages CreateShowTime(ShowTimeDTO showTimeDTO);
         public Messages UpdateShowTime(ShowTimeDTO showTimeDTO);
 

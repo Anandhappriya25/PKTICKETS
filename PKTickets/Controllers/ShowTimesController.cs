@@ -29,11 +29,7 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int showTimeId)
         {
             var showTime = showTimeRepository.ShowTimeasStringById(showTimeId);
-            if (showTime == null)
-            {
-                return NotFound("This ShowTime Id is not registered");
-            }
-            return Ok(showTime);
+            return (showTime == null) ? NotFound("This Show Time Id is not Registered") : Ok(showTime);
         }
 
 
@@ -41,11 +37,8 @@ namespace PKTickets.Controllers
         public IActionResult Add(ShowTimeDTO showTime)
         {
             var result = showTimeRepository.CreateShowTime(showTime);
-            if (result.Status == Statuses.Conflict)
-            {
-                return Conflict(result.Message);
-            }
-            return Created("" + TimingConvert.LocalHost("ShowTimes") + showTime.ShowTimeId + "", result.Message);
+            return (result.Status == Statuses.Conflict) ? Conflict(result.Message) : 
+                Created($"{TimingConvert.LocalHost("ShowTimes")}{showTime.ShowTimeId}", result.Message);
         }
 
 
@@ -54,17 +47,14 @@ namespace PKTickets.Controllers
         {
            
             var result = showTimeRepository.UpdateShowTime(showTime);
-            if (result.Status == Statuses.BadRequest)
+            switch (result.Status)
             {
-                return BadRequest(result.Message);
-            }
-           else if (result.Status == Statuses.NotFound)
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Status == Statuses.Conflict)
-            {
-                return Conflict(result.Message);
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
