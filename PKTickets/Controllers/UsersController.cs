@@ -43,8 +43,7 @@ namespace PKTickets.Controllers
         public IActionResult Add(User user)
         {
             var result = userRepository.CreateUser(user);
-            return (result.Success == false) ? OutPut(result) :
-                Created($"{TimingConvert.LocalHost("Users")}{user.UserId}", result.Message);            
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Users")}{user.UserId}", result.Message) : OutPut(result);            
         }
 
 
