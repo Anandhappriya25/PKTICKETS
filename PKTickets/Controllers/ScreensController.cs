@@ -59,7 +59,7 @@ namespace PKTickets.Controllers
             var result = screenRepository.RemoveScreen(screenId);
             return OutPut(result);
         }
-        public IActionResult OutPut(Messages result)
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {

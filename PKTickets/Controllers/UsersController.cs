@@ -30,11 +30,7 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int userId)
         {
             var user = userRepository.UserById(userId);
-            if (user == null)
-            {
-                return NotFound("This User Id Not Registered.");
-            }
-            return Ok(user);
+            return (user == null) ? NotFound("This User Id is not Registered") : Ok(user);            
         }
 
 
@@ -62,7 +58,8 @@ namespace PKTickets.Controllers
             var result = userRepository.DeleteUser(userId);
             return OutPut(result);
         }
-        public IActionResult OutPut(Messages result)
+
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {

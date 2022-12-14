@@ -83,7 +83,7 @@ namespace PKTickets.Controllers
             return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
         }
 
-        public IActionResult OutPut(Messages result)
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {

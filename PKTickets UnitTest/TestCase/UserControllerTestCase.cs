@@ -144,7 +144,7 @@ namespace PKTickets_UnitTest.TestCase
         {
             Messages message = new Messages();
             message.Success = true;
-            message.Status = Statuses.Success;
+            message.Status = Statuses.Created;
             var controller = new UsersController(AddMock(message).Object);
             var output = controller.Add(TestUser);
             var result = output as CreatedResult;

@@ -49,7 +49,7 @@ namespace PKTickets.Controllers
             return OutPut(result);
         }
 
-        public IActionResult OutPut(Messages result)
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {
