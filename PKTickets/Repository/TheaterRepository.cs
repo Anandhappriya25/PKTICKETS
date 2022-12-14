@@ -44,12 +44,15 @@ namespace PKTickets.Repository
             var theater = TheaterById(theaterId);
             if (theater == null)
             {
-                messages.Message = "Theater Id  ("+ theaterId + ") is not found";
+                messages.Message = $"Theater Id {theaterId} is not found";
+                messages.Status = Statuses.NotFound;
+                return messages;
             }
             var theaters = db.Screens.Where(x => x.TheaterId == theaterId).FirstOrDefault();
             if (theaters != null)
             {
-                messages.Message = "This Theater(" + theater.TheaterName + ") is Already scheduled, so you can't delete the theater";
+                messages.Message = $"This Theater {theater.TheaterName} is Already scheduled, so you can't delete the theater";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else
@@ -57,9 +60,11 @@ namespace PKTickets.Repository
                 theater.IsActive = false;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "Theater "+theater.TheaterName+ " is Successfully Removed";
+                messages.Message = $"Theater {theater.TheaterName} is Successfully Removed";
+                messages.Status = Statuses.Success;
+                return messages;
             }
-            return messages;
+            
         }
 
         public Messages CreateTheater(Theater theater)
@@ -69,31 +74,43 @@ namespace PKTickets.Repository
             var theaterExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
             if (theaterExist != null)
             {
-                messages.Message = "Theater Name ("+ theater.TheaterName + ") is already Registered.";
+                return messages;
+                messages.Status = Statuses.Conflict;
+                messages.Message = $"Theater Name {theater.TheaterName} is already Registered.";
             }
             else
             {
                 db.Theaters.Add(theater);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "Theater " + theater.TheaterName + " is Successfully Added";
+                messages.Message = $"Theater {theater.TheaterName} is Successfully Added";
+                messages.Status = Statuses.Success;
+                return messages;
             }
-            return messages;
+            
         }
 
         public Messages UpdateTheater(Theater theater)
         {
             Messages messages = new Messages();
             messages.Success = false;
+            if (theater.TheaterId == 0)
+            {
+                messages.Message = "Enter the Theater Id field";
+                messages.Status = Statuses.NotFound;
+                return messages;
+            }
             var theaterExist = TheaterById(theater.TheaterId);
             var nameExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
             if (theaterExist == null)
             {
                 messages.Message = "Theater Id is not found";
+                messages.Status = Statuses.NotFound;
             }
             else if (nameExist != null && nameExist.TheaterId != theaterExist.TheaterId)
             {
-                messages.Message = "Theater Name ("+ theater.TheaterName + ")is already registered";
+                messages.Message = $"Theater Name {theater.TheaterName} is already registered";
+                messages.Status = Statuses.Conflict;
             }
             else
             {
@@ -101,7 +118,8 @@ namespace PKTickets.Repository
                 theaterExist.Location = theater.Location;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "Theater " + theater.TheaterName + "is Successfully Updated";
+                messages.Message = $"Theater {theater.TheaterName} is Successfully Updated";
+                messages.Status = Statuses.Success;
             }
             return messages;
         }

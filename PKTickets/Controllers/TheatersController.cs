@@ -52,7 +52,7 @@ namespace PKTickets.Controllers
         public IActionResult Add(Theater theater)
         {
             var result = theaterRepository.CreateTheater(theater);
-            if (result.Success == false)
+            if (result.Status == Statuses.Conflict)
             {
                 return Conflict(result.Message);
             }
@@ -63,10 +63,7 @@ namespace PKTickets.Controllers
         [HttpPut("")]
         public ActionResult Update(Theater theater)
         {
-            if (theater.TheaterId == 0)
-            {
-                return BadRequest("Enter the Theater Id field");
-            }
+            
             var result = theaterRepository.UpdateTheater(theater);
             if (result.Message == "Theater Id is not found")
             {
