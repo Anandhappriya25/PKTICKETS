@@ -11,6 +11,7 @@
     public enum Statuses
     {
         Success,
+        Created,
         BadRequest,
         NotFound,
         Conflict

@@ -43,10 +43,14 @@ namespace PKTickets.Controllers
 
 
         [HttpPut("")]
-        public ActionResult Update(ShowTimeDTO showTime)
+        public IActionResult Update(ShowTimeDTO showTime)
         {
-           
             var result = showTimeRepository.UpdateShowTime(showTime);
+            return OutPut(result);
+        }
+
+        public IActionResult OutPut(Messages result)
+        {
             switch (result.Status)
             {
                 case Statuses.BadRequest:
@@ -58,9 +62,5 @@ namespace PKTickets.Controllers
             }
             return Ok(result.Message);
         }
-
-
-    
-
     }
 }
