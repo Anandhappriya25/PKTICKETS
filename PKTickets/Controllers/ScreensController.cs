@@ -40,8 +40,8 @@ namespace PKTickets.Controllers
         public IActionResult Add(Screen screen)
         {
             var result = screenRepository.AddScreen(screen);
-            return (result.Success == false) ? OutPut(result) :
-                Created($"{TimingConvert.LocalHost("Screens")}{ screen.ScreenId}", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Screens")}{screen.ScreenId}", result.Message) :
+                OutPut(result);
         }
 
 
@@ -59,7 +59,7 @@ namespace PKTickets.Controllers
             var result = screenRepository.RemoveScreen(screenId);
             return OutPut(result);
         }
-        public IActionResult OutPut(Messages result)
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {

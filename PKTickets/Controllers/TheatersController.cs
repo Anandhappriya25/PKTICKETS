@@ -48,8 +48,8 @@ namespace PKTickets.Controllers
         public IActionResult Add(Theater theater)
         {
             var result = theaterRepository.CreateTheater(theater);
-            return (result.Status == Statuses.Conflict) ? Conflict(result.Message) :
-                Created($"{TimingConvert.LocalHost("Theaters")}{theater.TheaterId}", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Theaters")}{theater.TheaterId}", result.Message) :
+             Conflict(result.Message) ;
         
         }
 
@@ -83,7 +83,7 @@ namespace PKTickets.Controllers
             return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
         }
 
-        public IActionResult OutPut(Messages result)
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {

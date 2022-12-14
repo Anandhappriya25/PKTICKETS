@@ -47,7 +47,7 @@ namespace PKTickets.Controllers
 
         [HttpGet("{movieId}")]
 
-        public ActionResult GetById(int movieId)
+        public IActionResult GetById(int movieId)
         {
             var movie = movieRepository.MovieById(movieId);
             return (movie == null) ? NotFound("This Movie Id is Not Registered") : Ok(movie);
@@ -58,31 +58,16 @@ namespace PKTickets.Controllers
         public IActionResult Add(Movie movie)
         {
             var result = movieRepository.CreateMovie(movie);
-            if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Created(""+ TimingConvert.LocalHost("Movies") + movie.MovieId + "", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Movies")}{movie.MovieId}", result.Message) :
+                Conflict(result.Message);
         }
 
 
         [HttpPut("")]
-        public ActionResult Update(Movie movie)
+        public IActionResult Update(Movie movie)
         {
-            if (movie.MovieId == 0)
-            {
-                return BadRequest("Enter the Movie Id field");
-            }
             var result = movieRepository.UpdateMovie(movie);
-            if (result.Message == "Movie Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -91,14 +76,10 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int movieId)
         {
             var result = movieRepository.DeleteMovie(movieId);
-            if (result.Success == false)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
-        public IActionResult OutPut(Messages result)
+        private IActionResult OutPut(Messages result)
         {
             switch (result.Status)
             {
