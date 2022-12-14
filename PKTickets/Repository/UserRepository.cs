@@ -50,7 +50,7 @@ namespace PKTickets.Repository
                 db.Users.Add(user);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Status = Statuses.Success;
+                messages.Status = Statuses.Created;
                 messages.Message = $"{ user.UserName}, Your Account is Successfully Registered";
                 return messages;
             }

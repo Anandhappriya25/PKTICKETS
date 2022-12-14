@@ -4,6 +4,7 @@ using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
 using PKTickets.Repository;
+using System.Collections.Generic;
 
 namespace PKTickets.Controllers
 {
@@ -34,22 +35,14 @@ namespace PKTickets.Controllers
         public IActionResult ListByTitle(string title)
         {
             var list = movieRepository.MovieByTitle(title);
-            if(list.Count() == 0)
-            {
-                return NotFound("This Movie Titles is Not Registered");
-            }
-            return Ok(list);
+            return (list.Count() == 0) ? NotFound("This Movie Titles is Not Registered") : Ok(list);
         }
 
         [HttpGet("Genre/{Genre}")]
         public IActionResult ListByGenre(string Genre)
         {
             var list = movieRepository.MovieByGenre(Genre);
-            if (list.Count() == 0)
-            {
-                return NotFound("This Genre of Movies is Not Registered");
-            }
-            return Ok(list);
+            return (list.Count() == 0) ? NotFound("This Genre of Movies is Not Registered") : Ok(list);
         }
 
         [HttpGet("{movieId}")]
@@ -57,11 +50,7 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int movieId)
         {
             var movie = movieRepository.MovieById(movieId);
-            if (movie == null)
-            {
-                return NotFound("This Movie Id is Not Registered");
-            }
-            return Ok(movie);
+            return (movie == null) ? NotFound("This Movie Id is Not Registered") : Ok(movie);
         }
 
 
@@ -105,6 +94,20 @@ namespace PKTickets.Controllers
             if (result.Success == false)
             {
                 return NotFound(result.Message);
+            }
+            return Ok(result.Message);
+        }
+
+        public IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
+            {
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }

@@ -55,19 +55,10 @@ namespace PKTickets.Controllers
 
 
         [HttpPut("")]
-        public ActionResult Update(Theater theater)
+        public IActionResult Update(Theater theater)
         {
             var result = theaterRepository.UpdateTheater(theater);
-            switch (result.Status)
-            {
-                case Statuses.BadRequest:
-                    return BadRequest(result.Message);
-                case Statuses.NotFound:
-                    return NotFound(result.Message);
-                case Statuses.Conflict:
-                    return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -75,14 +66,7 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int theaterId)
         {
             var result = theaterRepository.DeleteTheater(theaterId);
-            switch (result.Status)
-            {
-                case Statuses.NotFound:
-                    return NotFound(result.Message);
-                case Statuses.Conflict:
-                    return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
         [HttpGet("{id}/Screens")]
@@ -97,6 +81,20 @@ namespace PKTickets.Controllers
         {
             var theater = theaterRepository.TheaterSchedulesById(id);
             return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
+        }
+
+        public IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
+            {
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
+            }
+            return Ok(result.Message);
         }
     }
 }

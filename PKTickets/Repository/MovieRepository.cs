@@ -60,7 +60,8 @@ namespace PKTickets.Repository
             var movieExist = MovieByTitle(movie.Title).FirstOrDefault(x => x.Director == movie.Director);
             if (movieExist != null)
             {
-                messages.Message = ""+movie.Title+" Movie is already Registered.";
+                messages.Message = $"{movie.Title} Movie is already Registered.";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else
@@ -68,7 +69,8 @@ namespace PKTickets.Repository
                 db.Movies.Add(movie);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "" + movie.Title +" Movie is Successfully Added";
+                messages.Status = Statuses.Success;
+                messages.Message = $"{movie.Title} Movie is Successfully Added";
                 return messages;
             }
         }
@@ -81,7 +83,8 @@ namespace PKTickets.Repository
             var movie = MovieById(movieId);
             if (movie == null)
             {
-                messages.Message = "Movie Id (" + movieId + ") is not found";
+                messages.Message = $"Movie Id {movieId} is not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
            
@@ -90,7 +93,8 @@ namespace PKTickets.Repository
                 movie.IsPlaying = false;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "" + movie.Title + " Movie is Successfully Removed";
+                messages.Message = $"{movie.Title} Movie is Successfully Removed";
+                messages.Status = Statuses.Success;
                 return messages;
             }
         }
@@ -99,16 +103,24 @@ namespace PKTickets.Repository
         {
             Messages messages = new Messages();
             messages.Success = false;
+            if (movie.MovieId == 0)
+            {
+                messages.Message = "Enter the Movie Id Field";
+                messages.Status = Statuses.BadRequest;
+                return messages;
+            }
             var movieExist = MovieById(movie.MovieId);
             var directorExist = MovieByTitle(movie.Title).FirstOrDefault(x => x.Director == movie.Director);
             if (movieExist == null)
             {
                 messages.Message = "Movie Id is not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
             else if (directorExist != null && directorExist.MovieId != directorExist.MovieId)
             {
-                messages.Message = "This Movie is already registered with Director"+movie.Director+"";
+                messages.Message = $"This Movie is already registered with Director {movie.Director}";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else
@@ -121,7 +133,8 @@ namespace PKTickets.Repository
                 movieExist.ImagePath= movie.ImagePath;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "" + movie.Title + " Movie is Successfully Updated";
+                messages.Message = $"{movie.Title} Movie is Successfully Updated";
+                messages.Status = Statuses.Success;
                 return messages;
             }
         }
