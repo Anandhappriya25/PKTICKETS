@@ -41,7 +41,7 @@ namespace PKTickets.Controllers
         public IActionResult Add(ShowTimeDTO showTime)
         {
             var result = showTimeRepository.CreateShowTime(showTime);
-            if (result.Success == false)
+            if (result.Status == Statuses.Conflict)
             {
                 return Conflict(result.Message);
             }
@@ -52,16 +52,17 @@ namespace PKTickets.Controllers
         [HttpPut("")]
         public ActionResult Update(ShowTimeDTO showTime)
         {
-            if (showTime.ShowTimeId == 0)
-            {
-                return BadRequest("Enter the ShowTime Id field");
-            }
+           
             var result = showTimeRepository.UpdateShowTime(showTime);
-            if (result.Message == "ShowTime Id is not found")
+            if (result.Status == Statuses.BadRequest)
+            {
+                return BadRequest(result.Message);
+            }
+           else if (result.Status == Statuses.NotFound)
             {
                 return NotFound(result.Message);
             }
-            else if (result.Success == false)
+            else if (result.Status == Statuses.Conflict)
             {
                 return Conflict(result.Message);
             }
@@ -69,16 +70,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpDelete("{showTimeId}")]
-        public IActionResult Remove(int showTimeId)
-        {
-            var result = showTimeRepository.DeleteShowTime(showTimeId);
-            if (result.Success == false)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result.Message);
-        }
+    
 
     }
 }

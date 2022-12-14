@@ -1,6 +1,7 @@
 ﻿using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -129,6 +130,10 @@ namespace PKTickets.Repository
             var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
             var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
             ScreensListDTO list = new ScreensListDTO();
+            if (theater == null)
+            {
+                return list;
+            }
             list.TheaterName = theater.TheaterName;
             list.ScreensCount = screens.Count();
             list.Screens = Screens(id);
@@ -141,6 +146,10 @@ namespace PKTickets.Repository
             var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
 
             TheatersSchedulesDTO list = new TheatersSchedulesDTO();
+            if (theater == null)
+            {
+                return list;
+            }
             list.TheaterName = theater.TheaterName;
             list.ScreensCount = screens.Count();
 
