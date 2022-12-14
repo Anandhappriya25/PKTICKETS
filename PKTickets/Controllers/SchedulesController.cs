@@ -96,9 +96,9 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int id)
         {
             var schedule = scheduleRepository.ScheduleById(id);
-            if(schedule == null)
+            if (schedule == null)
             {
-                return NotFound("The Schedule Id is notfound");
+                return NotFound("Schedule Id(3) is not found");
             }
             var result = scheduleRepository.DeleteSchedule(id);
             if (result.Success == false)

@@ -81,7 +81,6 @@ namespace PKTickets.Controllers
 
 
         [HttpDelete("{theaterId}")]
-
         public IActionResult Remove(int theaterId)
         {
             var result = theaterRepository.DeleteTheater(theaterId);
@@ -91,6 +90,7 @@ namespace PKTickets.Controllers
             }
             return Ok(result.Message);
         }
+
         [HttpGet("{id}/Screens")]
         public IActionResult GetScreensByTheaterId(int id)
         {

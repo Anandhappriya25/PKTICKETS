@@ -43,7 +43,7 @@ namespace PKTickets.Controllers
         public IActionResult Add(User user)
         {
             var result=userRepository.CreateUser(user);
-            if(result.Success==false)
+            if(result.Status==Statuses.Conflict)
             {
                 return Conflict(result.Message);
             }
@@ -54,16 +54,13 @@ namespace PKTickets.Controllers
         [HttpPut("")]
         public ActionResult Update(User user)
         {
-            if (user.UserId ==0)
-            {
-                return BadRequest("Enter the User Id field");
-            }
+            
             var result = userRepository.UpdateUser(user);
-            if(result.Message== "User Id is not found")
+            if(result.Status== Statuses.NotFound)
             {
                 return NotFound(result.Message);
             }
-            else if (result.Success == false)
+            else if (result.Status == Statuses.Conflict)
             {
                 return Conflict(result.Message);
             }
@@ -76,7 +73,7 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int userId)
         {
             var result = userRepository.DeleteUser(userId);
-            if (result.Success == false)
+            if (result.Status == Statuses.NotFound)
             {
                 return NotFound(result.Message);
             }
