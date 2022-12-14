@@ -63,13 +63,12 @@ namespace PKTickets.Controllers
         [HttpPut("")]
         public ActionResult Update(Theater theater)
         {
-            
             var result = theaterRepository.UpdateTheater(theater);
-            if (result.Message == "Theater Id is not found")
+            if (result.Status == Statuses.NotFound)
             {
                 return NotFound(result.Message);
             }
-            else if (result.Success == false)
+            else if (result.Status == Statuses.Conflict)
             {
                 return Conflict(result.Message);
             }
@@ -81,9 +80,13 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int theaterId)
         {
             var result = theaterRepository.DeleteTheater(theaterId);
-            if (result.Success == false)
+            if (result.Status == Statuses.NotFound)
             {
                 return NotFound(result.Message);
+            }
+            else if (result.Status == Statuses.Conflict)
+            {
+                return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
@@ -91,23 +94,23 @@ namespace PKTickets.Controllers
         [HttpGet("{id}/Screens")]
         public IActionResult GetScreensByTheaterId(int id)
         {
-            var theater = theaterRepository.TheaterById(id);
-            if (theater == null)
+            var theater = theaterRepository.TheaterScreens(id);
+            if (theater.TheaterName == null)
             {
                 return NotFound("This Theater Id is not Registered");
             }
-            return Ok(theaterRepository.TheaterScreens(id));
+            return Ok(theater);
         }
 
         [HttpGet("{id}/Schedules")]
         public IActionResult ListByTheaterId(int id)
         {
-            var theater = theaterRepository.TheaterById(id);
-            if (theater == null)
+            var theater = theaterRepository.TheaterSchedulesById(id);
+            if (theater.TheaterName == null)
             {
                 return NotFound("Theater Id is notfound");
             }
-            return Ok(theaterRepository.TheaterSchedulesById(id));
+            return Ok(theater);
         }
     }
 }
