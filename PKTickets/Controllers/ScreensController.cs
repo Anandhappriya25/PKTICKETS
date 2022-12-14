@@ -72,8 +72,5 @@ namespace PKTickets.Controllers
             }
             return Ok(result.Message);
         }
-
-
-
     }
 }

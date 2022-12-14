@@ -42,12 +42,9 @@ namespace PKTickets.Controllers
 
         public IActionResult Add(User user)
         {
-            var result=userRepository.CreateUser(user);
-            if(result.Status==Statuses.Conflict)
-            {
-                return Conflict(result.Message);
-            }
-            return Created("" + TimingConvert.LocalHost("Users") + user.UserId+"", result.Message);
+            var result = userRepository.CreateUser(user);
+            return (result.Success == false) ? OutPut(result) :
+                Created($"{TimingConvert.LocalHost("Users")}{user.UserId}", result.Message);            
         }
 
 
@@ -79,6 +76,19 @@ namespace PKTickets.Controllers
             if (result.Status == Statuses.NotFound)
             {
                 return NotFound(result.Message);
+            }
+            return Ok(result.Message);
+        }
+        public IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
+            {
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
