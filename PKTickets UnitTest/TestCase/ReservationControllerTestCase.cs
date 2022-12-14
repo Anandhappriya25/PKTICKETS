@@ -226,14 +226,17 @@ namespace PKTickets_UnitTest.TestCase
         //[Fact]
         //public void Update_BadRequest()
         //{
-        //    User newUser = new User { UserId = 0 };
-        //    var controller = new ReservationsController(Mock().Object);
-        //    var output = controller.Update(newUser);
+        //    TestReservation.ReservationId = 0;
+        //    Messages message = new Messages();
+        //    message.Message = "Enter the Reservation Id field";
+        //    message.Success = false;
+        //    var controller = new ReservationsController(UpdateMock(message).Object);
+        //    var output = controller.Update(TestReservation);
         //    var result = output as BadRequestObjectResult;
         //    Assert.IsType<BadRequestObjectResult>(output);
-        //    Assert.StrictEqual("Enter the User Id field", result.Value);
+        //    Assert.StrictEqual("Enter the Reservation Id field", result.Value);
         //    Assert.StrictEqual(400, result.StatusCode);
-        //    Assert.True(newUser.UserId == 0);
+        //    Assert.True(TestReservation.ReservationId == 0);
         //}
         //[Fact]
         //public void Update_NotFound()

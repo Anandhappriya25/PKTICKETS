@@ -74,7 +74,7 @@ namespace PKTickets.Controllers
             if (reservation.ReservationId == 0)
             {
                 return BadRequest("Enter the Reservation Id field");
-            }
+            }                                
             var result = reservationRepository.UpdateReservation(reservation);
             if (result.Message == "Reservation Id is Not found")
             {

@@ -276,19 +276,19 @@ namespace PKTickets_UnitTest.TestCase
         //    Assert.StrictEqual(200, result.StatusCode);
         //}
 
-        [Fact]
-        public void Remove_IdNotFound()
-        {
-            Messages message = new Messages();
-            message.Message = "Schedule Id(3) is not found";
-            message.Success = false;
-            var controller = new SchedulesController(DeleteMock(message).Object);
-            var output = controller.Remove(3);
-            var result = output as NotFoundObjectResult;
-            Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual("Schedule Id(3) is not found", result.Value);
-            Assert.StrictEqual(404, result.StatusCode);
-        }
+        //[Fact]
+        //public void Remove_IdNotFound()
+        //{
+        //    Messages message = new Messages();
+        //    message.Message = "Schedule Id(3) is not found";
+        //    message.Success = false;
+        //    var controller = new SchedulesController(DeleteMock(message).Object);
+        //    var output = controller.Remove(3);
+        //    var result = output as NotFoundObjectResult;
+        //    Assert.IsType<NotFoundObjectResult>(output);
+        //    Assert.StrictEqual("Schedule Id(3) is not found", result.Value);
+        //    Assert.StrictEqual(404, result.StatusCode);
+        //}
 
         //[Fact]
         //public void Remove_AlreadyStarted()
