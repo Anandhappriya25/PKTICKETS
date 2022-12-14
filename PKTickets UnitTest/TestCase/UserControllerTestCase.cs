@@ -111,18 +111,17 @@ namespace PKTickets_UnitTest.TestCase
             var check = result as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
-            Assert.Equal("This User Id Not Registered.", check.Value);
         }
 
         [Fact]
         public void Add_PhoneConflict()
-        {Messages message = new Messages();
-            message.Message = "The (9441004834) , PhoneNumber is already Registered.";
+        {
+            Messages message = new Messages();
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new UsersController(AddMock(message).Object);
             var output = controller.Add(TestUser);
             var result = output as ConflictObjectResult;
-            Assert.Equal("The (9441004834) , PhoneNumber is already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -131,12 +130,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Add_EmailConflict()
         {
             Messages message = new Messages();
-            message.Message = "The (karth56@gmail.com), EmailId is already Registered.";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new UsersController(AddMock(message).Object);
             var output = controller.Add(TestUser);
             var result = output as ConflictObjectResult;
-            Assert.Equal("The (karth56@gmail.com), EmailId is already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -145,13 +143,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Add_Success()
         {
             Messages message = new Messages();
-            message.Message = "Vijay, Your Account is Successfully Registered";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new UsersController(AddMock(message).Object);
             var output = controller.Add(TestUser);
             var result = output as CreatedResult;
             Assert.IsType<CreatedResult>(output);
-            Assert.StrictEqual("Vijay, Your Account is Successfully Registered", result.Value);
             Assert.StrictEqual("https://localhost:7221/api/Users/3", result.Location);
             Assert.StrictEqual(201, result.StatusCode);
         }
@@ -159,12 +156,14 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_BadRequest()
         {
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.BadRequest;
             User newUser = new User { UserId = 0 };
-            var controller = new UsersController(Mock().Object);
+            var controller = new UsersController(UpdateMock(message).Object);
             var output = controller.Update(newUser);
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
-            Assert.StrictEqual("Enter the User Id field", result.Value);
             Assert.StrictEqual(400, result.StatusCode);
             Assert.True(newUser.UserId == 0);
         }
@@ -172,13 +171,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_NotFound()
         {
             Messages message = new Messages();
-            message.Message = "User Id is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound;
             var controller = new UsersController(UpdateMock(message).Object);
             var output = controller.Update(TestUser);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual("User Id is not found", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
 
@@ -186,12 +184,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_PhoneConflict()
         {
             Messages message = new Messages();
-            message.Message = "The (9443004834), PhoneNumber is already Registered.";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new UsersController(UpdateMock(message).Object);
             var output = controller.Update(TestUser);
             var result = output as ConflictObjectResult;
-            Assert.Equal("The (9443004834), PhoneNumber is already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -199,12 +196,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_EmailConflict()
         {
             Messages message = new Messages();
-            message.Message = "The (karth56@gmail.com), EmailId is already Registered.";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new UsersController(UpdateMock(message).Object);
             var output = controller.Update(TestUser);
             var result = output as ConflictObjectResult;
-            Assert.Equal("The (karth56@gmail.com), EmailId is already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -213,12 +209,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_SuccessOk()
         {
             Messages message = new Messages();
-            message.Message = "The Vijay Account is Successfully Updated";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new UsersController(UpdateMock(message).Object);
             var output = controller.Update(TestUser);
             var result = output as OkObjectResult;
-            Assert.Equal("The Vijay Account is Successfully Updated", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
             Assert.IsType<OkObjectResult>(output);
         }
@@ -226,28 +221,25 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Remove_SucessOk()
         {Messages message = new Messages();
-            message.Message = "The Vijay Account is Successfully removed";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new UsersController(DeleteMock(message).Object);
             var output = controller.Remove(3);
             Assert.IsType<OkObjectResult>(output);
             var result = output as OkObjectResult;
-            Assert.Equal("The Vijay Account is Successfully removed", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
-
         }
 
         [Fact]
         public void Remove_NotFound()
         {
             Messages message = new Messages();
-            message.Message = "User Id (3) is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound; 
             var controller = new UsersController(DeleteMock(message).Object);
             var output = controller.Remove(3);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual("User Id (3) is not found", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
     }
