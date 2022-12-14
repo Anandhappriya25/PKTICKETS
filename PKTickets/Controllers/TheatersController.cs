@@ -42,9 +42,7 @@ namespace PKTickets.Controllers
             return Ok(theaterRepository.TheaterByLocation(location));
         }
 
-
         [HttpPost("")]
-
         public IActionResult Add(Theater theater)
         {
             var result = theaterRepository.CreateTheater(theater);
@@ -52,7 +50,6 @@ namespace PKTickets.Controllers
              Conflict(result.Message) ;
         
         }
-
 
         [HttpPut("")]
         public IActionResult Update(Theater theater)

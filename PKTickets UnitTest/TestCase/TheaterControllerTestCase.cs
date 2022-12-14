@@ -111,7 +111,7 @@ namespace PKTickets_UnitTest.TestCase
         }
 
         [Fact]
-        public void GetById_Null()
+        public void GetById_NotFound()
         {
             Theater theater = null;
             var controller = new TheatersController(GetByIdMock(theater).Object);
@@ -120,7 +120,6 @@ namespace PKTickets_UnitTest.TestCase
             Assert.IsType<NotFoundObjectResult>(result);
             Assert.Null(theater);
             Assert.Equal(404, check.StatusCode);
-            Assert.Equal("This Theater Id is not Registered", check.Value);
         }
 
         [Fact]
@@ -132,7 +131,7 @@ namespace PKTickets_UnitTest.TestCase
             var list = okResult as OkObjectResult;
             var results = list.Value as List<Theater>;
             Assert.IsType<OkObjectResult>(okResult);
-            //Assert.Equal(theaters, results);
+            Assert.Equal(theaters, results);
             Assert.StrictEqual(200, list.StatusCode);
             Assert.StrictEqual(theaters.Count(), results.Count());
         }
@@ -154,13 +153,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Add_Success()
         {
             Messages message = new Messages();
-            message.Message = "Theater Priyan Cinemas, is Successfully Added";
             message.Success = true;
+            message.Status = Statuses.Created;
             var controller = new TheatersController(AddMock(message).Object);
             var output = controller.Add(TestTheater);
             var result = output as CreatedResult;
             Assert.IsType<CreatedResult>(output);
-            Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual("https://localhost:7221/api/Theaters/3", result.Location);
             Assert.StrictEqual(201, result.StatusCode);
         }
@@ -169,12 +167,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Add_NameConflict()
         {
             Messages message = new Messages();
-            message.Message = "Theater Priyan Cinemas, is already registered";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new TheatersController(AddMock(message).Object);
             var output = controller.Add(TestTheater);
             var result = output as ConflictObjectResult;
-            Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -183,13 +180,12 @@ namespace PKTickets_UnitTest.TestCase
         {
             Theater theater = new Theater { TheaterId = 0 };
             Messages message = new Messages();
-            message.Message = "Enter the Theater Id field";
             message.Success = false;
+            message.Status = Statuses.BadRequest;
             var controller = new TheatersController(UpdateMock(message).Object);
             var output = controller.Update(theater);
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
-            Assert.StrictEqual("Enter the Theater Id field", result.Value);
             Assert.StrictEqual(400, result.StatusCode);
             Assert.True(theater.TheaterId == 0);
         }
@@ -197,8 +193,8 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_NotFound()
         {
             Messages message = new Messages();
-            message.Message = "Theater Id is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound;
             var controller = new TheatersController(UpdateMock(message).Object);
             var output = controller.Update(TestTheater);
             var result = output as NotFoundObjectResult;
@@ -212,12 +208,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_NameConflict()
         {
             Messages message = new Messages();
-            message.Message = "Theater Priyan Cinemas, is already registered";
-            message.Success = false; 
+            message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new TheatersController(UpdateMock(message).Object);
             var output = controller.Update(TestTheater);
             var result = output as ConflictObjectResult;
-            Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -226,12 +221,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_SuccessOk()
         {
             Messages message = new Messages();
-            message.Message = "Theater Priyan Cinemas, is Successfully Updated";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new TheatersController(UpdateMock(message).Object);
             var output = controller.Update(TestTheater);
             var result = output as OkObjectResult;
-            Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(200, result.StatusCode);
             Assert.IsType<OkObjectResult>(output);
         }
@@ -239,13 +233,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Remove_SucessOk()
         {
             Messages message = new Messages();
-            message.Message = "Theater Priyan Cinemas is Successfully removed";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new TheatersController(RemoveMock(message).Object);
             var output = controller.Remove(9);
             Assert.IsType<OkObjectResult>(output);
             var result = output as OkObjectResult;
-            Assert.Equal(message.Message, result.Value);
             Assert.StrictEqual(200, result.StatusCode);
 
         }
@@ -254,13 +247,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Remove_NotFound()
         {
             Messages message = new Messages();
-            message.Message = "Theater Id (3) is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound;
             var controller = new TheatersController(RemoveMock(message).Object);
             var output = controller.Remove(3);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
 
@@ -285,18 +277,30 @@ namespace PKTickets_UnitTest.TestCase
         }
 
         [Fact]
+        public void GetScreensByTheaterId_NullOk()
+        {
+            ScreensListDTO screensListDTO = new ScreensListDTO();
+            screensListDTO.TheaterName = "priya";
+            var mockservice = new Mock<ITheaterRepository>();
+            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensListDTO);
+            var controller = new TheatersController(mockservice.Object);
+            var okResult = controller.GetScreensByTheaterId(3);
+            var list = okResult as OkObjectResult;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
         public void GetScreensByTheaterId_NotFound()
         {
-            Theater theater = null;
             ScreensListDTO screensListDTO = new ScreensListDTO();
             var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
+            mockservice.Setup(x => x.TheaterScreens(It.IsAny<int>())).Returns(screensListDTO);
             var controller = new TheatersController(mockservice.Object);
-            var okResult = controller.GetScreensByTheaterId(8);
+            var okResult = controller.GetScreensByTheaterId(3);
             var list = okResult as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(okResult);
             Assert.StrictEqual(404, list.StatusCode);
-            Assert.Equal("This Theater Id is not Registered", list.Value);
         }
 
         [Fact]
@@ -325,7 +329,6 @@ namespace PKTickets_UnitTest.TestCase
             screenSchedulesDTOs.Add(screens);
             theater.Screens = screenSchedulesDTOs;
             var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
             mockservice.Setup(x => x.TheaterSchedulesById(It.IsAny<int>())).Returns(theater);
             var controller = new TheatersController(mockservice.Object);
             var okResult = controller.ListByTheaterId(3);
@@ -339,8 +342,8 @@ namespace PKTickets_UnitTest.TestCase
         public void ScheduleListByTheaterId_NullOk()
         {
             TheatersSchedulesDTO theater = new TheatersSchedulesDTO();
+            theater.TheaterName = "hari";
             var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(TestTheater);
             mockservice.Setup(x => x.TheaterSchedulesById(It.IsAny<int>())).Returns(theater);
             var controller = new TheatersController(mockservice.Object);
             var okResult = controller.ListByTheaterId(3);
@@ -349,18 +352,18 @@ namespace PKTickets_UnitTest.TestCase
             Assert.IsType<OkObjectResult>(okResult);
             Assert.StrictEqual(200, list.StatusCode);
         }
+
         [Fact]
         public void ScheduleListByTheaterId_NotFound()
         {
-            Theater theater = null;
+            TheatersSchedulesDTO theater = new TheatersSchedulesDTO();
             var mockservice = new Mock<ITheaterRepository>();
-            mockservice.Setup(x => x.TheaterById(It.IsAny<int>())).Returns(theater);
+            mockservice.Setup(x => x.TheaterSchedulesById(It.IsAny<int>())).Returns(theater);
             var controller = new TheatersController(mockservice.Object);
             var okResult = controller.ListByTheaterId(3);
             var list = okResult as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(okResult);
             Assert.StrictEqual(404, list.StatusCode);
-            Assert.Equal("Theater Id is notfound", list.Value);
         }
 
     }

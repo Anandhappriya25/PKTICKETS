@@ -62,11 +62,8 @@ namespace PKTickets_UnitTest.TestCase
             [Fact]
         public void List_Ok()
         {
-            Screen screen1 = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150,ElitePrice=250, IsActive = true };
-            Screen screen2 = new Screen { ScreenId = 2, ScreenName = "theri", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
             List<Screen> screens = new List<Screen>();
-            screens.Add(screen2);
-            screens.Add(screen1);
+            screens.Add(TestScreen);
             var controller = new ScreensController(GetAllMock(screens).Object);
             var okResult = controller.List();
             var list = okResult as OkObjectResult;
@@ -107,7 +104,7 @@ namespace PKTickets_UnitTest.TestCase
             Assert.StrictEqual(200, list.StatusCode);
         }
         [Fact]
-        public void GetById_Null()
+        public void GetById_NotFound()
         {
             Screen screen = null;
             var controller = new ScreensController(GetByIdMock(screen).Object);
@@ -116,19 +113,17 @@ namespace PKTickets_UnitTest.TestCase
             Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
             Assert.Null(screen);
-            Assert.Equal("This Screen Id is not Registered", check.Value);
         }
 
         [Fact]
         public void Add_TheaterIdConflict()
         {
             Messages message = new Messages();
-            message.Message = "Theater Id(1) is Not Registered.";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new ScreensController(AddMock(message).Object);
             var output = controller.Add(TestScreen);
             var result = output as ConflictObjectResult;
-            Assert.Equal("Theater Id(1) is Not Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -136,14 +131,12 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Add_NameConflict()
         {
-            Screen newscreen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
             Messages message = new Messages();
-            message.Message = "Screen Name(Vijay) is Already Registered.";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new ScreensController(AddMock(message).Object);
             var output = controller.Add(TestScreen);
             var result = output as ConflictObjectResult;
-            Assert.Equal("Screen Name(Vijay) is Already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -152,13 +145,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Add_Success()
         {
             Messages message = new Messages();
-            message.Message = "Screen (Vijay) is succssfully Added";
             message.Success = true;
+            message.Status = Statuses.Created;
             var controller = new ScreensController(AddMock(message).Object);
             var output = controller.Add(TestScreen);
             var result = output as CreatedResult;
             Assert.IsType<CreatedResult>(output);
-            Assert.StrictEqual("Screen (Vijay) is succssfully Added", result.Value);
             Assert.StrictEqual("https://localhost:7221/api/Screens/3", result.Location);
             Assert.StrictEqual(201, result.StatusCode);
         }
@@ -166,12 +158,14 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void Update_BadRequest()
         {
+            Messages message = new Messages();
+            message.Success = true;
+            message.Status = Statuses.BadRequest;
             Screen screen = new Screen { ScreenId = 0 };
-            var controller = new ScreensController(Mock().Object);
+            var controller = new ScreensController(UpdateMock(message).Object);
             var output = controller.Update(screen);
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
-            Assert.StrictEqual("Enter the Screen Id field", result.Value);
             Assert.StrictEqual(400, result.StatusCode);
             Assert.True(screen.ScreenId == 0);
         }
@@ -179,13 +173,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_NotFound()
         {
             Messages message = new Messages();
-            message.Message = "Screen Id is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound;
             var controller = new ScreensController(UpdateMock(message).Object);
             var output = controller.Update(TestScreen);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual("Screen Id is not found", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
 
@@ -193,12 +186,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_NameConflict()
         {
             Messages message = new Messages();
-            message.Message = "Screen Name(Vijay) is Already Registered.";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new ScreensController(UpdateMock(message).Object);
             var output = controller.Update(TestScreen);
             var result = output as ConflictObjectResult;
-            Assert.Equal("Screen Name(Vijay) is Already Registered.", result.Value);
             Assert.StrictEqual(409, result.StatusCode);
             Assert.IsType<ConflictObjectResult>(output);
         }
@@ -207,12 +199,11 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_SuccessOk()
         {
             Messages message = new Messages();
-            message.Message = "Screen Vijay is succssfully Updated";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new ScreensController(UpdateMock(message).Object);
             var output = controller.Update(TestScreen);
             var result = output as OkObjectResult;
-            Assert.Equal("Screen Vijay is succssfully Updated", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
             Assert.IsType<OkObjectResult>(output);
         }
@@ -221,13 +212,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Remove_SucessOk()
         {
             Messages message = new Messages();
-            message.Message = "Screen (Vijay) is succssfully Removed";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new ScreensController(DeleteMock(message).Object);
             var output = controller.Remove(3);
             Assert.IsType<OkObjectResult>(output);
             var result = output as OkObjectResult;
-            Assert.Equal("Screen (Vijay) is succssfully Removed", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
 
         }
@@ -236,27 +226,25 @@ namespace PKTickets_UnitTest.TestCase
         public void Remove_IdNotFound()
         {
             Messages message = new Messages();
-            message.Message = "Screen Id(3) is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound;
             var controller = new ScreensController(DeleteMock(message).Object);
             var output = controller.Remove(3);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual("Screen Id(3) is not found", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
         [Fact]
         public void Remove_AlreadyStarted()
         {
             Messages message = new Messages();
-            message.Message = "This Screen(3) is Already scheduled, so you can't delete the screen";
             message.Success = false;
+            message.Status = Statuses.Conflict;
             var controller = new ScreensController(DeleteMock(message).Object);
             var output = controller.Remove(3);
-            var result = output as NotFoundObjectResult;
-            Assert.IsType<NotFoundObjectResult>(output);
-            Assert.StrictEqual("This Screen(3) is Already scheduled, so you can't delete the screen", result.Value);
-            Assert.StrictEqual(404, result.StatusCode);
+            var result = output as ConflictObjectResult;
+            Assert.IsType<ConflictObjectResult>(output);
+            Assert.StrictEqual(409, result.StatusCode);
         }
     }
 }
