@@ -294,9 +294,9 @@ namespace PKTickets_UnitTest.TestCase
         //public void Remove_AlreadyStarted()
         //{
         //    Messages message = new Messages();
-        //    message.Message = "This Screen(3) is Already scheduled, so you can't delete the screen";
+        //    message.Message = "This Schedule(3) is Already scheduled, so you can't delete the schedule";
         //    message.Success = false;
-        //    var controller = new ScreensController(DeleteMock(message).Object);
+        //    var controller = new SchedulesController(DeleteMock(message).Object);
         //    var output = controller.Remove(3);
         //    var result = output as NotFoundObjectResult;
         //    Assert.IsType<NotFoundObjectResult>(output);

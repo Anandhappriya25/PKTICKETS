@@ -34,12 +34,15 @@ namespace PKTickets.Repository
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == user.EmailId);
             if (phoneExist != null)
             {
-                messages.Message = "The ("+ user.PhoneNumber + ") , PhoneNumber is already Registered.";
+
+                messages.Message = $"The {user.PhoneNumber}, PhoneNumber is already Registered.";
+                messages.Status=Statuses.Conflict;
                 return messages;
             }
             else if (emailIdExist != null)
             {
                 messages.Message = "The (" + user.EmailId + ") , EmailId is already Registered.";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else
@@ -47,6 +50,7 @@ namespace PKTickets.Repository
                 db.Users.Add(user);
                 db.SaveChanges();
                 messages.Success = true;
+                messages.Status = Statuses.Success;
                 messages.Message = user.UserName + ", Your Account is Successfully Registered";
                 return messages;
             }
@@ -60,6 +64,7 @@ namespace PKTickets.Repository
             if (user == null)
             {
                 messages.Message = "User Id ("+userId +") is not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
             else
@@ -68,6 +73,7 @@ namespace PKTickets.Repository
                 db.SaveChanges();
                 messages.Success = true;
                 messages.Message = "The "+user.UserName + " Account is Successfully removed";
+                messages.Status = Statuses.Success;
                 return messages;
             }
         }
@@ -77,22 +83,31 @@ namespace PKTickets.Repository
         {
             Messages messages = new Messages();
             messages.Success = false;
+            if (userDTO.UserId == 0)
+            {
+                messages.Message = "Enter the User Id field";
+                messages.Status = Statuses.NotFound;
+                return messages;
+            }
             var userExist = UserById(userDTO.UserId);
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == userDTO.PhoneNumber);
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == userDTO.EmailId);
             if (userExist == null)
             {
                 messages.Message = "User Id is not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
             else if (phoneExist != null && phoneExist.UserId != userExist.UserId)
             {
                 messages.Message = "The ("+ userDTO.PhoneNumber + "), PhoneNumber is already Registered.";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else if (emailIdExist != null && emailIdExist.UserId != userExist.UserId)
             {
                 messages.Message = "The (" + userDTO.EmailId + "), EmailId is already Registered.";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else
@@ -105,6 +120,7 @@ namespace PKTickets.Repository
                 db.SaveChanges();
                 messages.Success = true;
                 messages.Message = "The " + userDTO.UserName + " Account is Successfully Updated";
+                messages.Status = Statuses.Success;
                 return messages;
             }
         }
