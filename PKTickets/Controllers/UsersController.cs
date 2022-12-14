@@ -49,22 +49,10 @@ namespace PKTickets.Controllers
 
 
         [HttpPut("")]
-        public ActionResult Update(User user)
+        public IActionResult Update(User user)
         {            
             var result = userRepository.UpdateUser(user);
-            if (result.Status == Statuses.BadRequest)
-            {
-                return BadRequest(result.Message);
-            }
-            else if (result.Status == Statuses.NotFound)
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Status == Statuses.Conflict)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -73,11 +61,7 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int userId)
         {
             var result = userRepository.DeleteUser(userId);
-            if (result.Status == Statuses.NotFound)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
         public IActionResult OutPut(Messages result)
         {
