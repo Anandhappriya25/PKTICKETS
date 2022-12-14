@@ -38,6 +38,8 @@ namespace PKTickets.Repository
             if (reservationExist == null)
             {
                 messages.Message = "Reservation Id is not found";
+                messages.Status = Statuses.NotFound;
+                return messages;
             }
             DateTime date = DateTime.Now;
             TimeSpan time = new TimeSpan( date.Hour, date.Minute,0);
@@ -46,6 +48,7 @@ namespace PKTickets.Repository
             if (date.Date > schedule.Date)
             {
                 messages.Message = "You are UpTo Time ,so can't Cancel The Reservation";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             var showTiming = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
@@ -58,6 +61,7 @@ namespace PKTickets.Repository
                 if (timing > showTiming.ShowTiming)
                 {
                     messages.Message = "You are UpTo Time ,so can't Cancel The Reservation";
+                    messages.Status = Statuses.Conflict;
                     return messages;
                 }
                 else
@@ -79,17 +83,20 @@ namespace PKTickets.Repository
             if (schedule == null)
             {
                 messages.Message = "Schedule Id is Not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
             var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == reservation.UserId);
             if (user == null)
             {
                 messages.Message = "User Id is Not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
             else if (reservation.PremiumTickets==0 && reservation.EliteTickets== 0)
             {
                 messages.Message = "Please reaserve atleast a seat";
+                messages.Status = Statuses.BadRequest;
                 return messages;
             }
            
@@ -101,11 +108,13 @@ namespace PKTickets.Repository
             else if(schedule.AvailablePreSeats- reservation.PremiumTickets < 0)
             {
                 messages.Message = "Only "+schedule.AvailablePreSeats+" Premium Tickets are Available";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else if (schedule.AvailableEliSeats - reservation.EliteTickets < 0)
             {
                 messages.Message = "Only " + schedule.AvailableEliSeats + " Elite Tickets are Available";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             else
@@ -123,6 +132,7 @@ namespace PKTickets.Repository
                     db.SaveChanges();
                     messages.Success = true;
                     messages.Message = "Successfully " + tickets + " Tickets are Reserved";
+                    messages.Status = Statuses.Created;
                     SeatCheck(schedule);
                     return messages;
                 }
@@ -135,10 +145,17 @@ namespace PKTickets.Repository
         {
             Messages messages = new Messages();
             messages.Success = false;
+            if (reservation.ReservationId == 0)
+            {
+                messages.Message = "Enter the Reservation Id Field";
+                messages.Status = Statuses.BadRequest;
+                return messages;
+            }
             var reservationExist = ReservationById(reservation.ReservationId);
             if (reservationExist == null)
             {
                 messages.Message = "Reservation Id is Not found";
+                messages.Status = Statuses.NotFound;
                 return messages;
             }
             DateTime date = DateTime.Now;
@@ -148,6 +165,7 @@ namespace PKTickets.Repository
             if(date.Date > schedule.Date)
             {
                 messages.Message = "You are UpTo Time ,so can't Update The Reservation";
+                messages.Status = Statuses.Conflict;
                 return messages;
             }
             var showTime = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
@@ -160,6 +178,7 @@ namespace PKTickets.Repository
                 if (timing > showTime.ShowTiming)
                 {
                     messages.Message = "You are UpTo Time ,so can't Update The Reservation";
+                    messages.Status = Statuses.Conflict;
                     return messages;
                 }
                 else
@@ -173,6 +192,10 @@ namespace PKTickets.Repository
         {
             var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == id);
             UserDTO details = new UserDTO();
+            if(user == null)
+            {
+                return details;
+            }
             details.UserName = user.UserName;
             details.ReservationDetail= ReservationDetailsByUserId(id);
             return details;
@@ -257,6 +280,7 @@ namespace PKTickets.Repository
             schedule.IsActive = false;
             db.SaveChanges();
             messages.Message = "You are UpTo Time ,so can't Book The Reservation";
+            messages.Status = Statuses.Conflict;
             return messages;
         }
         private List<ReservationDetails> ReservationDetailsByUserId(int id)
@@ -298,12 +322,14 @@ namespace PKTickets.Repository
         if (premiumSeats < 0)
         {
             messages.Message = "This Show Do not have that much of Premium seats,only " + premium + "Premium Tickets available";
-            return messages;
+                messages.Status = Statuses.Conflict;
+                return messages;
         }
         else if (eliteSeats < 0)
         {
             messages.Message = "This Show Do not have that much of Elite seats,only " + elite + "Elite Tickets available";
-            return messages;
+                messages.Status = Statuses.Conflict;
+                return messages;
         }
         else
         {
@@ -314,6 +340,7 @@ namespace PKTickets.Repository
             db.SaveChanges();
             messages.Success = true;
             messages.Message = " Tickets are Successfully Updated";
+                messages.Status = Statuses.Success;
                 SeatCheck(schedule);
                 return messages;
 
@@ -329,6 +356,7 @@ namespace PKTickets.Repository
             db.SaveChanges();
             messages.Success = true;
             messages.Message = "Reservation is succssfully deleted";
+            messages.Status = Statuses.Success;
             return messages;
         }
 
