@@ -86,7 +86,7 @@ namespace PKTickets.Repository
                 db.SaveChanges();
                 messages.Success = true;
                 messages.Message = $"Theater {theater.TheaterName} is Successfully Added";
-                messages.Status = Statuses.Success;
+                messages.Status = Statuses.Created;
                 return messages;
             }
             

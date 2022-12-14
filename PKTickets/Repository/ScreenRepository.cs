@@ -59,7 +59,7 @@ namespace PKTickets.Repository
                 db.SaveChanges();
                 messages.Success = true;
                 messages.Message = $"Screen {screen.ScreenName} is succssfully Added";
-                messages.Status = Statuses.Success;
+                messages.Status = Statuses.Created;
                 return messages;
             }
         }

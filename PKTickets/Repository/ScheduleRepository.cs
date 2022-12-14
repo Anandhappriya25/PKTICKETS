@@ -3,6 +3,7 @@ using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -84,7 +85,14 @@ namespace PKTickets.Repository
 
         public List<Schedule> SchedulesByMovieId(int id)
         {
-            var scheduleList = AvailableSchedulesList().Where(x => x.MovieId == id).ToList();
+            var movie=db.Movies.FirstOrDefault(x => x.MovieId == id);
+            List<Schedule> scheduleList = new List<Schedule>();  
+            if (movie == null)
+            {
+                scheduleList[1]= null;
+                return scheduleList;
+            }
+            scheduleList = AvailableSchedulesList().Where(x => x.MovieId == id).ToList();
             return scheduleList;
         }
 
@@ -98,35 +106,35 @@ namespace PKTickets.Repository
             var scheduleExist = ScheduleById(id);
             if (scheduleExist == null)
             {
-                messages.Message = "The Schedule Id ("+ id+") is not found";
+                messages.Message = $"The Schedule Id {id} is not found";
             }
             var reservation=db.Reservations.Where(x => x.ScheduleId == id).Where(x => x.IsActive == true).FirstOrDefault();
             if (reservation != null)
             {
-                messages.Message = "The Reservation is Already Started to Schedule Id (" + id + ") ,so can't Delete";
+                messages.Message = $"The Reservation is Already Started to Schedule Id {id} ,so can't Delete";
             }
             var timeExist = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == scheduleExist.ShowTimeId);
             if(date.Date > scheduleExist.Date)
             {
-                messages.Message = "The Show is Started for this Schedule Id (" + id + ") ,so can't Delete";
+                messages.Message = $"The Show is Started for this Schedule Id {id} ,so can't Delete";
             }
             if (date.Date == scheduleExist.Date && timeExist.ShowTiming > timeValue)
             {
                 scheduleExist.IsActive = false;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "The Schedule Id ("+ id+") is Removed From reservation"; 
+                messages.Message = $"The Schedule Id {id} is Removed From reservation"; 
             }
             else if(date.Date == scheduleExist.Date && timeExist.ShowTiming < timeValue)
             {
-                messages.Message = "The Show is Started for this Schedule Id (" + id + ") ,so can't Delete";
+                messages.Message = $"The Show is Started for this Schedule Id {id} ,so can't Delete";
             }
             else
             {
                 scheduleExist.IsActive = false;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "The Schedule Id (" + id + ") is Removed From reservation";
+                messages.Message = $"The Schedule Id {id} is Removed From reservation";
             }
             return messages;
         }
@@ -138,7 +146,7 @@ namespace PKTickets.Repository
             var screen=db.Screens.Where(x=>x.IsActive==true).FirstOrDefault(x => x.ScreenId == schedule.ScreenId);
             if (screen == null)
             {
-                messages.Message = "The Screen Id("+ schedule.ScreenId + ") is not Registered";
+                messages.Message = $"The Screen Id {schedule.ScreenId} is not Registered";
                 return messages;
             }
             var scheduleExist = SchedulesByMovieId(schedule.MovieId).Where(x => x.ScreenId == schedule.ScreenId).Where
@@ -160,7 +168,7 @@ namespace PKTickets.Repository
                 db.Schedules.Add(schedule);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "Schedule Id ("+ schedule.ScheduleId + ")Is added Successfully";
+                messages.Message = $"Schedule Id {schedule.ScheduleId} Is added Successfully";
                 return messages;
             }
             else if (date.Date == schedule.Date && timeExist.ShowTiming > timeValue)
@@ -172,13 +180,13 @@ namespace PKTickets.Repository
                 db.Schedules.Add(schedule);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "Schedule Id (" + schedule.ScheduleId + ")Is added Successfully";
+                messages.Message = $"Schedule Id {schedule.ScheduleId} Is added Successfully";
                 return messages;
             }
             else
             {
 
-                messages.Message = "The date("+schedule.Date+")entered is Invalid,Kindly Check the Date.";
+                messages.Message = $"The date {schedule.Date} entered is Invalid,Kindly Check the Date.";
                 return messages;
             }
         }
@@ -187,6 +195,26 @@ namespace PKTickets.Repository
         {
             Messages messages = new Messages();
             messages.Success = false;
+            if(schedule.ScheduleId==0)
+            {
+                messages.Message = "Enter the Schedule Id Field";
+                return messages;
+            }
+            else if (schedule.ScreenId == 0)
+            {
+                messages.Message = "Enter the Screen Id Field";
+                return messages;
+            }
+            else if (schedule.MovieId == 0)
+            {
+                messages.Message = "Enter the Movie Id Field";
+                return messages;
+            }
+            else if (schedule.ShowTimeId == 0)
+            {
+                messages.Message = "Enter the Show Time Id Field";
+                return messages;
+            }
             var scheduleExist = ScheduleById(schedule.ScheduleId);
             if (scheduleExist == null)
             {
@@ -198,7 +226,7 @@ namespace PKTickets.Repository
             var timeExist = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
             if (date.Date >= schedule.Date && timeExist.ShowTiming > timeValue)
             {
-                messages.Message = "The Reservation Is Already started fot this Schedule Id ("+ schedule.ScheduleId + ") So can't Update" ;
+                messages.Message = $"The Reservation Is Already started fot this Schedule Id {schedule.ScheduleId} So can't Update" ;
                 return messages;
             }
             else
@@ -206,7 +234,7 @@ namespace PKTickets.Repository
                 scheduleExist.MovieId = schedule.MovieId;
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Message = "The Schedule Id ("+ schedule.ScheduleId + ") is Successfully Updated";
+                messages.Message = $"The Schedule Id {schedule.ScheduleId} is Successfully Updated";
             }
             return messages;
         }

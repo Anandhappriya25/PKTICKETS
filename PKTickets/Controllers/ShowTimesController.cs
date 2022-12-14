@@ -37,8 +37,8 @@ namespace PKTickets.Controllers
         public IActionResult Add(ShowTimeDTO showTime)
         {
             var result = showTimeRepository.CreateShowTime(showTime);
-            return (result.Status == Statuses.Conflict) ? Conflict(result.Message) : 
-                Created($"{TimingConvert.LocalHost("ShowTimes")}{showTime.ShowTimeId}", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("ShowTimes")}{showTime.ShowTimeId}", result.Message) : 
+                Conflict(result.Message);
         }
 
 

@@ -72,7 +72,7 @@ namespace PKTickets.Repository
                 db.ShowTimes.Add(showTime);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Status = Statuses.Success;
+                messages.Status = Statuses.Created;
                 messages.Message = "ShowTiming is Successfully added";
             }
             return messages;

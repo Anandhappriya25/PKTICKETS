@@ -39,22 +39,18 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int id)
         {
             var show = scheduleRepository.ScheduleById(id);
-            if (show == null)
-            {
-                return NotFound("This Schedule Id is not Registered");
-            }
-            return Ok(show);
+            return (show == null) ? NotFound("This Schedule Id is not Registered") : Ok(show);
         }
 
         [HttpGet("Movie/{id}")]
         public IActionResult ListByMovieId(int id)
         {
-            var movie= scheduleRepository.MovieById(id);
-            if(movie == null)
+            var schedule= scheduleRepository.SchedulesByMovieId(id);
+            if (schedule.Count() == 0)
             {
-                return NotFound("Movie Id is Not Found");
+                return NotFound("Movie is Not Registered in any Schedules");
             }
-            return Ok(scheduleRepository.SchedulesByMovieId(id));
+            return Ok(schedule);
         }
 
 
@@ -104,6 +100,7 @@ namespace PKTickets.Controllers
             if (result.Success == false)
             {
                 return BadRequest(result.Message);
+                
             }
             return Ok(result.Message);
         }
@@ -119,6 +116,19 @@ namespace PKTickets.Controllers
                 return NotFound("Movie Id is Not Found");
             }
             return Ok(scheduleRepository.DetailsByMovieId(id));
+        }
+        private IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
+            {
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
+            }
+            return Ok(result.Message);
         }
     }
 }

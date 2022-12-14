@@ -69,7 +69,7 @@ namespace PKTickets.Repository
                 db.Movies.Add(movie);
                 db.SaveChanges();
                 messages.Success = true;
-                messages.Status = Statuses.Success;
+                messages.Status = Statuses.Created;
                 messages.Message = $"{movie.Title} Movie is Successfully Added";
                 return messages;
             }
