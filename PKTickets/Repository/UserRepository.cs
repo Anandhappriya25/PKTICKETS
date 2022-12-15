@@ -32,7 +32,7 @@ namespace PKTickets.Repository
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == user.EmailId);
             return (phoneExist != null) ? PhoneConflict(user)
                 : (emailIdExist != null) ? EmailConflict(user)
-                :Create(user);
+                : Create(user);
         }
 
         public Messages DeleteUser(int userId)
@@ -41,7 +41,7 @@ namespace PKTickets.Repository
             return (user == null) ? UserNotFound(userId)
                : Delete(user);
         }
-        
+
 
         public Messages UpdateUser(User userDTO)
         {
@@ -57,13 +57,12 @@ namespace PKTickets.Repository
             return (userExist == null) ? UserNotFound(userDTO.UserId)
                 : (phoneExist != null && phoneExist.UserId != userExist.UserId) ? PhoneConflict(userDTO)
                 : (emailIdExist != null && emailIdExist.UserId != userExist.UserId) ? EmailConflict(userDTO)
-                : Update(userExist,userDTO);
-            
+                : Update(userExist, userDTO);
+
         }
 
         #region
-        private Messages messages => new()
-        { Success = false, Status = Statuses.Conflict };
+        private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
         private Messages PhoneConflict(User user)
         {
             messages.Message = $"The {user.PhoneNumber}, PhoneNumber is already Registered.";
@@ -72,7 +71,7 @@ namespace PKTickets.Repository
 
         private Messages EmailConflict(User user)
         {
-            messages.Message = $"The {user.PhoneNumber}, PhoneNumber is already Registered.";
+            messages.Message = $"The {user.EmailId}, Email Id is already Registered.";
             return messages;
         }
         private Messages Create(User user)
