@@ -192,13 +192,12 @@ namespace PKTickets_UnitTest.TestCase
         public void Add_Success()
         {
             Messages message = new Messages();
-            message.Message = "Schedule Id (3) is succssfully Added";
             message.Success = true;
+            message.Status = Statuses.Created;
             var controller = new SchedulesController(AddMock(message).Object);
             var output = controller.Add(TestSchedule);
             var result = output as CreatedResult;
             Assert.IsType<CreatedResult>(output);
-            Assert.StrictEqual("Schedule Id (3) is succssfully Added", result.Value);
             Assert.StrictEqual("https://localhost:7221/api/Schedules/3", result.Location);
             Assert.StrictEqual(201, result.StatusCode);
         }
@@ -208,13 +207,12 @@ namespace PKTickets_UnitTest.TestCase
         {
             Schedule schedule = new Schedule { ScheduleId = 0 };
             Messages message = new Messages();
-            message.Message = "Enter the Schedule Id field";
             message.Success = false;
+            message.Status = Statuses.BadRequest;
             var controller = new SchedulesController(UpdateMock(message).Object);
             var output = controller.Update(schedule);
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
-            Assert.StrictEqual("Enter the Schedule Id field", result.Value);
             Assert.StrictEqual(400, result.StatusCode);
             Assert.True(schedule.ScheduleId == 0);
         }
@@ -223,14 +221,13 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_NotFound()
         {
             Messages message = new Messages();
-            message.Message = "The Schedule Id is not found";
             message.Success = false;
+            message.Status = Statuses.NotFound;
             var controller = new SchedulesController(UpdateMock(message).Object);
             var output = controller.Update(TestSchedule);
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
             Assert.StrictEqual(message.Message, result.Value);
-            Assert.NotEqual("Schedule Id is not found", result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
          
@@ -254,6 +251,7 @@ namespace PKTickets_UnitTest.TestCase
             Messages message = new Messages();
             message.Message = "The Schedule Id is succssfully Updated";
             message.Success = true;
+            message.Status = Statuses.Success;
             var controller = new SchedulesController(UpdateMock(message).Object);
             var output = controller.Update(TestSchedule);
             var result = output as OkObjectResult;
