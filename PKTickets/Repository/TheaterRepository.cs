@@ -17,23 +17,23 @@ namespace PKTickets.Repository
 
         public List<Theater> GetTheaters()
         {
-            return db.Theaters.Where(x => x.IsActive == true).ToList();
+            return db.Theaters.Where(x => x.IsActive).ToList();
         }
 
         public List<Theater> TheaterByLocation(string location)
         {
-            var theaters = db.Theaters.Where(x => x.IsActive == true).Where(x => x.Location == location).ToList();
+            var theaters = db.Theaters.Where(x => x.IsActive).Where(x => x.Location == location).ToList();
             return theaters;
         }
 
         public Theater TheaterById(int id)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == id);
             return theater;
         }
         public Theater TheaterByName(string name)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterName == name);
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterName == name);
             return theater;
         }
 
@@ -128,8 +128,8 @@ namespace PKTickets.Repository
 
         public ScreensListDTO TheaterScreens(int id)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
-            var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == id);
+            var screens = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == id).ToList();
             ScreensListDTO list = new ScreensListDTO();
             if (theater == null)
             {
@@ -144,7 +144,7 @@ namespace PKTickets.Repository
         public TheatersSchedulesDTO TheaterSchedulesById(int id)
         {
             var theater = db.Theaters.FirstOrDefault(x => x.TheaterId == id);
-            var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
+            var screens = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == id).ToList();
 
             TheatersSchedulesDTO list = new TheatersSchedulesDTO();
             if (theater == null)
@@ -179,7 +179,7 @@ namespace PKTickets.Repository
                            join schedule in db.Schedules on screen.ScreenId equals schedule.ScreenId
                            join showTime in db.ShowTimes on schedule.ShowTimeId equals showTime.ShowTimeId
                            join movie in db.Movies on schedule.MovieId equals movie.MovieId
-                           where screen.ScreenId == id && schedule.IsActive == true && ((schedule.Date == date.Date && showTime.ShowTiming > timeValue) || (schedule.Date > date.Date))
+                           where screen.ScreenId == id && schedule.IsActive && ((schedule.Date == date.Date && showTime.ShowTiming > timeValue) || (schedule.Date > date.Date))
                            select new SchedulesDTO()
                            {
                                ScheduleId = schedule.ScheduleId,
@@ -196,7 +196,7 @@ namespace PKTickets.Repository
         {
             var screens = (from theater in db.Theaters
                            join screen in db.Screens on theater.TheaterId equals screen.TheaterId
-                           where theater.TheaterId == id && screen.IsActive == true
+                           where theater.TheaterId == id && screen.IsActive
                            select new ScreensDTO()
                            {
                                ScreenId = screen.ScreenId,

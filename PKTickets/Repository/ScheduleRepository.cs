@@ -52,7 +52,7 @@ namespace PKTickets.Repository
         {
             DateTime date = DateTime.Now;
             var timeValue = TimesValue(date);
-            var list = db.Schedules.Where(x => x.IsActive == true).Where(x => x.Date == date.Date).ToList();
+            var list = db.Schedules.Where(x => x.IsActive).Where(x => x.Date == date.Date).ToList();
             var scheduleList = new List<Schedule>();
             foreach (Schedule movie in list)
             {
@@ -62,7 +62,7 @@ namespace PKTickets.Repository
                     scheduleList.Add(movie);
                 }
             }
-            var list2 = db.Schedules.Where(x => x.IsActive == true).Where(x => x.Date > date.Date).ToList();
+            var list2 = db.Schedules.Where(x => x.IsActive).Where(x => x.Date > date.Date).ToList();
             if(list2.Count()>0)
             {
                 foreach (Schedule movie in list2)
@@ -74,12 +74,12 @@ namespace PKTickets.Repository
         }
         public Movie MovieById(int id)
         {
-            var movie = db.Movies.Where(x => x.IsPlaying == true).FirstOrDefault(x => x.MovieId == id);
+            var movie = db.Movies.Where(x => x.IsPlaying).FirstOrDefault(x => x.MovieId == id);
             return movie;
         }
         public Schedule ScheduleById(int id)
         {
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == id);
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == id);
             return schedule;
         }
 
@@ -161,14 +161,14 @@ namespace PKTickets.Repository
                 messages.Status = Statuses.BadRequest;
                 return messages;
             }
-            var screen=db.Screens.Where(x=>x.IsActive==true).FirstOrDefault(x => x.ScreenId == schedule.ScreenId);
+            var screen=db.Screens.Where(x=>x.IsActive).FirstOrDefault(x => x.ScreenId == schedule.ScreenId);
             if (screen == null)
             {
                 messages.Message = $"The Screen Id {schedule.ScreenId} is not Registered";
                 messages.Status = Statuses.NotFound;
                 return messages;
             }
-            var movie = db.Movies.Where(x => x.IsPlaying == true).FirstOrDefault(x => x.MovieId == schedule.MovieId);
+            var movie = db.Movies.Where(x => x.IsPlaying).FirstOrDefault(x => x.MovieId == schedule.MovieId);
             if (movie == null)
             {
                 messages.Message = $"The Movie Id {schedule.MovieId} is not Registered";
@@ -285,20 +285,20 @@ namespace PKTickets.Repository
       
         public Screen ScreenById(int id)
         {
-            var screen = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == id);
+            var screen = db.Screens.Where(x => x.IsActive).FirstOrDefault(x => x.ScreenId == id);
             return screen;
         }
        
         public Theater TheaterById(int id)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == id);
             return theater;
         }
 
         public MovieDTO DetailsByMovieId(int id)
         {
             MovieDTO movie = new MovieDTO();
-            var moviename = db.Movies.Where(x => x.IsPlaying == true).FirstOrDefault(x => x.MovieId == id);
+            var moviename = db.Movies.Where(x => x.IsPlaying).FirstOrDefault(x => x.MovieId == id);
             movie.MovieName = moviename.Title;
             if(moviename == null)
             {
@@ -310,14 +310,14 @@ namespace PKTickets.Repository
             List<Screen> screenList = new List<Screen>();
             foreach (var schedule in uniqueSchedulesByScreen)
             {
-                Screen screen = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == schedule.ScreenId);
+                Screen screen = db.Screens.Where(x => x.IsActive).FirstOrDefault(x => x.ScreenId == schedule.ScreenId);
                 screenList.Add(screen);
             }
             List<Screen> uniqueScreen = screenList.DistinctBy(x => x.ScreenId).ToList();
             List<Theater> theaterList = new List<Theater>();
             foreach (var screen in uniqueScreen)
             {
-                Theater theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == screen.TheaterId);
+                Theater theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == screen.TheaterId);
                 theaterList.Add(theater);
             }
             List<Theater> uniqueTheater = theaterList.DistinctBy(x => x.TheaterId).ToList();
@@ -364,7 +364,7 @@ namespace PKTickets.Repository
         }
         public SchedulesListDTO SchedulesListByScreenId(int id)
         {
-            var screens = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == id);
+            var screens = db.Screens.Where(x => x.IsActive).FirstOrDefault(x => x.ScreenId == id);
             var theater = db.Theaters.FirstOrDefault(x => x.TheaterId == screens.TheaterId);
 
             SchedulesListDTO list = new SchedulesListDTO();

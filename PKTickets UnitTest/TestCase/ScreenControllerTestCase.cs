@@ -55,7 +55,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.RemoveScreen(It.IsAny<int>())).Returns(message);
             return mockservice;
         }
-        private Screen TestScreen => new()
+        private Screen TestScreen => new Screen()
         { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
         
 

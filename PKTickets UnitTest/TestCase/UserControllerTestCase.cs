@@ -54,7 +54,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.DeleteUser(It.IsAny<int>())).Returns(message);
             return mockservice;
         }
-        private User TestUser => new()
+        private User TestUser => new User()
         { UserId = 3, UserName = "Vijay", PhoneNumber = "9441004834", Location = "Vellore", EmailId = "karth56@gmail.com", Password = "123456", IsActive = true };
 
 

@@ -72,7 +72,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.DeleteMovie(It.IsAny<int>())).Returns(message);
             return mockservice;
         }
-        private Movie TestMovie => new()
+        private Movie TestMovie => new Movie()
         { MovieId = 3, Title = "Theri", Duration =120,Genre="Action", CastAndCrew ="vijay and samantha",Language="tamil",Director="atlee",ImagePath="css",IsPlaying=true};
 
         

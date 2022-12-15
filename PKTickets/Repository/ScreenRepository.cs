@@ -17,12 +17,12 @@ namespace PKTickets.Repository
 
         public List<Screen> GetAllScreens()
         {
-            return db.Screens.Where(x => x.IsActive == true).ToList();
+            return db.Screens.Where(x => x.IsActive).ToList();
         }
 
         public Screen ScreenById(int id)
         {
-            var screen = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == id);
+            var screen = db.Screens.Where(x => x.IsActive).FirstOrDefault(x => x.ScreenId == id);
             return screen;
         }
 
@@ -37,7 +37,7 @@ namespace PKTickets.Repository
                 messages.Status = Statuses.BadRequest;
                 return messages;
             }
-            var theaterExist = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == screen.TheaterId);
+            var theaterExist = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == screen.TheaterId);
 
             if (theaterExist == null)
             {
@@ -45,7 +45,7 @@ namespace PKTickets.Repository
                 messages.Status=Statuses.NotFound;
                 return messages;
             }
-            var screenExist = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == screen.TheaterId).
+            var screenExist = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == screen.TheaterId).
                 FirstOrDefault(x => x.ScreenName == screen.ScreenName);
             if (screenExist != null)
             {
@@ -81,7 +81,7 @@ namespace PKTickets.Repository
                 messages.Status = Statuses.NotFound;
                 return messages;
             }
-            var nameExist = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == screen.TheaterId).
+            var nameExist = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == screen.TheaterId).
                 FirstOrDefault(x => x.ScreenName == screen.ScreenName);
             if(nameExist!=null && nameExist.ScreenId != screen.ScreenId)
             {

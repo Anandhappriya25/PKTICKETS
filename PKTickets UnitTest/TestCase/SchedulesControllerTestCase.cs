@@ -43,6 +43,12 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.ScheduleById(It.IsAny<int>())).Returns(schedule);
             return mockservice;
         }
+        private Mock<IScheduleRepository> ListByMovieId(List<Schedule> schedule)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.SchedulesByMovieId(It.IsAny<int>())).Returns(schedule);
+            return mockservice;
+        }
         private Mock<IScheduleRepository> AddMock(Messages message)
         {
             var mockservice = Mock();
@@ -61,7 +67,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.DeleteSchedule(It.IsAny<int>())).Returns(message);
             return mockservice;
         }
-        private Schedule TestSchedule => new()
+        private Schedule TestSchedule => new Schedule()
         { ScheduleId = 3, ScreenId=2, MovieId=3, ShowTimeId=3, Date= DateTime.Now, PremiumSeats=200, EliteSeats=150, AvailablePreSeats=200, AvailableEliSeats=150, IsActive=true};
 
 
@@ -140,7 +146,7 @@ namespace PKTickets_UnitTest.TestCase
         }
 
         [Fact]
-        public void GetById_Null()
+        public void GetById_NotFound()
         {
             Schedule schedule = null;
             var controller = new SchedulesController(GetByIdMock(schedule).Object);
@@ -149,15 +155,17 @@ namespace PKTickets_UnitTest.TestCase
             Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
             Assert.Null(schedule);
-            Assert.Equal("This Schedule Id is not Registered", check.Value);
         }
 
-        //[Fact]
-        //public void ListByMovieId_Ok()
-        //{
-        //    Movie movie = new Movie() { MovieId = 3,};
+        [Fact]
+        public void ListByMovieId_Ok()
+        {
+            Movie movie = new Movie() { MovieId = 3, };
+            Messages message = new Messages();
+            message.Success = true;
+            message.Status = Statuses.Success;
 
-        //}
+        }
 
         //[Fact]
         //public void Add_TheaterIdConflict()
@@ -203,9 +211,55 @@ namespace PKTickets_UnitTest.TestCase
         }
 
         [Fact]
+        public void Add_BadRequest()
+        {
+            Schedule schedule = new Schedule { MovieId = 0 , ScreenId = 0, ShowTimeId = 0 };
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.BadRequest;
+            var controller = new SchedulesController(AddMock(message).Object);
+            var output = controller.Add(schedule);
+            var result = output as BadRequestObjectResult;
+            Assert.IsType<BadRequestObjectResult>(output);
+            Assert.StrictEqual(400, result.StatusCode);
+            Assert.True(schedule.MovieId == 0 || schedule.ScreenId == 0 || schedule.ShowTimeId == 0);
+        }
+
+        [Fact]
+        public void Add_NotFound()
+        {
+            Schedule schedule = new Schedule { MovieId = 3, ScreenId = 2, ShowTimeId = 3 };
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.NotFound;
+            var controller = new SchedulesController(AddMock(message).Object);
+            var output = controller.Add(schedule);
+            var result = output as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(output);
+            Assert.StrictEqual(404, result.StatusCode);
+            Assert.True(schedule.MovieId == 3 || schedule.ScreenId == 2 || schedule.ShowTimeId == 3);
+        }
+
+        //[Fact]
+        //public void Add_Conflict()
+        //{
+        //    Schedule schedule = new Schedule { Date = DateTime.Now}; 
+        //    Messages message = new Messages();
+        //    message.Success = false;
+        //    message.Status = Statuses.Conflict;
+        //    var controller = new SchedulesController(AddMock(message).Object);
+        //    var output = controller.Add(schedule);
+        //    var result = output as ConflictObjectResult;
+        //    Assert.IsType<ConflictObjectResult>(output); 
+        //    Assert.StrictEqual(409, result.StatusCode);
+        //    Assert.True(schedule.MovieId == 3 || schedule.ScreenId == 2 || schedule.ShowTimeId == 3);
+        //}
+
+
+        [Fact]
         public void Update_BadRequest()
         {
-            Schedule schedule = new Schedule { ScheduleId = 0 };
+            Schedule schedule = new Schedule { ScheduleId = 0, MovieId = 0, ScreenId = 0, ShowTimeId = 0 };
             Messages message = new Messages();
             message.Success = false;
             message.Status = Statuses.BadRequest;
@@ -214,7 +268,7 @@ namespace PKTickets_UnitTest.TestCase
             var result = output as BadRequestObjectResult;
             Assert.IsType<BadRequestObjectResult>(output);
             Assert.StrictEqual(400, result.StatusCode);
-            Assert.True(schedule.ScheduleId == 0);
+            Assert.True(schedule.ScheduleId == 0 || schedule.MovieId == 0 || schedule.ScreenId == 0 || schedule.ShowTimeId == 0);
         }
 
         [Fact]
@@ -249,58 +303,53 @@ namespace PKTickets_UnitTest.TestCase
         public void Update_SuccessOk()
         {
             Messages message = new Messages();
-            message.Message = "The Schedule Id is succssfully Updated";
             message.Success = true;
             message.Status = Statuses.Success;
             var controller = new SchedulesController(UpdateMock(message).Object);
             var output = controller.Update(TestSchedule);
             var result = output as OkObjectResult;
-            Assert.Equal("The Schedule Id is succssfully Updated", result.Value);
             Assert.StrictEqual(200, result.StatusCode);
             Assert.IsType<OkObjectResult>(output);
         }
 
-        //[Fact]
-        //public void Remove_SucessOk()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Schedule Id (3) is succssfully Removed";
-        //    message.Success = true;
-        //    var controller = new SchedulesController(DeleteMock(message).Object);
-        //    var output = controller.Remove(3);
-        //    Assert.IsType<OkObjectResult>(output);
-        //    var result = output as OkObjectResult;
-        //    Assert.Equal("Schedule Id (3) is succssfully Removed", result.Value);
-        //    Assert.StrictEqual(200, result.StatusCode);
-        //}
+        [Fact]
+        public void Remove_SucessOk()
+        {
+            Messages message = new Messages();
+            message.Success = true;
+            message.Status = Statuses.Success;
+            var controller = new SchedulesController(DeleteMock(message).Object);
+            var output = controller.Remove(3);
+            Assert.IsType<OkObjectResult>(output);
+            var result = output as OkObjectResult;
+            Assert.StrictEqual(200, result.StatusCode);
+        }
 
-        //[Fact]
-        //public void Remove_IdNotFound()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Schedule Id(3) is not found";
-        //    message.Success = false;
-        //    var controller = new SchedulesController(DeleteMock(message).Object);
-        //    var output = controller.Remove(3);
-        //    var result = output as NotFoundObjectResult;
-        //    Assert.IsType<NotFoundObjectResult>(output);
-        //    Assert.StrictEqual("Schedule Id(3) is not found", result.Value);
-        //    Assert.StrictEqual(404, result.StatusCode);
-        //}
+        [Fact]
+        public void Remove_NotFound()
+        {
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.NotFound;
+            var controller = new SchedulesController(DeleteMock(message).Object);
+            var output = controller.Remove(3);
+            var result = output as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(output);
+            Assert.StrictEqual(404, result.StatusCode);
+        }
 
-        //[Fact]
-        //public void Remove_AlreadyStarted()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "This Schedule(3) is Already scheduled, so you can't delete the schedule";
-        //    message.Success = false;
-        //    var controller = new SchedulesController(DeleteMock(message).Object);
-        //    var output = controller.Remove(3);
-        //    var result = output as NotFoundObjectResult;
-        //    Assert.IsType<NotFoundObjectResult>(output);
-        //    Assert.StrictEqual("This Screen(3) is Already scheduled, so you can't delete the screen", result.Value);
-        //    Assert.StrictEqual(404, result.StatusCode);
-        //}
+        [Fact]
+        public void Remove_AlreadyStarted()
+        {
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.Conflict;
+            var controller = new SchedulesController(DeleteMock(message).Object);
+            var output = controller.Remove(3);
+            var result = output as ConflictObjectResult;
+            Assert.IsType<ConflictObjectResult>(output);
+            Assert.StrictEqual(409, result.StatusCode);
+        }
     }
 }
 

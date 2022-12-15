@@ -18,7 +18,7 @@ namespace PKTickets.Repository
 
         public List<Movie> GetAllMovies()
         {
-            return db.Movies.Where(x => x.IsPlaying == true).ToList();
+            return db.Movies.Where(x => x.IsPlaying).ToList();
         }
         public List<Movie> ScheduledMovies()
         {
@@ -35,19 +35,19 @@ namespace PKTickets.Repository
 
         public Movie MovieById(int id)
         {
-            var movieExist = db.Movies.Where(x => x.IsPlaying == true).FirstOrDefault(x => x.MovieId == id);
+            var movieExist = db.Movies.Where(x => x.IsPlaying).FirstOrDefault(x => x.MovieId == id);
             return movieExist;
         }
 
         public List<Movie> MovieByTitle(string title)
         {
-            var movieExists = db.Movies.Where(x => x.IsPlaying == true).Where(x => x.Title == title).ToList();
+            var movieExists = db.Movies.Where(x => x.IsPlaying).Where(x => x.Title == title).ToList();
             return movieExists;
         }
 
         public List<Movie> MovieByGenre(string genre)
         {
-            var movieExists = db.Movies.Where(x => x.IsPlaying == true).Where(x => x.Genre == genre).ToList();
+            var movieExists = db.Movies.Where(x => x.IsPlaying).Where(x => x.Genre == genre).ToList();
             return movieExists;
         }
 

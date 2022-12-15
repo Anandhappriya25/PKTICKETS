@@ -16,13 +16,13 @@ namespace PKTickets.Repository
 
         public List<Reservation> ReservationList()
         {
-            return db.Reservations.Where(x => x.IsActive == true).ToList();
+            return db.Reservations.Where(x => x.IsActive).ToList();
         }
- 
+
 
         public Reservation ReservationById(int id)
         {
-            var reservation = db.Reservations.Where(x => x.IsActive == true).FirstOrDefault(x => x.ReservationId == id);
+            var reservation = db.Reservations.Where(x => x.IsActive).FirstOrDefault(x => x.ReservationId == id);
             return reservation;
         }
         public List<Reservation> ReservationsByShowId(int id)
@@ -42,7 +42,7 @@ namespace PKTickets.Repository
                 return messages;
             }
             DateTime date = DateTime.Now;
-            TimeSpan time = new TimeSpan( date.Hour, date.Minute,0);
+            TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
             var timing = TimingConvert.ConvertToInt(Convert.ToString(time));
             var schedule = db.Schedules.FirstOrDefault(x => x.ScheduleId == reservationExist.ScheduleId);
             if (date.Date > schedule.Date)
@@ -66,48 +66,48 @@ namespace PKTickets.Repository
                 }
                 else
                 {
-                    return DeleteSave(reservationExist,schedule);
+                    return DeleteSave(reservationExist, schedule);
                 }
             }
-               
+
         }
 
         public Messages CreateReservation(Reservation reservation)
         {
-             Messages messages = new Messages();
+            Messages messages = new Messages();
             messages.Success = false;
             DateTime date = DateTime.Now;
             TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
             var timing = TimingConvert.ConvertToInt(Convert.ToString(time));
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
             if (schedule == null)
             {
                 messages.Message = "Schedule Id is Not found";
                 messages.Status = Statuses.NotFound;
                 return messages;
             }
-            var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == reservation.UserId);
+            var user = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == reservation.UserId);
             if (user == null)
             {
                 messages.Message = "User Id is Not found";
                 messages.Status = Statuses.NotFound;
                 return messages;
             }
-            else if (reservation.PremiumTickets==0 && reservation.EliteTickets== 0)
+            else if (reservation.PremiumTickets == 0 && reservation.EliteTickets == 0)
             {
                 messages.Message = "Please reaserve atleast a seat";
                 messages.Status = Statuses.BadRequest;
                 return messages;
             }
-           
+
             var showTime = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
             if (date.Date > schedule.Date)
             {
                 return ScheduleFalse(schedule);
             }
-            else if(schedule.AvailablePreSeats- reservation.PremiumTickets < 0)
+            else if (schedule.AvailablePreSeats - reservation.PremiumTickets < 0)
             {
-                messages.Message = "Only "+schedule.AvailablePreSeats+" Premium Tickets are Available";
+                messages.Message = "Only " + schedule.AvailablePreSeats + " Premium Tickets are Available";
                 messages.Status = Statuses.Conflict;
                 return messages;
             }
@@ -121,7 +121,7 @@ namespace PKTickets.Repository
             {
                 if (date.Date == schedule.Date && timing > showTime.ShowTiming)
                 {
-                   return ScheduleFalse(schedule);
+                    return ScheduleFalse(schedule);
                 }
                 else
                 {
@@ -137,7 +137,7 @@ namespace PKTickets.Repository
                     return messages;
                 }
             }
-            
+
         }
 
 
@@ -159,10 +159,10 @@ namespace PKTickets.Repository
                 return messages;
             }
             DateTime date = DateTime.Now;
-            TimeSpan time = new TimeSpan(date.Hour, date.Minute,0);
+            TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
             var timing = TimingConvert.ConvertToInt(Convert.ToString(time));
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
-            if(date.Date > schedule.Date)
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
+            if (date.Date > schedule.Date)
             {
                 messages.Message = "You are UpTo Time ,so can't Update The Reservation";
                 messages.Status = Statuses.Conflict;
@@ -173,7 +173,7 @@ namespace PKTickets.Repository
             {
                 return UpdateSave(reservation, reservationExist, schedule);
             }
-            else 
+            else
             {
                 if (timing > showTime.ShowTiming)
                 {
@@ -183,35 +183,33 @@ namespace PKTickets.Repository
                 }
                 else
                 {
-                        return UpdateSave(reservation,reservationExist,schedule);
+                    return UpdateSave(reservation, reservationExist, schedule);
                 }
-             }
-                    
+            }
+
         }
         public UserDTO ReservationsByUserId(int id)
         {
-            var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == id);
+            var user = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == id);
             UserDTO details = new UserDTO();
-            if(user == null)
+            if (user == null)
             {
                 return details;
             }
             details.UserName = user.UserName;
-            details.ReservationDetail= ReservationDetailsByUserId(id);
+            details.ReservationDetail = ReservationDetailsByUserId(id);
             return details;
         }
-
         public User UserById(int id)
         {
-            var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == id);
+            var user = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == id);
             return user;
         }
         public Schedule ScheduleById(int id)
         {
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == id);
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == id);
             return schedule;
         }
-
         public List<ReservationDTO> ListOfReservations()
         {
             var reservations = (from reservation in db.Reservations
@@ -221,7 +219,7 @@ namespace PKTickets.Repository
                                 join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
                                 join movie in db.Movies on schedule.MovieId equals movie.MovieId
                                 join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
-                                where  user.IsActive == true && reservation.IsActive == true
+                                where user.IsActive == true && reservation.IsActive
                                 select new ReservationDTO()
                                 {
                                     ReservationId = reservation.ReservationId,
@@ -232,10 +230,9 @@ namespace PKTickets.Repository
                                     Date = schedule.Date,
                                     ShowTiming = TimingConvert.ConvertToString(time.ShowTiming),
                                     Tickets = reservation.PremiumTickets + reservation.EliteTickets,
-                                      }).ToList();
+                                }).ToList();
             return reservations;
         }
-
         public Invoice InvoiceById(int id)
         {
             var invoice = (from reservation in db.Reservations
@@ -245,7 +242,7 @@ namespace PKTickets.Repository
                            join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
                            join movie in db.Movies on schedule.MovieId equals movie.MovieId
                            join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
-                           where reservation.ReservationId == id && reservation.IsActive == true
+                           where reservation.ReservationId == id && reservation.IsActive
                            select new Invoice()
                            {
                                ReservationId = reservation.ReservationId,
@@ -264,6 +261,7 @@ namespace PKTickets.Repository
                            }).ToList();
             return invoice.ToList()[0];
         }
+
         #region Private Methods
         private void SeatCheck(Schedule schedule)
         {
@@ -286,68 +284,68 @@ namespace PKTickets.Repository
         private List<ReservationDetails> ReservationDetailsByUserId(int id)
         {
             var reservations = (from user in db.Users
-                           join reservation in db.Reservations on user.UserId equals reservation.UserId
+                                join reservation in db.Reservations on user.UserId equals reservation.UserId
                                 join schedule in db.Schedules on reservation.ScheduleId equals schedule.ScheduleId
                                 join screen in db.Screens on schedule.ScreenId equals screen.ScreenId
                                 join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
                                 join movie in db.Movies on schedule.MovieId equals movie.MovieId
                                 join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
-                                where user.UserId == id && user.IsActive==true && reservation.IsActive==true
-                           select new ReservationDetails()
-                           {
-                           ReservationId= reservation.ReservationId,
-                               TheaterName=theater.TheaterName,
-                               ScreenName=screen.ScreenName,
-                               MovieName=movie.Title,
-                               Date=schedule.Date,
-                               ShowTime=TimingConvert.ConvertToString(time.ShowTiming),
-                               PremiumTickets =reservation.PremiumTickets,
-                               EliteTickets=reservation.EliteTickets,
-                               PremiumPrice=screen.PremiumPrice,
-                               ElitePrice=screen.ElitePrice,
-                               TotalAmount= (reservation.PremiumTickets * screen.PremiumPrice)+(reservation.EliteTickets * screen.ElitePrice),
-                           }).ToList();
+                                where user.UserId == id && user.IsActive == true && reservation.IsActive
+                                select new ReservationDetails()
+                                {
+                                    ReservationId = reservation.ReservationId,
+                                    TheaterName = theater.TheaterName,
+                                    ScreenName = screen.ScreenName,
+                                    MovieName = movie.Title,
+                                    Date = schedule.Date,
+                                    ShowTime = TimingConvert.ConvertToString(time.ShowTiming),
+                                    PremiumTickets = reservation.PremiumTickets,
+                                    EliteTickets = reservation.EliteTickets,
+                                    PremiumPrice = screen.PremiumPrice,
+                                    ElitePrice = screen.ElitePrice,
+                                    TotalAmount = (reservation.PremiumTickets * screen.PremiumPrice) + (reservation.EliteTickets * screen.ElitePrice),
+                                }).ToList();
             return reservations;
         }
 
-       
+
         private Messages UpdateSave(Reservation reservation, Reservation reservationExist, Schedule schedule)
-      {
-        Messages messages = new Messages();
-        messages.Success = false;
-        var premiumSeats = schedule.AvailablePreSeats + (reservationExist.PremiumTickets - reservation.PremiumTickets);
-        var eliteSeats = schedule.AvailableEliSeats + (reservationExist.EliteTickets - reservation.EliteTickets);
-        var premium = schedule.AvailablePreSeats - reservationExist.PremiumTickets;
-        var elite = schedule.AvailableEliSeats - reservationExist.EliteTickets;
-        if (premiumSeats < 0)
         {
-            messages.Message = "This Show Do not have that much of Premium seats,only " + premium + "Premium Tickets available";
+            Messages messages = new Messages();
+            messages.Success = false;
+            var premiumSeats = schedule.AvailablePreSeats + (reservationExist.PremiumTickets - reservation.PremiumTickets);
+            var eliteSeats = schedule.AvailableEliSeats + (reservationExist.EliteTickets - reservation.EliteTickets);
+            var premium = schedule.AvailablePreSeats - reservationExist.PremiumTickets;
+            var elite = schedule.AvailableEliSeats - reservationExist.EliteTickets;
+            if (premiumSeats < 0)
+            {
+                messages.Message = "This Show Do not have that much of Premium seats,only " + premium + "Premium Tickets available";
                 messages.Status = Statuses.Conflict;
                 return messages;
-        }
-        else if (eliteSeats < 0)
-        {
-            messages.Message = "This Show Do not have that much of Elite seats,only " + elite + "Elite Tickets available";
+            }
+            else if (eliteSeats < 0)
+            {
+                messages.Message = "This Show Do not have that much of Elite seats,only " + elite + "Elite Tickets available";
                 messages.Status = Statuses.Conflict;
                 return messages;
-        }
-        else
-        {
-            schedule.AvailablePreSeats = premiumSeats;
-            schedule.AvailableEliSeats = eliteSeats;
-            reservationExist.PremiumTickets = reservation.PremiumTickets;
-            reservationExist.EliteTickets = reservation.EliteTickets;
-            db.SaveChanges();
-            messages.Success = true;
-            messages.Message = " Tickets are Successfully Updated";
+            }
+            else
+            {
+                schedule.AvailablePreSeats = premiumSeats;
+                schedule.AvailableEliSeats = eliteSeats;
+                reservationExist.PremiumTickets = reservation.PremiumTickets;
+                reservationExist.EliteTickets = reservation.EliteTickets;
+                db.SaveChanges();
+                messages.Success = true;
+                messages.Message = " Tickets are Successfully Updated";
                 messages.Status = Statuses.Success;
                 SeatCheck(schedule);
                 return messages;
 
 
+            }
         }
-      }
-        private Messages DeleteSave( Reservation reservationExist, Schedule schedule)
+        private Messages DeleteSave(Reservation reservationExist, Schedule schedule)
         {
             Messages messages = new Messages();
             schedule.AvailablePreSeats = schedule.AvailablePreSeats + reservationExist.PremiumTickets;
@@ -361,7 +359,6 @@ namespace PKTickets.Repository
         }
 
         #endregion
-
     }
 }
 

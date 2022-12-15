@@ -61,7 +61,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.DeleteTheater(It.IsAny<int>())).Returns(message);
             return mockservice;
         }
-        private Theater TestTheater => new()
+        private Theater TestTheater => new Theater()
         { TheaterId = 3, TheaterName = "Vijaya Cinemas", Location = "Maduravoyal", IsActive = true };
         
         [Fact]
