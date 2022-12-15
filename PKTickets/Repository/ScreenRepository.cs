@@ -29,110 +29,96 @@ namespace PKTickets.Repository
 
         public Messages AddScreen(Screen screen)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             if (screen.TheaterId == 0)
             {
-                messages.Message = "Enter the Theater Id field";
-                messages.Status = Statuses.BadRequest;
-                return messages;
+                return BadRequest.MSG("Enter the Theater Id field");
             }
             var theaterExist = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == screen.TheaterId);
-
-            if (theaterExist == null)
-            {
-                messages.Message = $"Theater Id{screen.TheaterId} is Not Registered.";
-                messages.Status=Statuses.NotFound;
-                return messages;
-            }
             var screenExist = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == screen.TheaterId).
                 FirstOrDefault(x => x.ScreenName == screen.ScreenName);
-            if (screenExist != null)
-            {
-                messages.Message = $"Screen Name {screen.ScreenName} is Already Registered.";
-                messages.Status = Statuses.Conflict;
-                return messages;
-            }
-            else
-            {
-                db.Screens.Add(screen);
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = $"Screen {screen.ScreenName} is succssfully Added";
-                messages.Status = Statuses.Created;
-                return messages;
-            }
+            return (theaterExist == null) ? TheaterNotFound(screen.TheaterId)
+               : (screenExist != null) ? NameConflict(screen.ScreenName)
+             : Create(screen);
         }
 
         public Messages UpdateScreen(Screen screen)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
-            if (screen.ScreenId == 0 )
+            if (screen.ScreenId == 0)
             {
-                messages.Message = "Enter the Screen Id field";
-                messages.Status = Statuses.BadRequest;
-                return messages;
+                return BadRequest.MSG("Enter the Screen Id field");
             }
             var ScreenExist = ScreenById(screen.ScreenId);
-            if (ScreenExist == null)
-            {
-                messages.Message = "Screen Id is not found";
-                messages.Status = Statuses.NotFound;
-                return messages;
-            }
             var nameExist = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == screen.TheaterId).
-                FirstOrDefault(x => x.ScreenName == screen.ScreenName);
-            if(nameExist!=null && nameExist.ScreenId != screen.ScreenId)
-            {
-                messages.Status = Statuses.Conflict;
-                messages.Message = $"Screen Name {screen.ScreenName} is Already Registered.";
-                return messages;
-            }
-            else
-            {
-                ScreenExist.ScreenName = screen.ScreenName;
-                ScreenExist.ElitePrice=screen.ElitePrice;
-                ScreenExist.PremiumPrice = screen.PremiumPrice;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Status = Statuses.Success;
-                messages.Message = $"Screen {screen.ScreenName} is succssfully Updated";
-                return messages;
-            }
+         FirstOrDefault(x => x.ScreenName == screen.ScreenName);
+            return (ScreenExist == null) ? ScreenNotFound(screen.ScreenId)
+               : (nameExist != null && nameExist.ScreenId != screen.ScreenId) ? NameConflict(screen.ScreenName)
+             : Update(screen, ScreenExist);
         }
         public Messages RemoveScreen(int screenId)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var screenExist = ScreenById(screenId);
-            if (screenExist == null)
-            {
-                messages.Message = $"Screen Id {screenId} is not found";
-                messages.Status = Statuses.NotFound;
-                return messages;
-            }
             var screen = db.Schedules.Where(x => x.ScreenId == screenId).FirstOrDefault();
-            if(screen != null)
-            {
-                messages.Status = Statuses.Conflict;
-                messages.Message = $"This Screen {screenExist.ScreenName} is Already scheduled, so you can't delete the screen";
-                return messages;
-            }
-            else
-            {
-                screenExist.IsActive = false;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Status = Statuses.Success;
-                messages.Message = $"Screen {screenExist.ScreenName} is succssfully Removed";
-                return messages;
-            }
+            return (screenExist == null) ? ScreenNotFound(screenId)
+              : (screen != null) ? ScheduleConflict(screenExist.ScreenName)
+            : Remove(screenExist);
         }
 
-        
-       
-     
-     
+
+        #region
+        private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
+        private Messages TheaterNotFound(int id)
+        {
+            messages.Message = $"Theater Id{id} is Not Registered.";
+            messages.Status = Statuses.NotFound;
+            return messages;
+        }
+        private Messages ScreenNotFound(int id)
+        {
+            messages.Message = $"Screen Id {id} is not found";
+            messages.Status = Statuses.NotFound;
+            return messages;
+        }
+        private Messages ScheduleConflict(string name)
+        {
+            messages.Message = $"This Screen {name} is Already scheduled, so you can't delete the screen";
+            return messages;
+        }
+        private Messages NameConflict(string name)
+        {
+            messages.Message = $"Screen Name {name} is Already Registered.";
+            return messages;
+        }
+        private Messages Create(Screen screen)
+        {
+            db.Screens.Add(screen);
+            db.SaveChanges();
+            messages.Success = true;
+            messages.Message = $"Screen {screen.ScreenName} is succssfully Added";
+            messages.Status = Statuses.Created;
+            return messages;
+        }
+        private Messages Update(Screen screen, Screen ScreenExist)
+        {
+            ScreenExist.ScreenName = screen.ScreenName;
+            ScreenExist.ElitePrice = screen.ElitePrice;
+            ScreenExist.PremiumPrice = screen.PremiumPrice;
+            db.SaveChanges();
+            messages.Success = true;
+            messages.Status = Statuses.Success;
+            messages.Message = $"Screen {screen.ScreenName} is succssfully Updated";
+            return messages;
+        }
+        private Messages Remove(Screen screenExist)
+        {
+            screenExist.IsActive = false;
+            db.SaveChanges();
+            messages.Success = true;
+            messages.Status = Statuses.Success;
+            messages.Message = $"Screen {screenExist.ScreenName} is succssfully Removed";
+            return messages;
+        }
+        #endregion
+
+
     }
 }

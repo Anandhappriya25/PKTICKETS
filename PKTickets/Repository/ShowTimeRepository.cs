@@ -56,61 +56,59 @@ namespace PKTickets.Repository
 
         public Messages CreateShowTime(ShowTimeDTO showTimeDTO)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var time = TimingConvert.ConvertToInt(showTimeDTO.ShowTiming);
             var showTimeExist = DetailsByTiming(time);
-            if (showTimeExist != null)
-            {
-                messages.Message = "ShowTiming is already Registered.";
-                messages.Status = Statuses.Conflict;
-            }
-            else
-            {
-                ShowTime showTime = new ShowTime();
-                showTime.ShowTiming = time;
-                db.ShowTimes.Add(showTime);
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Status = Statuses.Created;
-                messages.Message = "ShowTiming is Successfully added";
-            }
-            return messages;
+            return (showTimeExist != null) ? ExistConflict()
+               : Create(time);
         }
 
         public Messages UpdateShowTime(ShowTimeDTO showTimeDTO)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             if (showTimeDTO.ShowTimeId == 0)
             {
-                messages.Message = "Enter the ShowTime Id field";
-                messages.Status = Statuses.BadRequest;
-                return messages;
+                return BadRequest.MSG("Enter the ShowTime Id field");
             }
             var showTimeExist = TimeById(showTimeDTO.ShowTimeId);
             var time = TimingConvert.ConvertToInt(showTimeDTO.ShowTiming);
             var nameExist = DetailsByTiming(time);
-            if (showTimeExist == null)
-            {
-                messages.Message = "ShowTime Id is not found";
-                messages.Status = Statuses.NotFound;
-            }
-            else if (nameExist != null)
-            {
-                messages.Message = "ShowTiming is already registered";
-                messages.Status = Statuses.Conflict;
-            }
-            else
-            {
-                showTimeExist.ShowTiming = time;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = $"ShowTime of Id {showTimeDTO.ShowTimeId} is Successfully Updated";
-                messages.Status = Statuses.Success;
-            }
+            return (showTimeExist == null) ? TimeNotFound()
+                : (nameExist != null) ? ExistConflict()
+              : Update(showTimeExist ,time);
+        }
+        #region
+        private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
+        private Messages ExistConflict()
+        {
+            messages.Message = "ShowTiming is already Registered.";
+            return messages;
+        }
+        private Messages TimeNotFound()
+        {
+            messages.Message = "ShowTime Id is not found";
+            messages.Status = Statuses.NotFound;
+            return messages;
+        }
+        private Messages Create(int time)
+        {
+            ShowTime showTime = new ShowTime();
+            showTime.ShowTiming = time;
+            db.ShowTimes.Add(showTime);
+            db.SaveChanges();
+            messages.Success = true;
+            messages.Status = Statuses.Created;
+            messages.Message = "ShowTiming is Successfully added";
+            return messages;
+        }
+        private Messages Update(ShowTime showTimeExist, int time)
+        {
+            showTimeExist.ShowTiming = time;
+            db.SaveChanges();
+            messages.Success = true;
+            messages.Message = $"ShowTime of Id {showTimeExist.ShowTimeId} is Successfully Updated";
+            messages.Status = Statuses.Success;
             return messages;
         }
 
+        #endregion
     }
 }

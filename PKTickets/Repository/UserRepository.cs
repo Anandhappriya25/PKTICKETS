@@ -24,8 +24,6 @@ namespace PKTickets.Repository
             return userExist;
         }
 
-
-
         public Messages CreateUser(User user)
         {
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == user.PhoneNumber);
@@ -47,9 +45,7 @@ namespace PKTickets.Repository
         {
             if (userDTO.UserId == 0)
             {
-                messages.Message = "Enter the User Id field";
-                messages.Status = Statuses.BadRequest;
-                return messages;
+                return BadRequest.MSG("Enter the User Id field");
             }
             var userExist = UserById(userDTO.UserId);
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == userDTO.PhoneNumber);
@@ -63,6 +59,7 @@ namespace PKTickets.Repository
 
         #region
         private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
+       
         private Messages PhoneConflict(User user)
         {
             messages.Message = $"The {user.PhoneNumber}, PhoneNumber is already Registered.";
