@@ -20,19 +20,17 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(scheduleRepository.SchedulesList());
-        }
-        
+        }        
 
         [HttpGet("Available")]
         public IActionResult AvailableList()
         {
             return Ok(scheduleRepository.AvailableSchedulesList());
         }
-
 
         [HttpGet("{id}")]
 
@@ -49,8 +47,7 @@ namespace PKTickets.Controllers
             return (schedule.Count() == 0) ? NotFound("Movie is Not Registered in any Schedules") : Ok(schedule);
         }
 
-
-        [HttpPost("")]
+        [HttpPost]
         public IActionResult Add(Schedule schedule)
         {
             var result = scheduleRepository.CreateSchedule(schedule);
@@ -58,25 +55,19 @@ namespace PKTickets.Controllers
                OutPut(result);
         }
 
-
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(Schedule schedule)
         {
             var result = scheduleRepository.UpdateSchedule(schedule);
             return OutPut(result);
         }
 
-
-
         [HttpDelete("{id}")]
-
         public IActionResult Remove(int id)
         {
             var result = scheduleRepository.DeleteSchedule(id);
             return OutPut(result);
-        }
-
-       
+        }       
 
         [HttpGet("Movie/{id}")]
         public IActionResult DetailsByMovieId(int id)

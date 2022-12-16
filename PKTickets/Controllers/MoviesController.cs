@@ -21,7 +21,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(movieRepository.GetAllMovies());
@@ -56,7 +56,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPost("")]
+        [HttpPost]
         public IActionResult Add(Movie movie)
         {
             var result = movieRepository.CreateMovie(movie);
@@ -65,7 +65,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(Movie movie)
         {
             var result = movieRepository.UpdateMovie(movie);

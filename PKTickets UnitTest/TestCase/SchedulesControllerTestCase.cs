@@ -167,35 +167,6 @@ namespace PKTickets_UnitTest.TestCase
 
         }
 
-        //[Fact]
-        //public void Add_TheaterIdConflict()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Theater Id(1) is Not Registered.";
-        //    message.Success = false;
-        //    var controller = new ScreensController(AddMock(message).Object);
-        //    var output = controller.Add(TestScreen);
-        //    var result = output as ConflictObjectResult;
-        //    Assert.Equal("Theater Id(1) is Not Registered.", result.Value);
-        //    Assert.StrictEqual(409, result.StatusCode);
-        //    Assert.IsType<ConflictObjectResult>(output);
-        //}
-
-        //[Fact]
-        //public void Add_NameConflict()
-        //{
-        //    Screen newscreen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
-        //    Messages message = new Messages();
-        //    message.Message = "Screen Name(Vijay) is Already Registered.";
-        //    message.Success = false;
-        //    var controller = new ScreensController(AddMock(message).Object);
-        //    var output = controller.Add(TestScreen);
-        //    var result = output as ConflictObjectResult;
-        //    Assert.Equal("Screen Name(Vijay) is Already Registered.", result.Value);
-        //    Assert.StrictEqual(409, result.StatusCode);
-        //    Assert.IsType<ConflictObjectResult>(output);
-        //}
-
         [Fact]
         public void Add_Success()
         {

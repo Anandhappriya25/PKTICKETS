@@ -21,7 +21,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(reservationRepository.ReservationList());
@@ -41,7 +41,7 @@ namespace PKTickets.Controllers
             var reservation = reservationRepository.ReservationById(id);
             return (reservation == null) ? NotFound("This Reservation Id is Not Registered") : Ok(reservation);
         }
-        [HttpPost("")]
+        [HttpPost]
 
         public IActionResult Add(Reservation reservation)
         {
@@ -52,7 +52,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(Reservation reservation)
         {                            
             var result = reservationRepository.UpdateReservation(reservation);

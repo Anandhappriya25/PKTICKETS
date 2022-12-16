@@ -19,7 +19,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(userRepository.GetAllUsers());
@@ -34,7 +34,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPost("")]
+        [HttpPost]
 
         public IActionResult Add(User user)
         {
@@ -43,7 +43,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(User user)
         {            
             var result = userRepository.UpdateUser(user);

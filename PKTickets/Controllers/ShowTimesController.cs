@@ -18,7 +18,7 @@ namespace PKTickets.Controllers
             showTimeRepository = _showTimeRepository;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(showTimeRepository.GetAllShowTimes());
@@ -33,7 +33,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPost("")]
+        [HttpPost]
         public IActionResult Add(ShowTimeDTO showTime)
         {
             var result = showTimeRepository.CreateShowTime(showTime);
@@ -42,7 +42,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(ShowTimeDTO showTime)
         {
             var result = showTimeRepository.UpdateShowTime(showTime);

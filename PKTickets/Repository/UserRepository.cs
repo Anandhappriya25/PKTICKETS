@@ -40,7 +40,6 @@ namespace PKTickets.Repository
                : Delete(user);
         }
 
-
         public Messages UpdateUser(User userDTO)
         {
             if (userDTO.UserId == 0)
@@ -56,7 +55,6 @@ namespace PKTickets.Repository
                 : Update(userExist, userDTO);
 
         }
-
         #region
         private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
        
