@@ -58,7 +58,7 @@ namespace PKTickets.Repository
         {
             var time = TimingConvert.ConvertToInt(showTimeDTO.ShowTiming);
             var showTimeExist = DetailsByTiming(time);
-            return (showTimeExist != null) ? ExistConflict()
+            return (showTimeExist != null) ? Request.Conflict("ShowTiming is already Registered.")
                : Create(time);
         }
 
@@ -66,35 +66,23 @@ namespace PKTickets.Repository
         {
             if (showTimeDTO.ShowTimeId == 0)
             {
-                return BadRequest.MSG("Enter the ShowTime Id field");
+                return Request.Bad("Enter the ShowTime Id field");
             }
             var showTimeExist = TimeById(showTimeDTO.ShowTimeId);
             var time = TimingConvert.ConvertToInt(showTimeDTO.ShowTiming);
             var nameExist = DetailsByTiming(time);
-            return (showTimeExist == null) ? TimeNotFound()
-                : (nameExist != null) ? ExistConflict()
+            return (showTimeExist == null) ? Request.Not("ShowTime Id is not found")
+                : (nameExist != null) ? Request.Conflict("ShowTiming is already Registered.")
               : Update(showTimeExist ,time);
         }
         #region
-        private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
-        private Messages ExistConflict()
-        {
-            messages.Message = "ShowTiming is already Registered.";
-            return messages;
-        }
-        private Messages TimeNotFound()
-        {
-            messages.Message = "ShowTime Id is not found";
-            messages.Status = Statuses.NotFound;
-            return messages;
-        }
+        private Messages messages = new Messages() { Success = true };
         private Messages Create(int time)
         {
             ShowTime showTime = new ShowTime();
             showTime.ShowTiming = time;
             db.ShowTimes.Add(showTime);
             db.SaveChanges();
-            messages.Success = true;
             messages.Status = Statuses.Created;
             messages.Message = "ShowTiming is Successfully added";
             return messages;
@@ -103,7 +91,6 @@ namespace PKTickets.Repository
         {
             showTimeExist.ShowTiming = time;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = $"ShowTime of Id {showTimeExist.ShowTimeId} is Successfully Updated";
             messages.Status = Statuses.Success;
             return messages;

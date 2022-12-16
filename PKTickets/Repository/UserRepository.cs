@@ -28,15 +28,15 @@ namespace PKTickets.Repository
         {
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == user.PhoneNumber);
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == user.EmailId);
-            return (phoneExist != null) ? PhoneConflict(user)
-                : (emailIdExist != null) ? EmailConflict(user)
+            return (phoneExist != null) ? Request.Conflict($"The {user.PhoneNumber}, PhoneNumber is already Registered.")
+                : (emailIdExist != null) ? Request.Conflict($"The {user.EmailId}, Email Id is already Registered.")
                 : Create(user);
         }
 
         public Messages DeleteUser(int userId)
         {
             var user = UserById(userId);
-            return (user == null) ? UserNotFound(userId)
+            return (user == null) ? Request.Not($"User Id {userId} Not found") 
                : Delete(user);
         }
 
@@ -45,52 +45,32 @@ namespace PKTickets.Repository
         {
             if (userDTO.UserId == 0)
             {
-                return BadRequest.MSG("Enter the User Id field");
+                return Request.Bad("Enter the User Id field");
             }
             var userExist = UserById(userDTO.UserId);
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == userDTO.PhoneNumber);
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == userDTO.EmailId);
-            return (userExist == null) ? UserNotFound(userDTO.UserId)
-                : (phoneExist != null && phoneExist.UserId != userExist.UserId) ? PhoneConflict(userDTO)
-                : (emailIdExist != null && emailIdExist.UserId != userExist.UserId) ? EmailConflict(userDTO)
+            return (userExist == null) ? Request.Not($"User Id {userDTO.UserId}  Not found")
+                : (phoneExist != null && phoneExist.UserId != userExist.UserId) ? Request.Conflict($"The {userDTO.PhoneNumber}, PhoneNumber is already Registered.")
+                : (emailIdExist != null && emailIdExist.UserId != userExist.UserId) ? Request.Conflict($"The {userDTO.EmailId}, Email Id is already Registered.")
                 : Update(userExist, userDTO);
 
         }
 
         #region
-        private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
-       
-        private Messages PhoneConflict(User user)
-        {
-            messages.Message = $"The {user.PhoneNumber}, PhoneNumber is already Registered.";
-            return messages;
-        }
-
-        private Messages EmailConflict(User user)
-        {
-            messages.Message = $"The {user.EmailId}, Email Id is already Registered.";
-            return messages;
-        }
+        private Messages messages = new Messages() { Success = true };
         private Messages Create(User user)
         {
             db.Users.Add(user);
             db.SaveChanges();
-            messages.Success = true;
             messages.Status = Statuses.Created;
             messages.Message = $"{user.UserName}, Your Account is Successfully Registered";
-            return messages;
-        }
-        private Messages UserNotFound(int id)
-        {
-            messages.Message = $"User Id {id}  Not found";
-            messages.Status = Statuses.NotFound;
             return messages;
         }
         private Messages Delete(User user)
         {
             user.IsActive = false;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = $"The {user.UserName} Account is Successfully removed";
             messages.Status = Statuses.Success;
             return messages;
@@ -103,7 +83,6 @@ namespace PKTickets.Repository
             userExist.Password = userDTO.Password;
             userExist.Location = userDTO.Location;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = $"The {userDTO.UserName} Account is Successfully Updated";
             messages.Status = Statuses.Success;
             return messages;

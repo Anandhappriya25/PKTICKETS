@@ -108,16 +108,16 @@ namespace PKTickets.Repository
             var scheduleExist = ScheduleById(id);
             if (scheduleExist == null)
             {
-                return NotFound($"The Schedule Id {id} is not found");
+                return Request.Not($"The Schedule Id {id} is not found");
             }
             var reservation=db.Reservations.Where(x => x.ScheduleId == id).Where(x => x.IsActive == true).FirstOrDefault();
             if (reservation != null)
             {
-                return UpdateConflict(0,$"The Reservation is Already Started to Schedule Id {id} ,so can't Delete");
+                return Request.Conflict($"The Reservation is Already Started to Schedule Id {id} ,so can't Delete");
             }
             var timeExist = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == scheduleExist.ShowTimeId);
-            return (date.Date > scheduleExist.Date) ? UpdateConflict(0,$"The Show is Started for this Schedule Id {id} ,so can't Delete")
-                : (date.Date == scheduleExist.Date && timeExist.ShowTiming < timeValue) ? UpdateConflict(0,$"The Show is Started for this Schedule Id {id} ,so can't Delete")
+            return (date.Date > scheduleExist.Date) ? Request.Conflict($"The Show is Started for this Schedule Id {id} ,so can't Delete")
+                : (date.Date == scheduleExist.Date && timeExist.ShowTiming < timeValue) ? Request.Conflict($"The Show is Started for this Schedule Id {id} ,so can't Delete")
                 : Delete(scheduleExist, id);
         }
         
@@ -136,7 +136,7 @@ namespace PKTickets.Repository
                (x => x.Date == schedule.Date).FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
             if (scheduleExist != null)
             {
-                return ExistConflict();
+                return Request.Conflict("This Schedule is already Registered Please check the Fields");
             }
             return (TimeCheck(schedule).Status == Statuses.Conflict) ? TimeCheck(schedule)
                 : Create(schedule, screen);
@@ -148,7 +148,7 @@ namespace PKTickets.Repository
             messages.Success = false;
             if(schedule.ScheduleId==0)
             {
-                return BadRequest.MSG("Enter the Schedule Id Field");
+                return Request.Bad("Enter the Schedule Id Field");
             }
             if (BadSchedule(schedule).Status == Statuses.BadRequest)
             {
@@ -157,9 +157,7 @@ namespace PKTickets.Repository
             var scheduleExist = ScheduleById(schedule.ScheduleId);
             if (scheduleExist == null)
             {
-                messages.Message = "The Schedule Id is not found";
-                messages.Status = Statuses.NotFound;
-                return messages;
+                return Request.Not("The Schedule Id is not found");
             }
             return (TimeCheck(schedule).Status==Statuses.Conflict)? TimeCheck(schedule)
                 :Update(schedule,scheduleExist);
@@ -187,8 +185,7 @@ namespace PKTickets.Repository
             {
                 return movie;
             }
-            List<Schedule> schedulesList = AvailableSchedulesList().Where(x=> x.MovieId == id).ToList();    
-                //db.Schedules.Where(x => x.IsActive == true).Where(x => x.MovieId == id).ToList();
+            List<Schedule> schedulesList = AvailableSchedulesList().Where(x=> x.MovieId == id).ToList(); 
             List<Schedule> uniqueSchedulesByScreen = schedulesList.DistinctBy(x => x.ScreenId).ToList();
             List<Screen> screenList = new List<Screen>();
             foreach (var schedule in uniqueSchedulesByScreen)
@@ -224,7 +221,6 @@ namespace PKTickets.Repository
                     newScreen.ScreenName = screen.ScreenName;
                     newScreen.PremiumCapacity = screen.PremiumCapacity;
                     newScreen.EliteCapacity = screen.EliteCapacity;
-                    //newScreen.Schedules=newScreen.Schedules == null ? new List<ScheduleDetails>() : newScreen.Schedules;
                     foreach (var schedule in schedulesList)
                     {
                         if (schedule.ScreenId == screen.ScreenId)
@@ -289,41 +285,22 @@ namespace PKTickets.Repository
             var timeExist = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
             if (schedule.ScheduleId == 0)
             {
-                return (date.Date > schedule.Date) ? Conflict(schedule.Date)
-                    : (date.Date == schedule.Date && timeExist.ShowTiming < timeValue) ? Conflict(schedule.Date)
+                return (date.Date > schedule.Date) ? Request.Conflict($"The date {schedule.Date} entered is Invalid,Kindly Check the Date.")
+                    : (date.Date == schedule.Date && timeExist.ShowTiming < timeValue) ? Request.Conflict($"The date {schedule.Date} entered is Invalid,Kindly Check the Date.")
                     : messages;
             }
             else
             {
-                return (date.Date > schedule.Date) ? UpdateConflict(schedule.ScheduleId,"")
-               : (date.Date == schedule.Date && timeExist.ShowTiming > timeValue) ? UpdateConflict(schedule.ScheduleId,"")
+                return (date.Date > schedule.Date) ? Request.Conflict($"The Reservation Is Already started fot this Schedule Id {schedule.ScheduleId} So can't Update")
+               : (date.Date == schedule.Date && timeExist.ShowTiming > timeValue) ? Request.Conflict($"The Reservation Is Already started fot this Schedule Id {schedule.ScheduleId} So can't Update")
                : messages;
             }
         }
-        private Messages UpdateConflict(int id,string txt)
-        {
-            if(id==0)
-            {
-                messages.Message = txt;
-            }
-            else
-            {
-                messages.Message = $"The Reservation Is Already started fot this Schedule Id {id} So can't Update";
-            }
-            messages.Status = Statuses.Conflict;
-            return messages;
-        }
-        private Messages Conflict(DateTime date)
-        {
-            messages.Message = $"The date {date} entered is Invalid,Kindly Check the Date.";
-            messages.Status = Statuses.Conflict;
-            return messages;
-        }
         private Messages BadSchedule(Schedule schedule)
         {
-            return (schedule.ScreenId == 0) ? BadRequest.MSG("Enter the Screen Id Field")
-                : (schedule.MovieId == 0) ? BadRequest.MSG("Enter the Movie Id Field")
-                : (schedule.ShowTimeId == 0) ? BadRequest.MSG("Enter the Show Time Id Field")
+            return (schedule.ScreenId == 0) ? Request.Bad("Enter the Screen Id Field")
+                : (schedule.MovieId == 0) ? Request.Bad("Enter the Movie Id Field")
+                : (schedule.ShowTimeId == 0) ? Request.Bad("Enter the Show Time Id Field")
                 : messages;
         }
         private Messages NotFoundSchedule(Schedule schedule)
@@ -331,22 +308,10 @@ namespace PKTickets.Repository
             var screen = db.Screens.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScreenId == schedule.ScreenId);
             var movie = db.Movies.Where(x => x.IsPlaying == true).FirstOrDefault(x => x.MovieId == schedule.MovieId);
             var showtime = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
-            return (screen == null) ? NotFound($"The Screen Id {schedule.ScreenId} is not Registered")
-                : (movie == null) ? NotFound($"The Movie Id {schedule.MovieId} is not Registered")
-                : (showtime == null) ? NotFound($"The Show Time Id {schedule.ShowTimeId} is not Registered")
+            return (screen == null) ? Request.Not($"The Screen Id {schedule.ScreenId} is not Registered")
+                : (movie == null) ? Request.Not($"The Movie Id {schedule.MovieId} is not Registered")
+                : (showtime == null) ? Request.Not($"The Show Time Id {schedule.ShowTimeId} is not Registered")
                 : messages;
-        }
-        private Messages ExistConflict()
-        {
-            messages.Status = Statuses.Conflict;
-            messages.Message = "This Schedule is already Registered Please check the Fields";
-            return messages;
-        }
-        private Messages NotFound(string txt)
-        {
-            messages.Status=Statuses.NotFound;
-            messages.Message=txt;
-            return messages;
         }
         private List<SchedulesDTO> SchedulesListScreenId(int id)
         {
