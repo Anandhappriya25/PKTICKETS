@@ -40,7 +40,6 @@ namespace PKTickets.Repository
                : Delete(user);
         }
 
-
         public Messages UpdateUser(User userDTO)
         {
             if (userDTO.UserId == 0)
@@ -54,9 +53,7 @@ namespace PKTickets.Repository
                 : (phoneExist != null && phoneExist.UserId != userExist.UserId) ? Request.Conflict($"The {userDTO.PhoneNumber}, PhoneNumber is already Registered.")
                 : (emailIdExist != null && emailIdExist.UserId != userExist.UserId) ? Request.Conflict($"The {userDTO.EmailId}, Email Id is already Registered.")
                 : Update(userExist, userDTO);
-
         }
-
         #region
         private Messages messages = new Messages() { Success = true };
         private Messages Create(User user)

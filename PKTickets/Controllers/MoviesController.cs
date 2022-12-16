@@ -65,7 +65,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(Movie movie)
         {
             var result = movieRepository.UpdateMovie(movie);

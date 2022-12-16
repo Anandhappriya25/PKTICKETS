@@ -20,7 +20,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(screenRepository.GetAllScreens());
@@ -35,7 +35,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPost("")]
+        [HttpPost]
 
         public IActionResult Add(Screen screen)
         {
@@ -45,7 +45,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(Screen screen)
         {
             var result = screenRepository.UpdateScreen(screen);

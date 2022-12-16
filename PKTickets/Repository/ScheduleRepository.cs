@@ -46,7 +46,7 @@ namespace PKTickets.Repository
             var list = SchedulesListScreenId(sId).Where(x => x.MovieId == mId).ToList();
             return list;
         }
-            public List<Schedule> SchedulesList()
+        public List<Schedule> SchedulesList()
         {
             return db.Schedules.ToList();
         }

@@ -43,7 +43,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.ScheduleById(It.IsAny<int>())).Returns(schedule);
             return mockservice;
         }
-        private Mock<IScheduleRepository> ListByMovieId(List<Schedule> schedule)
+        private Mock<IScheduleRepository> ListByMovieIdMock(List<Schedule> schedule)
         {
             var mockservice = Mock();
             mockservice.Setup(x => x.SchedulesByMovieId(It.IsAny<int>())).Returns(schedule);
@@ -160,42 +160,35 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void ListByMovieId_Ok()
         {
-            Movie movie = new Movie() { MovieId = 3, };
-            Messages message = new Messages();
-            message.Success = true;
-            message.Status = Statuses.Success;
-
+            Schedule schedule = new Schedule(){ ScheduleId = 6, ScreenId = 7, MovieId = 3, ShowTimeId = 2, Date = DateTime.Now, PremiumSeats = 200, EliteSeats = 150, AvailablePreSeats = 200, AvailableEliSeats = 150, IsActive = true };
+            Schedule schedule2 = new Schedule(){ ScheduleId = 3, ScreenId = 2, MovieId = 3, ShowTimeId = 3, Date = DateTime.Now, PremiumSeats = 200, EliteSeats = 150, AvailablePreSeats = 200, AvailableEliSeats = 150, IsActive = true };
+            List<Schedule> schedules = new List<Schedule>();
+            schedules.Add(schedule);
+            schedules.Add(schedule2);
+            var controller = new SchedulesController(ListByMovieIdMock(schedules).Object);
+            var result = controller.ListByMovieId(3);
+            var check = result as OkObjectResult;
+            var lists = check.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, check.StatusCode);
+            Assert.Equal(schedules.Count(), lists.Count());
         }
 
-        //[Fact]
-        //public void Add_TheaterIdConflict()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Theater Id(1) is Not Registered.";
-        //    message.Success = false;
-        //    var controller = new ScreensController(AddMock(message).Object);
-        //    var output = controller.Add(TestScreen);
-        //    var result = output as ConflictObjectResult;
-        //    Assert.Equal("Theater Id(1) is Not Registered.", result.Value);
-        //    Assert.StrictEqual(409, result.StatusCode);
-        //    Assert.IsType<ConflictObjectResult>(output);
-        //}
-
-        //[Fact]
-        //public void Add_NameConflict()
-        //{
-        //    Screen newscreen = new Screen { ScreenId = 3, ScreenName = "Vijay", TheaterId = 1, PremiumCapacity = 200, EliteCapacity = 150, PremiumPrice = 150, ElitePrice = 250, IsActive = true };
-        //    Messages message = new Messages();
-        //    message.Message = "Screen Name(Vijay) is Already Registered.";
-        //    message.Success = false;
-        //    var controller = new ScreensController(AddMock(message).Object);
-        //    var output = controller.Add(TestScreen);
-        //    var result = output as ConflictObjectResult;
-        //    Assert.Equal("Screen Name(Vijay) is Already Registered.", result.Value);
-        //    Assert.StrictEqual(409, result.StatusCode);
-        //    Assert.IsType<ConflictObjectResult>(output);
-        //}
-
+        [Fact]
+        public void ListByMovieId_NullOk()
+        {
+            Schedule schedule = new Schedule() { MovieId = 30 };
+            List<Schedule> schedules = new List<Schedule>();
+            var mockservice = new Mock<IScheduleRepository>();
+            mockservice.Setup(x => x.SchedulesByMovieId(It.IsAny<int>())).Returns(schedules);
+            var controller = new SchedulesController(mockservice.Object);
+            var result = controller.ListByMovieId(3);
+            var check = result as OkObjectResult;
+            var lists = check.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, check.StatusCode);
+            Assert.Equal(schedules.Count(), lists.Count());
+        }
         [Fact]
         public void Add_Success()
         {

@@ -34,7 +34,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPost("")]
+        [HttpPost]
 
         public IActionResult Add(User user)
         {
@@ -43,7 +43,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(User user)
         {            
             var result = userRepository.UpdateUser(user);

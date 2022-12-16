@@ -21,7 +21,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(theaterRepository.GetTheaters());
@@ -42,7 +42,7 @@ namespace PKTickets.Controllers
             return Ok(theaterRepository.TheaterByLocation(location));
         }
 
-        [HttpPost("")]
+        [HttpPost]
         public IActionResult Add(Theater theater)
         {
             var result = theaterRepository.CreateTheater(theater);
@@ -51,7 +51,7 @@ namespace PKTickets.Controllers
         
         }
 
-        [HttpPut("")]
+        [HttpPut]
         public IActionResult Update(Theater theater)
         {
             var result = theaterRepository.UpdateTheater(theater);
