@@ -137,9 +137,6 @@ namespace PKTickets.Repository
                 messages.Status = Statuses.Success;
                 return messages;
             }
-        }
-       
-        
-
+        }  
     }
 }

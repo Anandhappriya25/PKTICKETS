@@ -53,7 +53,6 @@ namespace PKTickets.Repository
                 : (phoneExist != null && phoneExist.UserId != userExist.UserId) ? PhoneConflict(userDTO)
                 : (emailIdExist != null && emailIdExist.UserId != userExist.UserId) ? EmailConflict(userDTO)
                 : Update(userExist, userDTO);
-
         }
         #region
         private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };

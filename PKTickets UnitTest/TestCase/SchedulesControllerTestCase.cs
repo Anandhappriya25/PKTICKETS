@@ -43,7 +43,7 @@ namespace PKTickets_UnitTest.TestCase
             mockservice.Setup(x => x.ScheduleById(It.IsAny<int>())).Returns(schedule);
             return mockservice;
         }
-        private Mock<IScheduleRepository> ListByMovieId(List<Schedule> schedule)
+        private Mock<IScheduleRepository> ListByMovieIdMock(List<Schedule> schedule)
         {
             var mockservice = Mock();
             mockservice.Setup(x => x.SchedulesByMovieId(It.IsAny<int>())).Returns(schedule);
@@ -160,13 +160,35 @@ namespace PKTickets_UnitTest.TestCase
         [Fact]
         public void ListByMovieId_Ok()
         {
-            Movie movie = new Movie() { MovieId = 3, };
-            Messages message = new Messages();
-            message.Success = true;
-            message.Status = Statuses.Success;
-
+            Schedule schedule = new Schedule(){ ScheduleId = 6, ScreenId = 7, MovieId = 3, ShowTimeId = 2, Date = DateTime.Now, PremiumSeats = 200, EliteSeats = 150, AvailablePreSeats = 200, AvailableEliSeats = 150, IsActive = true };
+            Schedule schedule2 = new Schedule(){ ScheduleId = 3, ScreenId = 2, MovieId = 3, ShowTimeId = 3, Date = DateTime.Now, PremiumSeats = 200, EliteSeats = 150, AvailablePreSeats = 200, AvailableEliSeats = 150, IsActive = true };
+            List<Schedule> schedules = new List<Schedule>();
+            schedules.Add(schedule);
+            schedules.Add(schedule2);
+            var controller = new SchedulesController(ListByMovieIdMock(schedules).Object);
+            var result = controller.ListByMovieId(3);
+            var check = result as OkObjectResult;
+            var lists = check.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, check.StatusCode);
+            Assert.Equal(schedules.Count(), lists.Count());
         }
 
+        [Fact]
+        public void ListByMovieId_NullOk()
+        {
+            Schedule schedule = new Schedule() { MovieId = 30 };
+            List<Schedule> schedules = new List<Schedule>();
+            var mockservice = new Mock<IScheduleRepository>();
+            mockservice.Setup(x => x.SchedulesByMovieId(It.IsAny<int>())).Returns(schedules);
+            var controller = new SchedulesController(mockservice.Object);
+            var result = controller.ListByMovieId(3);
+            var check = result as OkObjectResult;
+            var lists = check.Value as List<Schedule>;
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, check.StatusCode);
+            Assert.Equal(schedules.Count(), lists.Count());
+        }
         [Fact]
         public void Add_Success()
         {
