@@ -4,6 +4,7 @@ using PKTickets.Models.DTO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using static Azure.Core.HttpHeader;
 
 namespace PKTickets.Repository
 {
@@ -42,15 +43,15 @@ namespace PKTickets.Repository
         {
             var theater = TheaterById(theaterId);
             var theaters = db.Screens.Where(x => x.TheaterId == theaterId).Where(x=>x.IsActive).FirstOrDefault();
-            return (theater == null) ? TheaterNotFound(theaterId)
-               : (theaters != null) ? ScheduleConflict(theater.TheaterName)
+            return (theater == null) ? Request.Not($"User Id {theaterId}  Not found")
+               : (theaters != null) ? Request.Conflict($"Theater Name {theater.TheaterName} is already Registered.")
                : Delete(theater);
         }
 
         public Messages CreateTheater(Theater theater)
         {
             var theaterExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
-            return (theaterExist != null) ? NameConflict(theater.TheaterName)
+            return (theaterExist != null) ? Request.Conflict($"This Theater {theater.TheaterName} is Already scheduled, so you can't delete the theater")
               : Create(theater);
         }
 
@@ -58,12 +59,12 @@ namespace PKTickets.Repository
         {
             if (theater.TheaterId == 0)
             {
-                return BadRequest.MSG("Enter the Theater Id field");
+                return Request.Bad("Enter the Theater Id field");
             }
             var theaterExist = TheaterById(theater.TheaterId);
             var nameExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
-            return (theaterExist == null) ? TheaterNotFound(theater.TheaterId)
-                : (nameExist != null && nameExist.TheaterId != theaterExist.TheaterId) ? NameConflict(theater.TheaterName)
+            return (theaterExist == null) ? Request.Not($"Theater Id {theater.TheaterId} is not found")
+                : (nameExist != null && nameExist.TheaterId != theaterExist.TheaterId) ? Request.Conflict($"Theater Name {theater.TheaterName} is already Registered.")
               : Update(theater,theaterExist);
         }
 
@@ -111,28 +112,11 @@ namespace PKTickets.Repository
         }
 
         #region PrivateMethods
-        private Messages messages = new Messages() { Status = Statuses.Conflict, Success = false };
-        private Messages TheaterNotFound(int id)
-        {
-            messages.Message = $"Theater Id {id} is not found";
-            messages.Status = Statuses.NotFound;
-            return messages;
-        }
-        private Messages ScheduleConflict(string name)
-        {
-            messages.Message = $"This Theater {name} is Already scheduled, so you can't delete the theater";
-            return messages;
-        }
-        private Messages NameConflict(string name)
-        {
-            messages.Message = $"Theater Name {name} is already Registered.";
-            return messages;
-        }
+        private Messages messages = new Messages() { Success = true };
         private Messages Delete(Theater theater)
         {
             theater.IsActive = false;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = $"Theater {theater.TheaterName} is Successfully Removed";
             messages.Status = Statuses.Success;
             return messages;
@@ -141,7 +125,6 @@ namespace PKTickets.Repository
         {
             db.Theaters.Add(theater);
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = $"Theater {theater.TheaterName} is Successfully Added";
             messages.Status = Statuses.Created;
             return messages;
@@ -151,7 +134,6 @@ namespace PKTickets.Repository
             theaterExist.TheaterName = theater.TheaterName;
             theaterExist.Location = theater.Location;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = $"Theater {theater.TheaterName} is Successfully Updated";
             messages.Status = Statuses.Success;
             return messages;
