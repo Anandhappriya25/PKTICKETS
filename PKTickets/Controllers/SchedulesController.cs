@@ -69,7 +69,7 @@ namespace PKTickets.Controllers
             return OutPut(result);
         }       
 
-        [HttpGet("Movie/{id}")]
+        [HttpGet("MovieDetails/{id}")]
         public IActionResult DetailsByMovieId(int id)
         {
             var list = scheduleRepository.DetailsByMovieId(id);
