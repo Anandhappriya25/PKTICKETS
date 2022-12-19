@@ -1,5 +1,6 @@
 ﻿using Blazorise;
 using Blazorise.Extensions;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestPlatform.Common.Interfaces;
@@ -35,6 +36,18 @@ namespace PKTickets_UnitTest.TestCase
         {
             var mockservice = Mock();
             mockservice.Setup(x => x.ReservationById(It.IsAny<int>())).Returns(reservation);
+            return mockservice;
+        }
+        private Mock<IReservationRepository> GetScheduleByIdMock(List<Reservation> reservation)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.ReservationsByShowId(It.IsAny<int>())).Returns(reservation);
+            return mockservice;
+        }
+        private Mock<IReservationRepository> GetUserByIdMock(UserDTO userDTO)
+        {
+            var mockservice = Mock();
+            mockservice.Setup(x => x.ReservationsByUserId(It.IsAny<int>())).Returns(userDTO);
             return mockservice;
         }
         private Mock<IReservationRepository> AddMock(Messages message)
@@ -104,7 +117,7 @@ namespace PKTickets_UnitTest.TestCase
             Assert.StrictEqual(200, list.StatusCode);
         }
         [Fact]
-        public void GetById_Null()
+        public void GetById_NotFound()
         {
             Reservation reservation = null;
             var controller = new ReservationsController(GetByIdMock(reservation).Object);
@@ -112,7 +125,35 @@ namespace PKTickets_UnitTest.TestCase
             var check = result as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(404, check.StatusCode);
-            Assert.Equal("This Reservation Id is Not Registered", check.Value);
+        }
+
+        [Fact]
+        public void GetScheduleById_ok()
+        {
+            List<Reservation> lists = new List<Reservation>();
+            lists.Add(TestReservation);
+            var controller = new ReservationsController(GetScheduleByIdMock(lists).Object);
+            var okResult = controller.ListByScheduleId(2);
+            var list = okResult as OkObjectResult;
+            var oklist = list.Value as List<Reservation>;
+            Assert.IsType<OkObjectResult>(okResult);
+            Assert.NotNull(okResult);
+            Assert.StrictEqual(1, TestReservation.ReservationId);
+            Assert.Equal(lists.Count(), oklist.Count());
+            Assert.StrictEqual(200, list.StatusCode);
+        }
+
+        [Fact]
+        public void GetScheduleById_NotFound()
+        {
+            List<Reservation> lists = new List<Reservation>();
+            var controller = new ReservationsController(GetScheduleByIdMock(lists).Object);
+            var okResult = controller.ListByScheduleId(2);
+            var list = okResult as NotFoundObjectResult;
+            var oklist = list.Value as List<Reservation>;
+            Assert.IsType<NotFoundObjectResult>(okResult);
+            Assert.StrictEqual(1, TestReservation.ReservationId);
+            Assert.StrictEqual(404, list.StatusCode);
         }
 
         [Fact]
@@ -306,6 +347,56 @@ namespace PKTickets_UnitTest.TestCase
             var result = output as NotFoundObjectResult;
             Assert.IsType<NotFoundObjectResult>(output);
             Assert.StrictEqual(404, result.StatusCode);
+        }
+
+        [Fact]
+        public void ListByUserId_Ok()
+        {
+            UserDTO userDTO = new UserDTO();
+            userDTO.UserName = "Karthik";
+            List<ReservationDetails> reservationDetails = new List<ReservationDetails>();
+            ReservationDetails reservation = new ReservationDetails();
+            reservation.ReservationId = 21;
+            reservation.TheaterName = "Sathayam Cinemas";
+            reservation.ScreenName = "3D Screen";
+            reservation.MovieName = "Theri";
+            reservation.Date = DateTime.Now;
+            reservation.ShowTime = "06:30 PM";
+            reservation.PremiumTickets = 5;
+            reservation.EliteTickets = 8;
+            reservation.PremiumPrice = 100;
+            reservation.ElitePrice = 180;
+            reservation.TotalAmount = 1940;
+            reservationDetails.Add(reservation);
+            userDTO.ReservationDetail = reservationDetails;
+            var controller = new ReservationsController(GetUserByIdMock(userDTO).Object);
+            var output = controller.ListByUserId(3);
+            var result = output as OkObjectResult;
+            Assert.IsType<OkObjectResult>(output);
+            Assert.StrictEqual(200, result.StatusCode);
+        }
+
+        [Fact]
+        public void ListByUserId_NullOk()
+        {
+            UserDTO userDTO = new UserDTO();
+            userDTO.UserName = "Karthik";
+            var controller = new ReservationsController(GetUserByIdMock(userDTO).Object);
+            var output = controller.ListByUserId(3);
+            var result = output as OkObjectResult;
+            Assert.IsType<OkObjectResult>(output);
+            Assert.StrictEqual(200, result.StatusCode);
+        }
+
+        [Fact]
+        public void ListByUserId_NotFound()
+        {
+            UserDTO userDTO = new UserDTO();
+            var controller = new ReservationsController(GetUserByIdMock(userDTO).Object);
+            var output = controller.ListByUserId(3);
+            var list = output as NotFoundObjectResult;
+            Assert.IsType<NotFoundObjectResult>(output);
+            Assert.StrictEqual(404, list.StatusCode);
         }
     }
 }
