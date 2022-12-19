@@ -232,20 +232,18 @@ namespace PKTickets_UnitTest.TestCase
             Assert.True(schedule.MovieId == 3 || schedule.ScreenId == 2 || schedule.ShowTimeId == 3);
         }
 
-        //[Fact]
-        //public void Add_Conflict()
-        //{
-        //    Schedule schedule = new Schedule { Date = DateTime.Now}; 
-        //    Messages message = new Messages();
-        //    message.Success = false;
-        //    message.Status = Statuses.Conflict;
-        //    var controller = new SchedulesController(AddMock(message).Object);
-        //    var output = controller.Add(schedule);
-        //    var result = output as ConflictObjectResult;
-        //    Assert.IsType<ConflictObjectResult>(output); 
-        //    Assert.StrictEqual(409, result.StatusCode);
-        //    Assert.True(schedule.MovieId == 3 || schedule.ScreenId == 2 || schedule.ShowTimeId == 3);
-        //}
+        [Fact]
+        public void Add_ExistConflict()
+        {
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.Conflict;
+            var controller = new SchedulesController(AddMock(message).Object);
+            var output = controller.Add(TestSchedule);
+            var result = output as ConflictObjectResult;
+            Assert.IsType<ConflictObjectResult>(output);
+            Assert.StrictEqual(409, result.StatusCode);
+        }
 
 
         [Fact]
@@ -276,20 +274,19 @@ namespace PKTickets_UnitTest.TestCase
             Assert.StrictEqual(message.Message, result.Value);
             Assert.StrictEqual(404, result.StatusCode);
         }
-         
-        //[Fact]
-        //public void Update_NameConflict()
-        //{
-        //    Messages message = new Messages();
-        //    message.Message = "Screen Name(Vijay) is Already Registered.";
-        //    message.Success = false;
-        //    var controller = new ScreensController(UpdateMock(message).Object);
-        //    var output = controller.Update(TestScreen);
-        //    var result = output as ConflictObjectResult;
-        //    Assert.Equal("Screen Name(Vijay) is Already Registered.", result.Value);
-        //    Assert.StrictEqual(409, result.StatusCode);
-        //    Assert.IsType<ConflictObjectResult>(output);
-        //}
+
+        [Fact]
+        public void Update_NameConflict()
+        {
+            Messages message = new Messages();
+            message.Success = false;
+            message.Status = Statuses.Conflict;
+            var controller = new SchedulesController(UpdateMock(message).Object);
+            var output = controller.Update(TestSchedule);
+            var result = output as ConflictObjectResult;
+            Assert.IsType<ConflictObjectResult>(output);
+            Assert.StrictEqual(409, result.StatusCode);
+        }
 
         [Fact]
         public void Update_SuccessOk()
