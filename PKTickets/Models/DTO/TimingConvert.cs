@@ -29,4 +29,26 @@ namespace PKTickets.Models.DTO
             return value;
         }
     }
-}
+    public static class Request
+    {
+        public static Messages messages = new Messages() {  Success = false };
+        public static Messages Bad(string text)
+        {
+            messages.Message = text;
+            messages.Status = Statuses.BadRequest;
+            return messages;
+        }
+        public static Messages Not(string text)
+        {
+            messages.Message = text;
+            messages.Status = Statuses.NotFound;
+            return messages;
+        }
+        public static Messages Conflict(string text)
+        {
+            messages.Message = text;
+            messages.Status = Statuses.Conflict;
+            return messages;
+        }
+    }
+ }

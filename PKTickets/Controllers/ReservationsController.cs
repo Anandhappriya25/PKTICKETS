@@ -4,6 +4,7 @@ using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
 using PKTickets.Repository;
+using System.Collections.Generic;
 
 namespace PKTickets.Controllers
 {
@@ -20,7 +21,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(reservationRepository.ReservationList());
@@ -29,12 +30,8 @@ namespace PKTickets.Controllers
         [HttpGet("ScheduleId/{id}")]
         public IActionResult ListByScheduleId(int id)
         {
-            var schedule=reservationRepository.ScheduleById(id);
-            if(schedule==null)
-            {
-                return NotFound("Schedule Id is notfound");
-            }
-            return Ok(reservationRepository.ReservationsByShowId(id));
+            var list= reservationRepository.ReservationsByShowId(id);
+            return (list.Count() == 0) ? NotFound("This Shedule Id don't have any Reservations") : Ok(list);
         }
 
         [HttpGet("{id}")]
@@ -42,49 +39,24 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int id)
         {
             var reservation = reservationRepository.ReservationById(id);
-            if (reservation == null)
-            {
-               return NotFound("This Reservation Id is Not Registered");
-            }
-            return Ok(reservation);
+            return (reservation == null) ? NotFound("This Reservation Id is Not Registered") : Ok(reservation);
         }
-
-
-        [HttpPost("")]
+        [HttpPost]
 
         public IActionResult Add(Reservation reservation)
         {
 
             var result = reservationRepository.CreateReservation(reservation);
-            if (result.Message == "Atleast Please reaserve a seat")
-            {
-                return BadRequest(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return NotFound(result.Message);
-            }
-            return Created(""+ TimingConvert.LocalHost("Reservations") + reservation.ReservationId + "", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Reservations")}{reservation.ReservationId}", result.Message) :
+                OutPut(result);
         }
 
 
-        [HttpPut("")]
-        public ActionResult Update(Reservation reservation)
-        {
-            if (reservation.ReservationId == 0)
-            {
-                return BadRequest("Enter the Reservation Id field");
-            }
+        [HttpPut]
+        public IActionResult Update(Reservation reservation)
+        {                            
             var result = reservationRepository.UpdateReservation(reservation);
-            if (result.Message == "Reservation Id is Not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -93,27 +65,27 @@ namespace PKTickets.Controllers
         public IActionResult Cancel(int id)
         {
             var result = reservationRepository.DeleteReservation(id);
-            if (result.Message == "Reservation Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
         [HttpGet("UserId/{id}")]
         public IActionResult ListByUserId(int id)
         {
-            var user=reservationRepository.UserById(id);
-            if(user == null)
-            {
-                return NotFound("User Id is notfound");
-            }
-            return Ok(reservationRepository.ReservationsByUserId(id));
+            var list= reservationRepository.ReservationsByUserId(id);
+            return (list.UserName == null) ? NotFound("User Id is notfound") : Ok(list);
         }
 
-  
+        private IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
+            {
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
+            }
+            return Ok(result.Message);
+        }
     }
 }

@@ -16,13 +16,13 @@ namespace PKTickets.Repository
 
         public List<Reservation> ReservationList()
         {
-            return db.Reservations.Where(x => x.IsActive == true).ToList();
+            return db.Reservations.Where(x => x.IsActive).ToList();
         }
- 
+
 
         public Reservation ReservationById(int id)
         {
-            var reservation = db.Reservations.Where(x => x.IsActive == true).FirstOrDefault(x => x.ReservationId == id);
+            var reservation = db.Reservations.Where(x => x.IsActive).FirstOrDefault(x => x.ReservationId == id);
             return reservation;
         }
         public List<Reservation> ReservationsByShowId(int id)
@@ -32,163 +32,92 @@ namespace PKTickets.Repository
 
         public Messages DeleteReservation(int id)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var reservationExist = ReservationById(id);
             if (reservationExist == null)
             {
-                messages.Message = "Reservation Id is not found";
+                return Request.Not("Reservation Id is not found");
             }
             DateTime date = DateTime.Now;
-            TimeSpan time = new TimeSpan( date.Hour, date.Minute,0);
+            TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
             var timing = TimingConvert.ConvertToInt(Convert.ToString(time));
             var schedule = db.Schedules.FirstOrDefault(x => x.ScheduleId == reservationExist.ScheduleId);
-            if (date.Date > schedule.Date)
-            {
-                messages.Message = "You are UpTo Time ,so can't Cancel The Reservation";
-                return messages;
-            }
             var showTiming = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
-            if (date.Date < schedule.Date)
-            {
-                return DeleteSave(reservationExist, schedule);
-            }
-            else
-            {
-                if (timing > showTiming.ShowTiming)
-                {
-                    messages.Message = "You are UpTo Time ,so can't Cancel The Reservation";
-                    return messages;
-                }
-                else
-                {
-                    return DeleteSave(reservationExist,schedule);
-                }
-            }
-               
+            return (date.Date > schedule.Date) ? Request.Conflict("You are UpTo Time ,so can't Cancel The Reservation")
+                : (date.Date < schedule.Date) ? DeleteSave(reservationExist, schedule)
+                : (date.Date == schedule.Date && timing > showTiming.ShowTiming) ? Request.Conflict("You are UpTo Time ,so can't Cancel The Reservation")
+                : DeleteSave(reservationExist, schedule);
         }
 
+       
         public Messages CreateReservation(Reservation reservation)
         {
-             Messages messages = new Messages();
+            Messages messages = new Messages();
             messages.Success = false;
             DateTime date = DateTime.Now;
             TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
             var timing = TimingConvert.ConvertToInt(Convert.ToString(time));
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
-            if (schedule == null)
+            if(NotFounds(reservation).Status==Statuses.NotFound)
             {
-                messages.Message = "Schedule Id(" + reservation.ScheduleId + ") is Not found";
-                return messages;
+                return NotFounds(reservation);
             }
-            var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == reservation.UserId);
-            if (user == null)
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
+            if (reservation.PremiumTickets == 0 && reservation.EliteTickets == 0)
             {
-                messages.Message = "User Id(" + reservation.UserId + ") is Not found";
-                return messages;
+                return Request.Bad("Please reaserve atleast a seat");
             }
-            else if (reservation.PremiumTickets==0 && reservation.EliteTickets== 0)
-            {
-                messages.Message = " Please reaserve atleast a seat";
-                return messages;
-            }
-           
             var showTime = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
-            if (date.Date > schedule.Date)
-            {
-                return ScheduleFalse(schedule);
-            }
-            else if(schedule.AvailablePreSeats- reservation.PremiumTickets < 0)
-            {
-                messages.Message = "Only "+schedule.AvailablePreSeats+" Premium Tickets are Available";
-                return messages;
-            }
-            else if (schedule.AvailableEliSeats - reservation.EliteTickets < 0)
-            {
-                messages.Message = "Only " + schedule.AvailableEliSeats + " Elite Tickets are Available";
-                return messages;
-            }
-            else
-            {
-                if (date.Date == schedule.Date && timing > showTime.ShowTiming)
-                {
-                   return ScheduleFalse(schedule);
-                }
-                else
-                {
-                    var tickets = reservation.PremiumTickets + reservation.EliteTickets;
-                    schedule.AvailablePreSeats = schedule.AvailablePreSeats - reservation.PremiumTickets;
-                    schedule.AvailableEliSeats = schedule.AvailableEliSeats - reservation.EliteTickets;
-                    db.Reservations.Add(reservation);
-                    db.SaveChanges();
-                    messages.Success = true;
-                    messages.Message = "Successfully " + tickets + " Tickets are Reserved";
-                    SeatCheck(schedule);
-                    return messages;
-                }
-            }
-            
+            return (date.Date > schedule.Date) ? ScheduleFalse(schedule)
+                : (schedule.AvailablePreSeats - reservation.PremiumTickets < 0) ? Request.Conflict
+                ("Only " + schedule.AvailablePreSeats + " Premium Tickets are Available")
+                : (schedule.AvailableEliSeats - reservation.EliteTickets < 0) ? Request.Conflict
+                ("Only " + schedule.AvailableEliSeats + " Elite Tickets are Available")
+                : (date.Date == schedule.Date && timing > showTime.ShowTiming) ? ScheduleFalse(schedule)
+                : Create(reservation, schedule);
         }
-
 
         public Messages UpdateReservation(Reservation reservation)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
+            if (reservation.ReservationId == 0)
+            {
+                return Request.Bad("Enter the Reservation Id Field");
+            }
             var reservationExist = ReservationById(reservation.ReservationId);
             if (reservationExist == null)
             {
-                messages.Message = "Reservation Id is Not found";
-                return messages;
+                return Request.Not("Reservation Id is Not found");
             }
             DateTime date = DateTime.Now;
-            TimeSpan time = new TimeSpan(date.Hour, date.Minute,0);
+            TimeSpan time = new TimeSpan(date.Hour, date.Minute, 0);
             var timing = TimingConvert.ConvertToInt(Convert.ToString(time));
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
-            if(date.Date > schedule.Date)
-            {
-                messages.Message = "You are UpTo Time ,so can't Update The Reservation";
-                return messages;
-            }
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
             var showTime = db.ShowTimes.FirstOrDefault(x => x.ShowTimeId == schedule.ShowTimeId);
-            if (date.Date < schedule.Date)
-            {
-                return UpdateSave(reservation, reservationExist, schedule);
-            }
-            else 
-            {
-                if (timing > showTime.ShowTiming)
-                {
-                    messages.Message = "You are UpTo Time ,so can't Update The Reservation";
-                    return messages;
-                }
-                else
-                {
-                        return UpdateSave(reservation,reservationExist,schedule);
-                }
-             }
-                    
+            return (date.Date > schedule.Date)? Request.Conflict("You are UpTo Time ,so can't Update The Reservation")
+                : (date.Date < schedule.Date) ? UpdateSave(reservation, reservationExist, schedule)
+                : (date.Date == schedule.Date && timing > showTime.ShowTiming) ? Request.Conflict("You are UpTo Time ,so can't Update The Reservation")
+                : UpdateSave(reservation, reservationExist, schedule);
         }
         public UserDTO ReservationsByUserId(int id)
         {
-            var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == id);
+            var user = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == id);
             UserDTO details = new UserDTO();
+            if (user == null)
+            {
+                return details;
+            }
             details.UserName = user.UserName;
-            details.ReservationDetail= ReservationDetailsByUserId(id);
+            details.ReservationDetail = ReservationDetailsByUserId(id);
             return details;
         }
-
         public User UserById(int id)
         {
-            var user = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == id);
+            var user = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == id);
             return user;
         }
         public Schedule ScheduleById(int id)
         {
-            var schedule = db.Schedules.Where(x => x.IsActive == true).FirstOrDefault(x => x.ScheduleId == id);
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == id);
             return schedule;
         }
-
         public List<ReservationDTO> ListOfReservations()
         {
             var reservations = (from reservation in db.Reservations
@@ -198,7 +127,7 @@ namespace PKTickets.Repository
                                 join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
                                 join movie in db.Movies on schedule.MovieId equals movie.MovieId
                                 join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
-                                where  user.IsActive == true && reservation.IsActive == true
+                                where user.IsActive == true && reservation.IsActive
                                 select new ReservationDTO()
                                 {
                                     ReservationId = reservation.ReservationId,
@@ -209,10 +138,9 @@ namespace PKTickets.Repository
                                     Date = schedule.Date,
                                     ShowTiming = TimingConvert.ConvertToString(time.ShowTiming),
                                     Tickets = reservation.PremiumTickets + reservation.EliteTickets,
-                                      }).ToList();
+                                }).ToList();
             return reservations;
         }
-
         public Invoice InvoiceById(int id)
         {
             var invoice = (from reservation in db.Reservations
@@ -222,7 +150,7 @@ namespace PKTickets.Repository
                            join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
                            join movie in db.Movies on schedule.MovieId equals movie.MovieId
                            join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
-                           where reservation.ReservationId == id && reservation.IsActive == true
+                           where reservation.ReservationId == id && reservation.IsActive
                            select new Invoice()
                            {
                                ReservationId = reservation.ReservationId,
@@ -241,6 +169,7 @@ namespace PKTickets.Repository
                            }).ToList();
             return invoice.ToList()[0];
         }
+
         #region Private Methods
         private void SeatCheck(Schedule schedule)
         {
@@ -250,90 +179,97 @@ namespace PKTickets.Repository
                 db.SaveChanges();
             }
         }
+        private Messages messages = new Messages() { Success = true };
         private Messages ScheduleFalse(Schedule schedule)
         {
-            Messages messages = new Messages();
             messages.Success = false;
             schedule.IsActive = false;
             db.SaveChanges();
-            messages.Message = "You are UpTo Time ,so can't Book The Reservation";
-            return messages;
+            return Request.Conflict("You are UpTo Time ,so can't Book The Reservation");
         }
         private List<ReservationDetails> ReservationDetailsByUserId(int id)
         {
             var reservations = (from user in db.Users
-                           join reservation in db.Reservations on user.UserId equals reservation.UserId
+                                join reservation in db.Reservations on user.UserId equals reservation.UserId
                                 join schedule in db.Schedules on reservation.ScheduleId equals schedule.ScheduleId
                                 join screen in db.Screens on schedule.ScreenId equals screen.ScreenId
                                 join theater in db.Theaters on screen.TheaterId equals theater.TheaterId
                                 join movie in db.Movies on schedule.MovieId equals movie.MovieId
                                 join time in db.ShowTimes on schedule.ShowTimeId equals time.ShowTimeId
-                                where user.UserId == id && user.IsActive==true && reservation.IsActive==true
-                           select new ReservationDetails()
-                           {
-                           ReservationId= reservation.ReservationId,
-                               TheaterName=theater.TheaterName,
-                               ScreenName=screen.ScreenName,
-                               MovieName=movie.Title,
-                               Date=schedule.Date,
-                               ShowTime=TimingConvert.ConvertToString(time.ShowTiming),
-                               PremiumTickets =reservation.PremiumTickets,
-                               EliteTickets=reservation.EliteTickets,
-                               PremiumPrice=screen.PremiumPrice,
-                               ElitePrice=screen.ElitePrice,
-                               TotalAmount= (reservation.PremiumTickets * screen.PremiumPrice)+(reservation.EliteTickets * screen.ElitePrice),
-                           }).ToList();
+                                where user.UserId == id && user.IsActive == true && reservation.IsActive
+                                select new ReservationDetails()
+                                {
+                                    ReservationId = reservation.ReservationId,
+                                    TheaterName = theater.TheaterName,
+                                    ScreenName = screen.ScreenName,
+                                    MovieName = movie.Title,
+                                    Date = schedule.Date,
+                                    ShowTime = TimingConvert.ConvertToString(time.ShowTiming),
+                                    PremiumTickets = reservation.PremiumTickets,
+                                    EliteTickets = reservation.EliteTickets,
+                                    PremiumPrice = screen.PremiumPrice,
+                                    ElitePrice = screen.ElitePrice,
+                                    TotalAmount = (reservation.PremiumTickets * screen.PremiumPrice) + (reservation.EliteTickets * screen.ElitePrice),
+                                }).ToList();
             return reservations;
         }
+        private Messages NotFounds(Reservation reservation)
+        {
+            var schedule = db.Schedules.Where(x => x.IsActive).FirstOrDefault(x => x.ScheduleId == reservation.ScheduleId);
+            var user = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == reservation.UserId);
+            return (schedule == null) ? Request.Not("Schedule Id is Not found")
+                : (user == null) ? Request.Not("User Id is Not found")
+                : messages;
+        }
+        private Messages Create(Reservation reservation,Schedule schedule)
+        {
+            var tickets = reservation.PremiumTickets + reservation.EliteTickets;
+            schedule.AvailablePreSeats = schedule.AvailablePreSeats - reservation.PremiumTickets;
+            schedule.AvailableEliSeats = schedule.AvailableEliSeats - reservation.EliteTickets;
+            db.Reservations.Add(reservation);
+            db.SaveChanges();
+            messages.Message = "Successfully " + tickets + " Tickets are Reserved";
+            messages.Status = Statuses.Created;
+            SeatCheck(schedule);
+            return messages;
+        }
 
-       
         private Messages UpdateSave(Reservation reservation, Reservation reservationExist, Schedule schedule)
-      {
-        Messages messages = new Messages();
-        messages.Success = false;
-        var premiumSeats = schedule.AvailablePreSeats + (reservationExist.PremiumTickets - reservation.PremiumTickets);
-        var eliteSeats = schedule.AvailableEliSeats + (reservationExist.EliteTickets - reservation.EliteTickets);
-        var premium = schedule.AvailablePreSeats - reservationExist.PremiumTickets;
-        var elite = schedule.AvailableEliSeats - reservationExist.EliteTickets;
-        if (premiumSeats < 0)
         {
-            messages.Message = "This Show Do not have that much of Premium seats,only " + premium + "Premium Tickets available";
-            return messages;
+            Messages messages = new Messages();
+            messages.Success = false;
+            var premiumSeats = schedule.AvailablePreSeats + (reservationExist.PremiumTickets - reservation.PremiumTickets);
+            var eliteSeats = schedule.AvailableEliSeats + (reservationExist.EliteTickets - reservation.EliteTickets);
+            var premium = schedule.AvailablePreSeats - reservationExist.PremiumTickets;
+            var elite = schedule.AvailableEliSeats - reservationExist.EliteTickets;
+            return (premiumSeats < 0)? Request.Conflict("This Show Do not have that much of Premium seats,only " + premium + "Premium Tickets available")
+                : (eliteSeats < 0)? Request.Conflict("This Show Do not have that much of Elite seats,only " + elite + "Elite Tickets available")
+                : Update(reservation, reservationExist, schedule, premiumSeats, eliteSeats);
         }
-        else if (eliteSeats < 0)
-        {
-            messages.Message = "This Show Do not have that much of Elite seats,only " + elite + "Elite Tickets available";
-            return messages;
-        }
-        else
+        private Messages Update(Reservation reservation, Reservation reservationExist, Schedule schedule,int premiumSeats, int eliteSeats)
         {
             schedule.AvailablePreSeats = premiumSeats;
             schedule.AvailableEliSeats = eliteSeats;
             reservationExist.PremiumTickets = reservation.PremiumTickets;
             reservationExist.EliteTickets = reservation.EliteTickets;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = " Tickets are Successfully Updated";
-                SeatCheck(schedule);
-                return messages;
-
-
+            messages.Status = Statuses.Success;
+            SeatCheck(schedule);
+            return messages;
         }
-      }
-        private Messages DeleteSave( Reservation reservationExist, Schedule schedule)
+        private Messages DeleteSave(Reservation reservationExist, Schedule schedule)
         {
-            Messages messages = new Messages();
             schedule.AvailablePreSeats = schedule.AvailablePreSeats + reservationExist.PremiumTickets;
             schedule.AvailableEliSeats = schedule.AvailableEliSeats + reservationExist.EliteTickets;
             reservationExist.IsActive = false;
             db.SaveChanges();
-            messages.Success = true;
             messages.Message = "Reservation is succssfully deleted";
+            messages.Status = Statuses.Success;
             return messages;
         }
 
         #endregion
-
     }
 }
 

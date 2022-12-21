@@ -15,110 +15,75 @@ namespace PKTickets.Repository
 
         public List<User> GetAllUsers()
         {
-            return db.Users.Where(x => x.IsActive == true).ToList();
+            return db.Users.Where(x => x.IsActive).ToList();
         }
 
         public User UserById(int id)
         {
-            var userExist = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.UserId == id);
-            return userExist;
-        }
-
-        public User UserByPhone(string phone)
-        {
-            var userExist = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.PhoneNumber == phone);
-            return userExist;
-        }
-
-        public User UserByEmail(string email)
-        {
-            var userExist = db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.EmailId == email);
+            var userExist = db.Users.Where(x => x.IsActive).FirstOrDefault(x => x.UserId == id);
             return userExist;
         }
 
         public Messages CreateUser(User user)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == user.PhoneNumber);
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == user.EmailId);
-            if (phoneExist != null)
-            {
-                messages.Message = "The ("+ user.PhoneNumber + ") , PhoneNumber is already Registered.";
-                return messages;
-            }
-            else if (emailIdExist != null)
-            {
-                messages.Message = "The (" + user.EmailId + ") , EmailId is already Registered.";
-                return messages;
-            }
-            else
-            {
-                db.Users.Add(user);
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = user.UserName + ", Your Account is Successfully Registered";
-                return messages;
-            }
+            return (phoneExist != null) ? Request.Conflict($"The {user.PhoneNumber}, PhoneNumber is already Registered.")
+                : (emailIdExist != null) ? Request.Conflict($"The {user.EmailId}, Email Id is already Registered.")
+                : Create(user);
         }
 
         public Messages DeleteUser(int userId)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var user = UserById(userId);
-            if (user == null)
-            {
-                messages.Message = "User Id ("+userId +") is not found";
-                return messages;
-            }
-            else
-            {
-                user.IsActive = false;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = "The "+user.UserName + " Account is Successfully removed";
-                return messages;
-            }
+            return (user == null) ? Request.Not($"User Id {userId} Not found") 
+               : Delete(user);
         }
-        
 
         public Messages UpdateUser(User userDTO)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
+            if (userDTO.UserId == 0)
+            {
+                return Request.Bad("Enter the User Id field");
+            }
             var userExist = UserById(userDTO.UserId);
             var phoneExist = db.Users.FirstOrDefault(x => x.PhoneNumber == userDTO.PhoneNumber);
             var emailIdExist = db.Users.FirstOrDefault(x => x.EmailId == userDTO.EmailId);
-            if (userExist == null)
-            {
-                messages.Message = "User Id is not found";
-                return messages;
-            }
-            else if (phoneExist != null && phoneExist.UserId != userExist.UserId)
-            {
-                messages.Message = "The ("+ userDTO.PhoneNumber + "), PhoneNumber is already Registered.";
-                return messages;
-            }
-            else if (emailIdExist != null && emailIdExist.UserId != userExist.UserId)
-            {
-                messages.Message = "The (" + userDTO.EmailId + "), EmailId is already Registered.";
-                return messages;
-            }
-            else
-            {
-                userExist.UserName = userDTO.UserName;
-                userExist.PhoneNumber = userDTO.PhoneNumber;
-                userExist.EmailId = userDTO.EmailId;
-                userExist.Password = userDTO.Password;
-                userExist.Location = userDTO.Location;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = "The " + userDTO.UserName + " Account is Successfully Updated";
-                return messages;
-            }
+            return (userExist == null) ? Request.Not($"User Id {userDTO.UserId}  Not found")
+                : (phoneExist != null && phoneExist.UserId != userExist.UserId) ? Request.Conflict($"The {userDTO.PhoneNumber}, PhoneNumber is already Registered.")
+                : (emailIdExist != null && emailIdExist.UserId != userExist.UserId) ? Request.Conflict($"The {userDTO.EmailId}, Email Id is already Registered.")
+                : Update(userExist, userDTO);
         }
-       
-
+        #region
+        private Messages messages = new Messages() { Success = true };
+        private Messages Create(User user)
+        {
+            db.Users.Add(user);
+            db.SaveChanges();
+            messages.Status = Statuses.Created;
+            messages.Message = $"{user.UserName}, Your Account is Successfully Registered";
+            return messages;
+        }
+        private Messages Delete(User user)
+        {
+            user.IsActive = false;
+            db.SaveChanges();
+            messages.Message = $"The {user.UserName} Account is Successfully removed";
+            messages.Status = Statuses.Success;
+            return messages;
+        }
+        private Messages Update(User userExist,User userDTO)
+        {
+            userExist.UserName = userDTO.UserName;
+            userExist.PhoneNumber = userDTO.PhoneNumber;
+            userExist.EmailId = userDTO.EmailId;
+            userExist.Password = userDTO.Password;
+            userExist.Location = userDTO.Location;
+            db.SaveChanges();
+            messages.Message = $"The {userDTO.UserName} Account is Successfully Updated";
+            messages.Status = Statuses.Success;
+            return messages;
+        }
+        #endregion
     }
 }

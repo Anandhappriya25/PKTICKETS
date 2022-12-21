@@ -21,7 +21,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(theaterRepository.GetTheaters());
@@ -32,11 +32,7 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int theaterId)
         {
             var theater = theaterRepository.TheaterById(theaterId);
-            if (theater == null)
-            {
-                return NotFound("This Theater Id is not Registered");
-            }
-            return Ok(theater);
+            return (theater == null) ? NotFound("This Theater Id is not Registered") : Ok(theater);
         }
 
         [HttpGet("Location/{location}")]
@@ -46,71 +42,56 @@ namespace PKTickets.Controllers
             return Ok(theaterRepository.TheaterByLocation(location));
         }
 
-
-        [HttpPost("")]
-
+        [HttpPost]
         public IActionResult Add(Theater theater)
         {
             var result = theaterRepository.CreateTheater(theater);
-            if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Created("" + TimingConvert.LocalHost("Theaters") + theater.TheaterId +"", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Theaters")}{theater.TheaterId}", result.Message) :
+             Conflict(result.Message) ;
+        
         }
 
-
-        [HttpPut("")]
-        public ActionResult Update(Theater theater)
+        [HttpPut]
+        public IActionResult Update(Theater theater)
         {
-            if (theater.TheaterId == 0)
-            {
-                return BadRequest("Enter the Theater Id field");
-            }
             var result = theaterRepository.UpdateTheater(theater);
-            if (result.Message == "Theater Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
         [HttpDelete("{theaterId}")]
-
         public IActionResult Remove(int theaterId)
         {
             var result = theaterRepository.DeleteTheater(theaterId);
-            if (result.Success == false)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
+
         [HttpGet("{id}/Screens")]
         public IActionResult GetScreensByTheaterId(int id)
         {
-            var theater = theaterRepository.TheaterById(id);
-            if (theater == null)
-            {
-                return NotFound("This Theater Id is not Registered");
-            }
-            return Ok(theaterRepository.TheaterScreens(id));
+            var theater = theaterRepository.TheaterScreens(id);
+            return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
         }
 
         [HttpGet("{id}/Schedules")]
         public IActionResult ListByTheaterId(int id)
         {
-            var theater = theaterRepository.TheaterById(id);
-            if (theater == null)
+            var theater = theaterRepository.TheaterSchedulesById(id);
+            return (theater.TheaterName == null) ? NotFound("The Theater Id is NotFound") : Ok(theater);
+        }
+
+        private IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
             {
-                return NotFound("Theater Id is notfound");
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
-            return Ok(theaterRepository.TheaterSchedulesById(id));
+            return Ok(result.Message);
         }
     }
 }

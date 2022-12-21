@@ -1,8 +1,10 @@
 ﻿using PKTickets.Interfaces;
 using PKTickets.Models;
 using PKTickets.Models.DTO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using static Azure.Core.HttpHeader;
 
 namespace PKTickets.Repository
 {
@@ -16,101 +18,65 @@ namespace PKTickets.Repository
 
         public List<Theater> GetTheaters()
         {
-            return db.Theaters.Where(x => x.IsActive == true).ToList();
+            return db.Theaters.Where(x => x.IsActive).ToList();
         }
 
         public List<Theater> TheaterByLocation(string location)
         {
-            var theaters = db.Theaters.Where(x => x.IsActive == true).Where(x => x.Location == location).ToList();
+            var theaters = db.Theaters.Where(x => x.IsActive).Where(x => x.Location == location).ToList();
             return theaters;
         }
 
         public Theater TheaterById(int id)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == id);
             return theater;
         }
         public Theater TheaterByName(string name)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterName == name);
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterName == name);
             return theater;
         }
 
 
         public Messages DeleteTheater(int theaterId)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var theater = TheaterById(theaterId);
-            if (theater == null)
-            {
-                messages.Message = "Theater Id  ("+ theaterId + ") is not found";
-            }
-            var theaters = db.Screens.Where(x => x.TheaterId == theaterId).FirstOrDefault();
-            if (theaters != null)
-            {
-                messages.Message = "This Theater(" + theater.TheaterName + ") is Already scheduled, so you can't delete the theater";
-                return messages;
-            }
-            else
-            {
-                theater.IsActive = false;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = "Theater "+theater.TheaterName+ " is Successfully Removed";
-            }
-            return messages;
+            var theaters = db.Screens.Where(x => x.TheaterId == theaterId).Where(x=>x.IsActive).FirstOrDefault();
+            return (theater == null) ? Request.Not($"User Id {theaterId}  Not found")
+               : (theaters != null) ? Request.Conflict($"Theater Name {theater.TheaterName} is already Registered.")
+               : Delete(theater);
         }
 
         public Messages CreateTheater(Theater theater)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
             var theaterExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
-            if (theaterExist != null)
-            {
-                messages.Message = "Theater Name ("+ theater.TheaterName + ") is already Registered.";
-            }
-            else
-            {
-                db.Theaters.Add(theater);
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = "Theater " + theater.TheaterName + " is Successfully Added";
-            }
-            return messages;
+            return (theaterExist != null) ? Request.Conflict($"This Theater {theater.TheaterName} is Already scheduled, so you can't delete the theater")
+              : Create(theater);
         }
 
         public Messages UpdateTheater(Theater theater)
         {
-            Messages messages = new Messages();
-            messages.Success = false;
+            if (theater.TheaterId == 0)
+            {
+                return Request.Bad("Enter the Theater Id field");
+            }
             var theaterExist = TheaterById(theater.TheaterId);
             var nameExist = db.Theaters.FirstOrDefault(x => x.TheaterName == theater.TheaterName);
-            if (theaterExist == null)
-            {
-                messages.Message = "Theater Id is not found";
-            }
-            else if (nameExist != null && nameExist.TheaterId != theaterExist.TheaterId)
-            {
-                messages.Message = "Theater Name ("+ theater.TheaterName + ")is already registered";
-            }
-            else
-            {
-                theaterExist.TheaterName = theater.TheaterName;
-                theaterExist.Location = theater.Location;
-                db.SaveChanges();
-                messages.Success = true;
-                messages.Message = "Theater " + theater.TheaterName + "is Successfully Updated";
-            }
-            return messages;
+            return (theaterExist == null) ? Request.Not($"Theater Id {theater.TheaterId} is not found")
+                : (nameExist != null && nameExist.TheaterId != theaterExist.TheaterId) ? Request.Conflict($"Theater Name {theater.TheaterName} is already Registered.")
+              : Update(theater,theaterExist);
         }
 
         public ScreensListDTO TheaterScreens(int id)
         {
-            var theater = db.Theaters.Where(x => x.IsActive == true).FirstOrDefault(x => x.TheaterId == id);
-            var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
+            var theater = db.Theaters.Where(x => x.IsActive).FirstOrDefault(x => x.TheaterId == id);
+            var screens = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == id).ToList();
             ScreensListDTO list = new ScreensListDTO();
+            if (theater == null)
+            {
+                return list;
+            }
             list.TheaterName = theater.TheaterName;
             list.ScreensCount = screens.Count();
             list.Screens = Screens(id);
@@ -120,9 +86,13 @@ namespace PKTickets.Repository
         public TheatersSchedulesDTO TheaterSchedulesById(int id)
         {
             var theater = db.Theaters.FirstOrDefault(x => x.TheaterId == id);
-            var screens = db.Screens.Where(x => x.IsActive == true).Where(x => x.TheaterId == id).ToList();
+            var screens = db.Screens.Where(x => x.IsActive).Where(x => x.TheaterId == id).ToList();
 
             TheatersSchedulesDTO list = new TheatersSchedulesDTO();
+            if (theater == null)
+            {
+                return list;
+            }
             list.TheaterName = theater.TheaterName;
             list.ScreensCount = screens.Count();
 
@@ -142,7 +112,32 @@ namespace PKTickets.Repository
         }
 
         #region PrivateMethods
-
+        private Messages messages = new Messages() { Success = true };
+        private Messages Delete(Theater theater)
+        {
+            theater.IsActive = false;
+            db.SaveChanges();
+            messages.Message = $"Theater {theater.TheaterName} is Successfully Removed";
+            messages.Status = Statuses.Success;
+            return messages;
+        }
+        private Messages Create(Theater theater)
+        {
+            db.Theaters.Add(theater);
+            db.SaveChanges();
+            messages.Message = $"Theater {theater.TheaterName} is Successfully Added";
+            messages.Status = Statuses.Created;
+            return messages;
+        }
+        private Messages Update(Theater theater,Theater theaterExist)
+        {
+            theaterExist.TheaterName = theater.TheaterName;
+            theaterExist.Location = theater.Location;
+            db.SaveChanges();
+            messages.Message = $"Theater {theater.TheaterName} is Successfully Updated";
+            messages.Status = Statuses.Success;
+            return messages;
+        }
         private List<SchedulesDTO> SchedulesListScreenId(int id)
         {
             DateTime date = DateTime.Now;
@@ -151,7 +146,7 @@ namespace PKTickets.Repository
                            join schedule in db.Schedules on screen.ScreenId equals schedule.ScreenId
                            join showTime in db.ShowTimes on schedule.ShowTimeId equals showTime.ShowTimeId
                            join movie in db.Movies on schedule.MovieId equals movie.MovieId
-                           where screen.ScreenId == id && schedule.IsActive == true && ((schedule.Date == date.Date && showTime.ShowTiming > timeValue) || (schedule.Date > date.Date))
+                           where screen.ScreenId == id && schedule.IsActive && ((schedule.Date == date.Date && showTime.ShowTiming > timeValue) || (schedule.Date > date.Date))
                            select new SchedulesDTO()
                            {
                                ScheduleId = schedule.ScheduleId,
@@ -168,7 +163,7 @@ namespace PKTickets.Repository
         {
             var screens = (from theater in db.Theaters
                            join screen in db.Screens on theater.TheaterId equals screen.TheaterId
-                           where theater.TheaterId == id && screen.IsActive == true
+                           where theater.TheaterId == id && screen.IsActive
                            select new ScreensDTO()
                            {
                                ScreenId = screen.ScreenId,

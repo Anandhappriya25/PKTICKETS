@@ -20,12 +20,11 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(scheduleRepository.SchedulesList());
-        }
-        
+        }        
 
         [HttpGet("Available")]
         public IActionResult AvailableList()
@@ -33,105 +32,61 @@ namespace PKTickets.Controllers
             return Ok(scheduleRepository.AvailableSchedulesList());
         }
 
-
         [HttpGet("{id}")]
 
         public ActionResult GetById(int id)
         {
             var show = scheduleRepository.ScheduleById(id);
-            if (show == null)
-            {
-                return NotFound("This Schedule Id is not Registered");
-            }
-            return Ok(show);
+            return (show == null) ? NotFound("This Schedule Id is not Registered") : Ok(show);
         }
 
         [HttpGet("Movie/{id}")]
         public IActionResult ListByMovieId(int id)
         {
-            var movie= scheduleRepository.MovieById(id);
-            if(movie == null)
-            {
-                return NotFound("Movie Id is Not Found");
-            }
-            return Ok(scheduleRepository.SchedulesByMovieId(id));
+            var schedule= scheduleRepository.SchedulesByMovieId(id);
+            return (schedule.Count() == 0) ? NotFound("Movie is Not Registered in any Schedules") : Ok(schedule);
         }
 
-
-        [HttpPost("")]
+        [HttpPost]
         public IActionResult Add(Schedule schedule)
         {
             var result = scheduleRepository.CreateSchedule(schedule);
-            if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Created(""+ TimingConvert.LocalHost("Schedules") + schedule.ScheduleId + "", result.Message);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Schedules")}{schedule.ScheduleId}", result.Message) :
+               OutPut(result);
         }
 
-
-        [HttpPut("")]
-        public ActionResult Update(Schedule schedule)
+        [HttpPut]
+        public IActionResult Update(Schedule schedule)
         {
-            if (schedule.ScheduleId == 0)
-            {
-                return BadRequest("Enter the Schedule Id field");
-            }
             var result = scheduleRepository.UpdateSchedule(schedule);
-            if (result.Message == "The Schedule Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
-
-
 
         [HttpDelete("{id}")]
-
         public IActionResult Remove(int id)
         {
-            var schedule = scheduleRepository.ScheduleById(id);
-            if(schedule == null)
-            {
-                return NotFound("The Schedule Id is notfound");
-            }
             var result = scheduleRepository.DeleteSchedule(id);
-            if (result.Success == false)
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(result.Message);
-        }
+            return OutPut(result);
+        }       
 
-
-        [HttpGet("ScreenId/{id}")]
-        public IActionResult ListByScreenId(int id)
-        {
-            var screen= scheduleRepository.ScreenById(id);
-            if(screen == null)
-            {
-                return NotFound("Screen Id is notfound");
-            }
-            return Ok(scheduleRepository.SchedulesListByScreenId(id));
-        }
-
-
-       
-
-        [HttpGet("Details/Movie/{id}")]
+        [HttpGet("MovieDetails/{id}")]
         public IActionResult DetailsByMovieId(int id)
         {
-            var movie = scheduleRepository.MovieById(id);
-            if (movie == null)
+            var list = scheduleRepository.DetailsByMovieId(id);
+            return (list.MovieName == null) ? NotFound("Movie Id is Not Found") : Ok(list);
+        }
+        private IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
             {
-                return NotFound("Movie Id is Not Found");
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
-            return Ok(scheduleRepository.DetailsByMovieId(id));
+            return Ok(result.Message);
         }
     }
 }

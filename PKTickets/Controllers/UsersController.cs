@@ -19,7 +19,7 @@ namespace PKTickets.Controllers
         }
 
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult List()
         {
             return Ok(userRepository.GetAllUsers());
@@ -30,44 +30,24 @@ namespace PKTickets.Controllers
         public ActionResult GetById(int userId)
         {
             var user = userRepository.UserById(userId);
-            if (user == null)
-            {
-                return NotFound("This User Id Not Registered.");
-            }
-            return Ok(user);
+            return (user == null) ? NotFound("This User Id is not Registered") : Ok(user);            
         }
 
 
-        [HttpPost("")]
+        [HttpPost]
 
         public IActionResult Add(User user)
         {
-            var result=userRepository.CreateUser(user);
-            if(result.Success==false)
-            {
-                return Conflict(result.Message);
-            }
-            return Created("" + TimingConvert.LocalHost("Users") + user.UserId+"", result.Message);
+            var result = userRepository.CreateUser(user);
+            return (result.Status == Statuses.Created) ? Created($"{TimingConvert.LocalHost("Users")}{user.UserId}", result.Message) : OutPut(result);            
         }
 
 
-        [HttpPut("")]
-        public ActionResult Update(User user)
-        {
-            if (user.UserId ==0)
-            {
-                return BadRequest("Enter the User Id field");
-            }
+        [HttpPut]
+        public IActionResult Update(User user)
+        {            
             var result = userRepository.UpdateUser(user);
-            if(result.Message== "User Id is not found")
-            {
-                return NotFound(result.Message);
-            }
-            else if (result.Success == false)
-            {
-                return Conflict(result.Message);
-            }
-            return Ok(result.Message);
+            return OutPut(result);
         }
 
 
@@ -76,9 +56,19 @@ namespace PKTickets.Controllers
         public IActionResult Remove(int userId)
         {
             var result = userRepository.DeleteUser(userId);
-            if (result.Success == false)
+            return OutPut(result);
+        }
+
+        private IActionResult OutPut(Messages result)
+        {
+            switch (result.Status)
             {
-                return NotFound(result.Message);
+                case Statuses.BadRequest:
+                    return BadRequest(result.Message);
+                case Statuses.NotFound:
+                    return NotFound(result.Message);
+                case Statuses.Conflict:
+                    return Conflict(result.Message);
             }
             return Ok(result.Message);
         }
