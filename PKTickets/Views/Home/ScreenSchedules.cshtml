@@ -1,0 +1,94 @@
+﻿@using PKTickets.Models.DTO
+@model SchedulesListDTO
+
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+
+
+<div class="row">
+    <div id="heading">
+       Schedules
+    </div>
+</div>
+
+
+<div class="container" style="float:left">
+    <div class="row side">
+        <div class="col-4">
+            <h5>
+                Screen Name :
+                <b> @Model.ScreenName</b>
+            </h5>
+        </div>
+    </div>
+</div>
+<div class="container" style="float:left">
+    <div class="row side">
+        <div class="col-4">
+            <h5>
+                Premium Capacity :
+                <b> @Model.PremiumCapacity</b>
+            </h5>
+        </div>
+    </div>
+</div>
+<div class="container" style="float:left">
+    <div class="row side">
+        <div class="col-4">
+            <h5>
+                Elite Capacity :
+                <b> @Model.EliteCapacity</b>
+            </h5>
+        </div>
+    </div>
+</div>
+<a class="nav-link text-black mb-2 add"  asp-area="" asp-controller="Home" asp-action="CreateSchedule" asp-route-id="@ViewBag.csd">
+    <i class="fa-regular fa-square-plus Add"></i> <span class="msg">ADD SCHEDULE</span></i>
+
+</a>
+<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th>Schedule Id</th>
+            <th class="text-center">Movie Name</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Show Time</th>
+            <th class="text-center">Available Premium Seats</th>
+            <th class="text-center">Available Elite Seats</th>
+            <th class="text-center" data-orderable="false">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (SchedulesDTO schedule in Model.Schedules)
+        {
+            <tr class="text-center align-text-bottom">
+                <td>@schedule.ScheduleId</td>
+                <td>@schedule.MovieName</td>
+                <td>@String.Format("{0:d/M/yyyy}",@schedule.Date)</td>
+                <td>@schedule.ShowTime</td>
+                <td>@schedule.AvailablePremiumSeats</td>
+                <td>@schedule.AvailableEliteSeats</td>
+                <td >
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditSchedule" asp-route-id="@schedule.ScheduleId">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <div class="nav-link text-danger delete" title="Delete"  onclick="ScheduleDelete(@schedule.ScheduleId)">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                </td>
+            </tr>
+        }    
+    </tbody>
+</table>
+
+
+
+@section scripts{
+    <link href="~/css/screenschedules.css" rel="stylesheet" />
+    <script src="~/js/deleteschedule.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+}
+

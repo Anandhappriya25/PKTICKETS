@@ -1,0 +1,89 @@
+﻿@using PKTickets.Models
+@model User
+@{
+    string name = "Submit";
+    string title = "User Form";
+
+    if (Model.UserId > 0)
+    {
+        title = "Edit User";
+        name = "Update";
+    }
+    Layout = "~/views/shared/_userlayout.cshtml";
+
+}
+
+
+<div class="container register">
+    <div class="row">
+        <div class="col-md-3 register-left">
+            <img src="~/css/logo/logo.jpg" class=" rounded-4 shadow-4" alt="f"  />
+            <p>Welcome to PKTickets</p>
+            <p>You can Create an Account for Easy Booking</p>
+        </div>
+        <div class="col-md-9 register-right">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 class="register-heading"> @title </h3>
+                    <div class="row register-form">
+                        @using (Html.BeginForm(FormMethod.Post, new { id = "CreateUsers" }))
+                        {
+                            @Html.HiddenFor(m => m.UserId )
+
+                            <div class="mb-3  row justify-content-center">
+                                <div class="col-3">
+                                    <label class="form-label required">User Name</label>
+                                </div>
+                                <div class="col-5">
+                                    @Html.TextBoxFor(m => m.UserName , new {@class="form-control", required = "required" , maxlength = "20"} )
+                                </div>
+                            </div>
+                            <div class="mb-3  row justify-content-center">
+                                <div class="col-3">
+                                    <label class="form-label required">Email address</label>
+                                </div>
+                                <div class="col-5">
+                                    @Html.TextBoxFor(m => m.EmailId , new {@class="form-control", required = "required" , type= "email"})
+                                </div>
+                            </div>
+                            <div class="mb-3  row justify-content-center">
+                                <div class="col-3">
+                                    <label class="form-label required">Password</label>
+                                </div>
+                                <div class="col-5">
+                                    @Html.TextBoxFor(m => m.Password , new {@class="form-control", required = "required" ,type="password",minlength = "6",maxlength = "10"})
+                                </div>
+                            </div>
+                            <div class="mb-3  row justify-content-center">
+                                <div class="col-3">
+                                    <label class="form-label required">Phone number</label>
+                                </div>
+                                <div class="col-5">
+                                    @Html.TextBoxFor(m => m.PhoneNumber , new {@class="form-control", required = "required" ,type ="number",minlength = "10" ,maxlength = "10" ,min="6000000000",max="9999999999"})
+                                </div>
+                            </div>
+                            <div class="mb-3  row justify-content-center">
+                                <div class="col-3">
+                                    <label class="form-label required">Location</label>
+                                </div>
+                                <div class="col-5">
+                                    @Html.TextBoxFor(m => m.Location , new {@class="form-control", required = "required" , maxlength = "20"})
+                                </div>
+                            </div>
+                            <input type="submit" class="btnRegister" value="@name" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+@section scripts{  
+    
+    <script src="~/js/createusers.js"></script>
+    <link href="~/css/layout.css" rel="stylesheet" />
+}

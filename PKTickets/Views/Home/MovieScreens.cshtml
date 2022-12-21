@@ -1,0 +1,118 @@
+﻿@using PKTickets.Models
+@model List<Screen>
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div id="heading">Screens</div>
+@*<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th class ="text-center">Screen Name</th>
+            <th class="text-center">Premium Capacity</th>
+            <th class="text-center">Elite Capacity</th>
+            <th class="text-center">Premium Price</th>
+            <th class="text-center">Elite Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Screen screen in Model)
+        {
+            <tr class="text-center align-text-bottom">
+               <td> <a class="nav-link " asp-area="" asp-controller="Home" asp-action="MovieSchedules" asp-route-sId="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
+                        @screen.ScreenName
+                    </a>
+                </td>
+                <td>@screen.PremiumCapacity</td>
+                <td>@screen.EliteCapacity</td>
+                <td>@screen.PremiumPrice</td>
+                <td>@screen.ElitePrice</td>
+
+            </tr>
+        }    
+    </tbody>
+</table>
+*@
+
+
+@*   <div class="row row-cols-3 row-cols-sm-3 row-cols-md-3 row-cols-lg-3">
+    @foreach (Screen screen in Model)
+    {
+        <div class="card size">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MovieSchedules" asp-route-sId="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="head">
+                        ScreenName
+                    </div>
+                    <div class="value">
+                        :  @screen.ScreenName
+
+                    </div>
+                </div>
+                <div class="row ad">
+                    <div class="head">
+                        Premium Capacity
+                    </div>
+                    <div class="value">
+                        :  @screen.PremiumCapacity
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Premium Price
+                    </div>
+                    <div class="value">
+                        :  @screen.PremiumPrice
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Elite Capacity
+                    </div>
+                    <div class="value">
+                        :  @screen.EliteCapacity
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="head">
+                        Elite Price
+                    </div>
+                    <div class="value">
+                        :  @screen.ElitePrice
+                    </div>
+                </div>
+
+            </div>
+            </a>
+        </div>
+    }
+</div>*@
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+    @foreach (Screen screen in Model)
+    {
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header text-primary" style="font-size:191%;background-color:#ddd;">
+                    @screen.ScreenName
+                </div>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MovieSchedules" asp-route-sId="@screen.ScreenId" asp-route-mId="@ViewBag.mId">
+                    <div class="card-body">
+                        <div class="card-text h6">
+                            <p>Premium Capacity-@screen.PremiumCapacity</p>
+                            <p>Premium Price-@screen.PremiumPrice</p>
+                            <p>Elite Capacity-@screen.EliteCapacity</p>
+                            <p>Elite Price-@screen.ElitePrice</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    } 
+</div>
+@section scripts{  
+    <link href="~/css/mscreens.css" rel="stylesheet" />
+}

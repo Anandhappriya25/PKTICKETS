@@ -1,0 +1,40 @@
+﻿@using PKTickets.Models
+@model List<Theater>
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div id="heading">Theaters</div>
+
+
+
+<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th class="text-center">Theater Id</th>
+            <th class="text-center">Theater Name</th>
+            <th class="text-center">Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Theater theater in Model)
+        {
+           <tr class="text-center align-text-bottom">
+                    <td>@theater.TheaterId</td>
+                <td>
+                    <a class="nav-link " asp-area="" asp-controller="Home" asp-action="MovieScreens" asp-route-tId="@theater.TheaterId" asp-route-mId=@ViewBag.mId>
+                     @theater.TheaterName 
+                    </a>
+                </td>
+                    <td>@theater.Location</td>
+           </tr>
+        }    
+    </tbody>
+</table>
+
+@section scripts{  
+    <link href="~/css/movietheaters.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+}
+

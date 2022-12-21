@@ -1,0 +1,91 @@
+﻿@using PKTickets.Models.DTO
+@model UserDTO
+@{
+    var minDate = DateTime.Now.ToString("yyyy-MM-d");
+    var currentDate = Convert.ToDateTime(minDate);
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+<div class="row">
+<div id="heading">
+    Reservations List</div>
+</div>
+
+
+<div class="container" style="float:left">
+    <div class="row ">
+        <div class="col-4">
+            <h5 style="margin-left:-3%;">
+                User Name :<b> @Model.UserName</b>
+            </h5>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover borderd " id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th class="text-center">Reservation Id</th>
+            <th class="text-center">Theater Name</th>
+            <th class="text-center">Movie Name</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Show Timing</th>
+            <th class="text-center">Premium Ticket</th>
+            <th class="text-center">Elite Ticket</th>
+            <th class="text-center">Total Price</th>
+            <th class="text-center" data-orderable="false">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ReservationDetails user in Model.ReservationDetail)
+        {
+            <tr class="text-center align-text-bottom">
+                <td>@user.ReservationId</td>
+                <td>@user.TheaterName</td>
+                <td>@user.MovieName</td>
+                <td>@String.Format("{0:d/M/yyyy}",@user.Date)</td>
+                <td>@user.ShowTime </td>
+                <td>@user.PremiumTickets</td>
+                <td>@user.EliteTickets</td>
+                <td>@user.TotalAmount</td>
+                <td>
+                    <a class="nav-link text-primary info" title="Info" asp-area="" asp-controller="Home" asp-action="InvoiceById" asp-route-id="@user.ReservationId">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                    @if (currentDate > @user.Date)
+                    {
+                        <div>
+                            <a class="nav-link text-danger delete" title="Delete" role="link" aria-disabled="true" disabled>
+                                <i class="fa-solid fa-trash-can" style="opacity:50%;cursor:not-allowed;"></i>
+                            </a>
+                           
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            
+                            <a class="nav-link text-danger delete" title="Delete" asp-area="" onclick="ConfirmDelete(@user.ReservationId)">
+                                <i class="fa-solid fa-trash-can hi"></i>
+                            </a>
+                          
+                        </div>
+                    }  
+                </td>
+            </tr>
+        }    
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+        </tr>
+
+    </tfoot>
+</table>
+
+@section scripts{  
+    <link href="~/css/booklistbyuserid.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>    <script src="~/js/goindex.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+    <script src="~/js/confirmdelete.js"></script>
+}
+

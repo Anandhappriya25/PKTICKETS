@@ -1,0 +1,62 @@
+﻿.edit {
+    margin-left: -77%;
+    font-size: 22px;
+}
+
+.delete {
+    margin-top: -55%;
+    margin-left: 44%;
+    font-size: 22px;
+}
+.name {
+    margin-left: -25px;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+#thead {
+    background-color: #edf5ed;
+}
+
+
+
+.fa-pen-to-square:hover {
+    font-size: 28px;
+}
+
+.fa-trash-can:hover {
+    font-size: 28px;
+}
+.Add {
+    font-size: 29px;
+    float: right;
+    margin-right: -16px;
+    margin-bottom: 15%;
+}
+.Add:hover {
+    color: blue;
+}
+.add {
+    margin-left: 94%;
+}
+    .add .msg {
+        visibility: hidden;
+        font-size: 12px;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        bottom: 77%;
+        left: 88%;
+    }
+
+.add:hover .msg {
+    visibility: visible;
+}

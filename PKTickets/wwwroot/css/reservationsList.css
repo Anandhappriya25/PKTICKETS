@@ -1,0 +1,37 @@
+﻿.add {
+    float: right;
+}
+.Add {
+    font-size: 35px;
+}
+#thead {
+    background-color: #edf5ed;
+}
+.edit {
+    margin-left: -114%;
+    margin-top: -59%;
+    font-size: 22px;
+}
+.delete {
+    margin-right: 41%;
+    margin-top: -58%;
+    font-size: 22px;
+}
+.info {
+    margin-right: -51%;
+    margin-top: -8%;
+    font-size: 22px;
+}
+#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+
+.fa-circle-info:hover {
+    font-size: 28px;
+}
+
+.hi:hover {
+    font-size: 28px;
+}

@@ -1,0 +1,29 @@
+﻿
+.card {
+    margin-left: 33%;
+    width: 39%;
+}
+.card-text {
+    word-wrap: break-word;
+}
+.card-header {
+    text-align: center;
+    font-size: xx-large;
+}
+.card-body {
+    flex: 1 1 auto;
+    padding: 1rem 2rem;
+}
+.large {
+    font-size: x-large;
+}
+.small {
+    margin-top: -6%;
+    font-size: large;
+    inline-size:280px;
+    margin-left: 39%;
+}
+.image {
+    width: 300px;
+    height: 400px;
+}

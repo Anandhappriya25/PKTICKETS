@@ -1,0 +1,77 @@
+﻿@using PKTickets.Models.DTO
+@model ScreensListDTO
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div class="row">
+    <div id="heading">
+        Screens
+    </div>
+</div>
+
+
+<div class="container" style="float:left">
+    <div class="row name">
+        <div class="col-4">
+            <h5>
+                Theater Name :<b> @Model.TheaterName</b>
+            </h5>
+        </div>
+    </div>
+</div>
+
+<a class="nav-link text-black mb-2 add" asp-controller="Home" asp-action="AddScreen" asp-route-id="@ViewBag.csd">
+    <i class="fa-regular fa-square-plus Add"><span class="msg">Add Screen</span></i> 
+</a>
+
+<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th>Screen Id</th>
+            <th class="text-center">Screen Name</th>
+            <th class="text-center">Premium Capacity</th>
+            <th class="text-center">Elite Capacity</th>
+            <th class="text-center">Premium Price</th>
+            <th class="text-center">Elite Price</th>
+            <th class="text-center" data-orderable="false">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ScreensDTO screen in Model.Screens)
+        {
+            <tr class="text-center align-text-bottom">
+                <td>@screen.ScreenId</td>
+                <td>
+                    <a class="nav-link " asp-area="" asp-controller="Home" asp-action="ScreenScheduleById" asp-route-id="@screen.ScreenId">
+                        @screen.ScreenName
+                    </a>
+                </td>
+                <td>@screen.PremiumCapacity</td>
+                <td>@screen.EliteCapacity</td>
+                <td>@screen.PremiumPrice</td>
+                <td>@screen.ElitePrice</td>
+                <td>
+
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditScreen" asp-route-id="@screen.ScreenId">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+
+
+                    <div class="nav-link text-danger delete" title="Delete" asp-area="" onclick="ScreenDelete(@screen.ScreenId)">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+
+                </td>
+            </tr>
+        }    
+    </tbody>
+</table>
+
+@section scripts{
+    <link href="~/css/theaterscreens.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+    <script src="~/js/screendelete.js"></script>
+}
+

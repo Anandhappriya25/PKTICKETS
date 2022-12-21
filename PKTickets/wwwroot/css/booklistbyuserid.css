@@ -1,0 +1,30 @@
+﻿#heading {
+    color: black;
+    text-decoration: underline;
+    font-size: 2.5em;
+}
+#thead {
+    background-color: #edf5ed;
+}
+.edit {
+    margin-left: -75%;
+    font-size: 22px;
+}
+
+.delete {
+    margin-right: 61px;
+    margin-top: -40%;
+    font-size: 22px;
+}
+
+.info {
+    margin-right: -37%;
+    font-size: 22px;
+}
+.fa-circle-info:hover {
+    font-size: 28px;
+}
+
+.hi:hover {
+    font-size: 28px;
+}

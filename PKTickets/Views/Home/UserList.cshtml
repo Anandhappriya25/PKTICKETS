@@ -1,0 +1,57 @@
+﻿@using PKTickets.Models
+@model List<User>
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div id="heading">Users List</div>
+
+
+<a class="nav-link text-black mb-2 add"   asp-area="" asp-controller="Home" asp-action="CreateUser">
+    <i class="fa-regular fa-square-plus Add"><span class="msg">Add User</span></i>
+    
+</a>
+
+<table class="table table-hover pt-2" id="dataTable">
+    <thead class="text-dark" id="thead">
+        <tr>
+            <th>User Id</th>
+            <th class="text-center">User Name</th>
+            <th class="text-center">Phone Number</th>
+            <th class="text-center">Location</th>
+            <th class="text-center">Email Id</th>
+            <th class="text-center" data-orderable="false">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User user in Model)
+        {
+            <tr class="text-center align-text-bottom">
+                <td>@user.UserId</td>
+                <td>
+                    <a class="nav-link " asp-area="" asp-controller="Home" asp-action="ReservationsByUserId" asp-route-id="@user.UserId">
+                        @user.UserName
+                    </a>
+                </td>
+                <td>@user.PhoneNumber</td>
+                <td>@user.Location</td>
+                <td>@user.EmailId</td>
+                <td>
+                    <a class="nav-link text-success edit" title="Edit" asp-area="" asp-controller="Home" asp-action="EditUser" asp-route-id="@user.UserId">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>   
+                    <div class="nav-link text-danger delete" title="Delete" onclick="UserDelete(@user.UserId)">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                </td>
+            </tr>
+        }    
+    </tbody>
+</table>
+
+@section scripts{  
+    <link href="~/css/userlist.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <script>$(document).ready(function () { $("#dataTable").DataTable(); })</script>
+    <script src="~/js/userdelete.js"></script>
+}

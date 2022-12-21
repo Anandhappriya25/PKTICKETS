@@ -1,0 +1,82 @@
+﻿@using PKTickets.Models.DTO
+@model Invoice
+
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+
+    <div class="card">
+        <div class="card-header">
+            Reservation Detail
+        </div>
+        <div class="card-body">
+            <div class="row">
+            <div class="large">Reservation Id </div>
+            <div class="small">:&nbsp;&nbsp;@Model.ReservationId</div>
+            </div>
+
+        <div class="row ">
+                <div class="large">User Name </div>
+            <div class="small">:&nbsp;&nbsp;@Model.UserName</div>
+            </div>
+             <div class="row ">
+                <div class="large">Movie Name </div>
+            <div class="small">:&nbsp;&nbsp;@Model.MovieName</div>
+            </div>
+        <div class="row ">
+            <div class="large">Theater Name </div>
+            <div class="small">:&nbsp;&nbsp;@Model.TheaterName</div>
+        </div>
+         <div class="row ">
+            <div class="large">screen Name </div>
+            <div class="small">:&nbsp;&nbsp;@Model.ScreenName</div>
+            </div>
+        <div class="row ">
+            <div class="large">Date </div>
+            <div class="small">:&nbsp;&nbsp;@String.Format("{0:d/M/yyyy}",@Model.Date)</div>
+        </div>
+        <div class="row ">
+            <div class="large">Show Time </div>
+            <div class="small">:&nbsp;&nbsp;@Model.ShowTime</div>
+        </div>
+        @if (Model.PremiumTicket > 0)
+        {
+            <div class="row ">
+                <div class="large">Premium Tickets </div>
+            <div class="small">:&nbsp;&nbsp;@Model.PremiumTicket</div>
+        </div>
+        }
+        @if (Model.EliteTicket > 0)
+        {
+            <div class="row ">
+                <div class="large">Elite Tickets </div>
+            <div class="small">:&nbsp;&nbsp;@Model.EliteTicket</div>
+        </div>
+        }
+        @if (Model.PremiumTicket > 0)
+        {
+            <div class="row ">
+                <div class="large">Premium Price </div>
+            <div class="small">:&nbsp;&nbsp;@Model.PremiumPrice</div>
+        </div>
+        }
+        @if (Model.EliteTicket > 0)
+        {
+            <div class="row ">
+                <div class="large">Elite Price </div>
+            <div class="small">:&nbsp;&nbsp;@Model.ElitePrice</div>
+        </div>
+        }
+        <div class="row ">
+            <div class="large">Total Amount </div>
+            <div class="small">:&nbsp;&nbsp;@Model.TotalAmount</div>
+        </div>
+       
+            
+        </div>
+    </div>
+ 
+    @section scripts{
+    <link href="~/css/invoice.css" rel="stylesheet" />
+    }

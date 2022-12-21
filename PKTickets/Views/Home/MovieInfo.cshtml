@@ -1,0 +1,48 @@
+﻿@using PKTickets.Models.DTO
+@model Movie
+
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+
+    <div class="card">
+        <div class="card-header">
+           <img class="image" src="/css/Image/@Model.ImagePath"/>
+        </div>
+        <div class="card-body">
+           
+
+        <div class="row ">
+                <div class="large">Movie Name </div>
+            <div class="small">:&nbsp;&nbsp;@Model.Title</div>
+            </div>
+            
+        <div class="row ">
+            <div class="large">Language </div>
+            <div class="small">:&nbsp;&nbsp;@Model.Language</div>
+        </div>
+         <div class="row ">
+            <div class="large">Director </div>
+            <div class="small">:&nbsp;&nbsp;@Model.Director</div>
+            </div>
+        <div class="row ">
+            <div class="large">Genre </div>
+            <div class="small">:&nbsp;&nbsp;@Model.Genre</div>
+        </div>
+        <div class="row ">
+            <div class="large">Duration </div>
+            <div class="small">:&nbsp;&nbsp;@Model.Duration Minutes</div>
+        </div>
+        <div class="row ">
+            <div class="large">Cast And Crew </div>
+            <div class="small">:&nbsp;&nbsp;@Model.CastAndCrew</div>
+        </div>
+       
+            
+        </div>
+    </div>
+ 
+    @section scripts{
+    <link href="~/css/movieinfo.css" rel="stylesheet" />
+    }

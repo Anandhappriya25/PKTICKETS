@@ -1,0 +1,36 @@
+﻿@using PKTickets.Models
+@model List<Movie>
+@{
+    Layout = "~/views/shared/_userlayout.cshtml";
+}
+
+<div id="heading">Movies List</div>
+
+
+
+<div class="container-fluid ">
+    <div class="row row-cols-4 row-cols-sm-4 row-cols-md-4 row-cols-lg-4">
+        @foreach (Movie movie in Model)
+        {
+
+            <div class="card round">
+                <a class="nav-link text-dark" style="margin-left:-5%" asp-area="" asp-controller="Home" asp-action="MovieTheaters" asp-route-id="@movie.MovieId">
+                    <img class="card-img-top try" src="/css/Image/@movie.ImagePath" alt="Card image top">
+                <div class="card-body">
+                    <h3 class="card-title">@movie.Title</h3>
+                    <h4 class="card-subtitle">@movie.Language</h4>
+                    <p class="card-text">@movie.Director, @movie.CastAndCrew</p>
+                    <p class="card-text para">Duration : @movie.Duration Minutes</p>
+                </div>
+            </a>
+            </div>
+        }
+    </div>
+</div>
+
+
+@section scripts{  
+    <link href="~/css/movielist.css" rel="stylesheet" />
+}
+
+                 

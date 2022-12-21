@@ -1,0 +1,122 @@
+﻿@using PKTickets.Models
+@model Screen
+@{
+    string name = "Submit";
+    string title = "Screen Form";
+    if (Model.ScreenId > 0)
+    {
+        title = "Edit Screen";
+        name = "Update";
+    }
+    Layout = "~/views/shared/_userlayout.cshtml";
+
+}
+
+<div class="container register">
+    <div class="row">
+        <div class="col-md-3 register-left">
+            <img src="~/css/logo/logo.jpg" class=" rounded-4 shadow-4" alt="f" />
+            <p>Welcome to PKTickets</p>
+            <p>You can Add a Screen for Easy Booking</p>
+        </div>
+        <div class="col-md-9 register-right">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 class="register-heading"> @title </h3>
+                    <div class="row register-form">
+                        @using (Html.BeginForm(FormMethod.Post, new { id = "AddScreen" }))
+                        {
+                            @Html.HiddenFor(m => m.ScreenId )
+                            @Html.HiddenFor(m => m.TheaterId )
+                            <div class="mb-3  row justify-content-center">
+                                <div class="col-3">
+                                    <label class="form-label required">Screen Name</label>
+                                </div>
+                                <div class="col-5">
+                                    @Html.TextBoxFor(m => m.ScreenName , new {@class="form-control", required = "required" , maxlength = "20"} )
+                                </div>
+                            </div>
+                            @if (Model.ScreenId > 0)
+                            {
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Premium Capacity</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Elite Capacity</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">PremiumPrice</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Elite Price</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control",@disabled="disabled"})
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Premium Capacity</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.PremiumCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Elite Capacity</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.EliteCapacity , new {@class="form-control",type ="number", required = "required" ,min="50", max = "250"})
+                                    </div>
+                                </div>
+
+
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">PremiumPrice</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.PremiumPrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "1000"})
+                                    </div>
+                                </div>
+                                <div class="mb-3  row justify-content-center">
+                                    <div class="col-3">
+                                        <label class="form-label required">Elite Price</label>
+                                    </div>
+                                    <div class="col-5">
+                                        @Html.TextBoxFor(m => m.ElitePrice , new {@class="form-control",type ="number", required = "required" ,min="100", max = "2000"})
+                                    </div>
+                                </div>
+                            }
+                            <input type="submit" class="btnRegister" value="@name" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/js/addscreen.js"></script>
+    <link href="~/css/layout.css" rel="stylesheet" />
+}
